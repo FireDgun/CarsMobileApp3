@@ -3,7 +3,7 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
-
+import { fixPhoneFormat } from "./utils/phoneHelper";
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
@@ -30,10 +30,21 @@ export default function Login() {
         .collection("users")
         .doc(user.uid)
         .get();
+      let number = fixPhoneFormat(phoneNumber);
+      const resetAction = navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: userDocument.exists ? "Dashboard" : "Details",
+            params: { uid: user.uid, number },
+          },
+        ],
+      });
+
       if (userDocument.exists) {
-        navigation.navigate("Dashboard");
+        resetAction;
       } else {
-        navigation.navigate("Details", { uid: user.uid });
+        resetAction;
       }
     } catch (error) {
       setError("קוד שגוי, נסו שוב");

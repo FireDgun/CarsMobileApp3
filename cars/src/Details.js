@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import firestore from "@react-native-firebase/firestore";
 export default function Details({ route, navigation }) {
-  const { uid } = route.params;
+  const { uid, phoneNumber } = route.params;
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
 
@@ -11,6 +11,7 @@ export default function Details({ route, navigation }) {
       await firestore().collection("users").doc(uid).set({
         name,
         dob,
+        phoneNumber,
       });
       navigation.navigate("Dashboard");
     } catch (error) {

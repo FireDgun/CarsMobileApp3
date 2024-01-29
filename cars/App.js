@@ -6,6 +6,7 @@ import Dashboard from "./src/Dashboard";
 import Details from "./src/Details";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import StartNewChat from "./src/chats/StartNewChat";
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,11 @@ export default function App() {
         <Stack.Screen
           name="Dashboard"
           component={Dashboard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="StartNewChat"
+          component={StartNewChat}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

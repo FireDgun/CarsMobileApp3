@@ -1,10 +1,12 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import TopNavigation from "./TopNavigation";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const Header = ({ setSelectedTab }) => {
   const navigation = useNavigation();
+  const route = useRoute();
 
   const handleSearch = () => {
     console.log("Search clicked");
@@ -27,20 +29,36 @@ const Header = ({ setSelectedTab }) => {
   };
   return (
     <View style={styles.header}>
-      <View style={styles.icons}>
-        <TouchableOpacity onPress={handleSearch}>
-          <Text>🔍</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleSettings}>
-          <Text>⚙️</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLogout}>
+      <View style={styles.iconsBar}>
+        {
+          route.name !== "Dashboard" ? (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
+              <Text>Back</Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.placeholder} />
+          ) // Placeholder when back button is not shown
+        }
+        <View style={styles.icons}>
+          <TouchableOpacity onPress={handleSearch}>
+            <MaterialIcons name="search" size={30} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSettings}>
+            <MaterialIcons name="settings" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
+        {/* <TouchableOpacity onPress={handleLogout}>
           <Text>🚪</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
-      <View style={styles.menu}>
-        <TopNavigation setSelectedTab={setSelectedTab} />
-      </View>
+      {route.name === "Dashboard" && (
+        <View style={styles.menu}>
+          <TopNavigation setSelectedTab={setSelectedTab} />
+        </View>
+      )}
     </View>
   );
 };
@@ -55,12 +73,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDD",
     width: "100%",
   },
+  iconsBar: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 10, // Add some padding on the sides
+  },
   icons: {
     display: "flex",
     flexDirection: "row",
-    alignSelf: "flex-end",
+    // Remove alignSelf: "end"
   },
-  menu: { width: "100%" },
+  placeholder: {
+    width: 50, // Make sure this width is similar to the back button's width
+  },
+  menu: {
+    width: "100%",
+  },
 });
 
 export default Header;
