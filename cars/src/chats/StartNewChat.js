@@ -1,67 +1,74 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
-import * as Contacts from "expo-contacts";
+import React, { useEffect, useMemo } from "react";
+import { View, Text, FlatList, Button, StyleSheet } from "react-native";
 import Header from "../layout/Header";
-import { fixPhoneFormat } from "../utils/phoneHelper";
-import firestore from "@react-native-firebase/firestore";
+import ChatRow from "./ChatRow";
+import { useContacts } from "../providers/ContactsProvider";
+import useUsers from "../hooks/useUsers";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../providers/AuthContext";
+import { useChatsContext } from "../providers/ChatsProvider";
 
-export default function StartNewChat({ navigation }) {
-  const [contacts, setContacts] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
+export default function StartNewChat() {
+  const contacts = useContacts();
+  const { getAllUsers, allUsers, usersNumbers } = useUsers();
+  const navigation = useNavigation();
+  const { user } = useAuth();
+  const { createChat } = useChatsContext();
 
   useEffect(() => {
     getAllUsers();
-    requestContactsPermission();
   }, []);
 
-  const getAllUsers = async () => {
-    const usersCollection = await firestore().collection("users").get();
-    const usersData = usersCollection.docs.map((doc) => {
-      const docData = doc.data();
-      return {
-        id: doc.id,
-        name: docData.name,
-        phoneNumber: docData.phoneNumber,
-      };
-    });
-
-    console.log("Users Data:", usersData); // Log the complete array
-    setAllUsers(usersData);
+  const handleRowClickUser = async (id) => {
+    const chatId = await createChat(user.uid, id);
+    navigation.navigate("ChatWindow", { id: chatId });
+    console.log(`Clicked on ${chatId}`);
   };
-
-  const requestContactsPermission = async () => {
-    const { status } = await Contacts.requestPermissionsAsync();
-    if (status === "granted") {
-      getContacts();
-    } else {
-      console.log("Contacts permission denied");
-    }
+  const handleRowClickContact = (id) => {
+    console.log(`Clicked on ${id}`);
   };
+  // Combine all users and contacts into one array for rendering in FlatList
+  const combinedData = useMemo(() => {
+    return [
+      { type: "header", title: "חברים באפליקציה" },
+      ...allUsers.map((user) => ({ type: "user", ...user })),
+      { type: "header", title: "הזמן אנשי קשר" },
+      ...contacts
+        .filter((contact) => !usersNumbers.includes(contact.number))
+        .map((contact) => ({ type: "contact", ...contact })),
+    ];
+  }, [allUsers, contacts]);
 
-  const getContacts = async () => {
-    try {
-      const { data } = await Contacts.getContactsAsync({
-        fields: [Contacts.Fields.PhoneNumbers],
-      });
-
-      if (data.length > 0) {
-        setContacts(
-          data.map((element) => ({
-            name: element.name,
-            number: fixPhoneFormat(element.phoneNumbers?.[0]?.number),
-          }))
-        );
-      }
-    } catch (error) {
-      console.log("Error fetching contacts: ", error);
+  const renderItem = ({ item }) => {
+    if (item.type === "header") {
+      return <Text style={styles.subtitle}>{item.title}</Text>;
     }
+    return (
+      <ChatRow
+        name={item.name}
+        id={item.id || "no id"}
+        city={item.city || "מרכז"} // Default to "Tel Aviv" if city is not provided
+        image={item.image} // Provide a default image if not provided
+        onClick={
+          usersNumbers.includes(item.phoneNumber)
+            ? () => handleRowClickUser(item.id)
+            : () => handleRowClickContact(item.name)
+        }
+      />
+    );
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Header />
-      <Text>Start a New Chat</Text>
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
+      <FlatList
+        data={combinedData}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `item-${index}`}
+        ListHeaderComponent={() => (
+          <Text style={styles.title}>Start a New Chat</Text>
+        )}
+      />
     </View>
   );
 }
@@ -69,7 +76,16 @@ export default function StartNewChat({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    padding: 10,
+    paddingTop: 20,
+    backgroundColor: "#f8f8f8",
   },
 });
