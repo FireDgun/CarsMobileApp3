@@ -14,6 +14,7 @@ export default function ChatsList() {
 
   const renderItem = ({ item }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
+    if (item?.messages?.length == 0) return null;
     return (
       <ChatRow
         name={item.name} // Replace with actual property names
