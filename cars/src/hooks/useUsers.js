@@ -22,9 +22,40 @@ export default function useUsers() {
     setAllUsers(usersData);
   }, []);
 
+  const saveDetails = useCallback(
+    async (
+      uid,
+      name,
+      selectedMonth,
+      selectedYear,
+      phoneNumber,
+      selectedLocations,
+      profilePic,
+      navigation
+    ) => {
+      try {
+        await firestore()
+          .collection("users")
+          .doc(uid)
+          .set({
+            name,
+            dob: `${selectedMonth}/${selectedYear}`, // Store DOB as "month/year"
+            phoneNumber,
+            selectedLocations, // Store selected locations
+            profilePic,
+          });
+        navigation.navigate("Dashboard");
+      } catch (error) {
+        console.log("Error saving the details :" + error);
+      }
+    },
+    []
+  );
+
   return {
     allUsers,
     usersNumbers,
     getAllUsers,
+    saveDetails,
   };
 }

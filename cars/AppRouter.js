@@ -15,7 +15,7 @@ export default function AppRouter() {
   const { user } = useAuth();
 
   return (
-    <Stack.Navigator initialRouteName={user ? "Details" : "Login"}>
+    <Stack.Navigator initialRouteName={user ? "Dashboard" : "Login"}>
       <Stack.Screen
         name="Login"
         component={Login}

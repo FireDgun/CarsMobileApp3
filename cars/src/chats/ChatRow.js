@@ -6,7 +6,6 @@ const defaultImage = require("../../assets/avatars/driver.png"); // Replace with
 const ChatRow = ({ name, city, image, onClick, id }) => {
   const imageSource = image ? { uri: image } : defaultImage;
   const { user } = useContext(AuthContext);
-
   if (user && user.uid == id) return;
 
   return (

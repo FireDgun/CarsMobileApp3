@@ -7,33 +7,26 @@ import {
   ScrollView,
   Image,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import firestore from "@react-native-firebase/firestore";
 import { Picker } from "@react-native-picker/picker";
 import storage from "@react-native-firebase/storage"; // Ensure Firebase Storage is correctly imported
-
-const locationOptions = [
-  "רמת הגולן",
-  "טבריה ועמק הירדן",
-  "בית שאן והסביבה",
-  "אזור יוקנעם",
-  "הגליל העליון", // Add the rest of your options...
-];
+import useUsers from "./hooks/useUsers";
+import { uploadImage } from "./utils/FireStorageHelper";
+import { months, years } from "./utils/datesHelper";
+import { locationOptions } from "./utils/locationsList";
+import CustomImagePicker from "./components/CustomImagePicker";
 
 export default function Details({ route, navigation }) {
-  const uid = route.params?.uid || "H5GqTwrMdfZfOteMVD5JdBwO4l63";
-  const phoneNumber = route.params?.phoneNumber || "0511111111";
-
+  const uid = route.params?.uid || "H5GqTwrMdfZfOteMVD5JdBwO4l63"; // the OR statement only for testing
+  const phoneNumber = route.params?.phoneNumber || "0511111111"; // the OR statement only for testing
+  const { saveDetails } = useUsers();
   const [name, setName] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("01");
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
   );
-
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
-  console.log(uid);
-
   const toggleLocation = (location) => {
     if (selectedLocations.includes(location)) {
       setSelectedLocations(
@@ -43,68 +36,26 @@ export default function Details({ route, navigation }) {
       setSelectedLocations([...selectedLocations, location]);
     }
   };
-  const uploadImage = async (uri, fileName) => {
-    const response = await fetch(uri);
-    const blob = await response.blob(); // Convert the fetched URI to a blob
 
-    const storageRef = storage().ref(fileName); // Create a reference to Firebase Storage
-    storageRef
-      .put(blob)
-      .then(async (snapshot) => {
-        try {
-          const downloadURL = await storage()
-            .ref(snapshot.metadata.fullPath)
-            .getDownloadURL();
-          console.log("Image uploaded to:", downloadURL);
-          setProfilePic(downloadURL);
-        } catch (error) {
-          console.error("Error getting download URL:", error);
-        }
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
-      });
-  };
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    if (!result.canceled) {
-      // Assuming result.assets[0].uri contains the file URI
-      const uploadUri = result.assets[0].uri;
-      const fileName = `profile_pics/${uid}.jpg`; // Construct a file name or path as needed
-      uploadImage(uploadUri, fileName);
-    }
-  };
-
-  const months = Array.from({ length: 12 }, (_, i) =>
-    (i + 1).toString().padStart(2, "0")
-  );
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 75 }, (_, i) =>
-    (currentYear - i).toString()
-  );
-
-  const saveDetails = async () => {
+  const handleSaveDetails = async () => {
     try {
-      await firestore()
-        .collection("users")
-        .doc(uid)
-        .set({
-          name,
-          dob: `${selectedMonth}/${selectedYear}`, // Store DOB as "month/year"
-          phoneNumber,
-          selectedLocations, // Store selected locations
-          profilePic,
-        });
-      navigation.navigate("Dashboard");
+      await saveDetails(
+        uid,
+        name,
+        selectedMonth,
+        selectedYear,
+        phoneNumber,
+        selectedLocations,
+        profilePic,
+        navigation
+      );
     } catch (error) {
       console.log("Error saving the details :" + error);
     }
+  };
+
+  const handleSetProfilePic = (newPic) => {
+    setProfilePic(newPic);
   };
 
   return (
@@ -168,28 +119,14 @@ export default function Details({ route, navigation }) {
           </TouchableOpacity>
         ))}
       </View>
+      <CustomImagePicker
+        uid={uid}
+        folderName={"profile_pics"}
+        handleSetState={handleSetProfilePic}
+      />
+
       <TouchableOpacity
-        onPress={pickImage}
-        style={{
-          backgroundColor: "#999",
-          padding: 10,
-          borderRadius: 5,
-          marginBottom: 20,
-          alignItems: "center",
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 22, fontWeight: "bold" }}>
-          העלה תמונת פרופיל
-        </Text>
-      </TouchableOpacity>
-      {profilePic && (
-        <Image
-          source={{ uri: profilePic }}
-          style={{ width: 100, height: 100, marginBottom: 20 }}
-        />
-      )}
-      <TouchableOpacity
-        onPress={saveDetails}
+        onPress={handleSaveDetails}
         style={{
           backgroundColor: "#841584",
           padding: 10,
