@@ -29,6 +29,10 @@ export default function useChats() {
       const message = {
         ...messageContent, // The text or other content of the message
         senderId: user?.uid,
+        senderName: user?.name,
+        senderImg: user?.profilePic,
+        senderPhoneNumber: user?.phoneNumber,
+        readBy: user ? [user.uid] : [],
         timestamp: new Date(), // Set the timestamp
       };
 
@@ -84,6 +88,7 @@ export default function useChats() {
       const newChat = {
         chatParticipants: [senderId, getterId],
         messages: [],
+
         // ... other chat details (Image, Chat name, etc.)
       };
       const newChatRef = await firestore().collection("chats").add(newChat);

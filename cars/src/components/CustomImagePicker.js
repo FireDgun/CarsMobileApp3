@@ -13,7 +13,6 @@ const CustomImagePicker = ({ folderName, uid, handleSetState }) => {
   const handleUploadImage = async (uri, fileName) => {
     try {
       let downloadUrl = await uploadImage(uri, fileName);
-      console.log(downloadUrl);
       setPhoto(downloadUrl);
     } catch (error) {
       console.error("Error uploading image:", error);

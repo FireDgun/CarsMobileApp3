@@ -17,9 +17,20 @@ export default function useUsers() {
         id: doc.id,
         name: docData.name,
         phoneNumber: docData.phoneNumber,
+        profilePic: docData.profilePic,
+
+        selectedLocations: docData.selectedLocations,
       };
     });
     setAllUsers(usersData);
+  }, []);
+
+  const getUserById = useCallback(async (id) => {
+    try {
+      return await firestore().collection("users").doc(id).get(); //YOU WAS HERE TO ADD ID
+    } catch (error) {
+      console.log("Error get user ", id);
+    }
   }, []);
 
   const saveDetails = useCallback(
@@ -57,5 +68,6 @@ export default function useUsers() {
     usersNumbers,
     getAllUsers,
     saveDetails,
+    getUserById,
   };
 }

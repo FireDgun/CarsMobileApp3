@@ -3,11 +3,16 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import ChatRow from "./ChatRow"; // Assuming ChatRow is in the same directory
 import { useChatsContext } from "../providers/ChatsProvider";
 import { useNavigation } from "@react-navigation/native";
+import { useUsersContext } from "../providers/UsersProvider";
+import {
+  getChatName,
+  getLastMessageTextAndName,
+} from "../utils/chatsDataHelpers";
 
 export default function ChatsList() {
   const { myChats } = useChatsContext();
   const navigation = useNavigation();
-
+  const { allUsers } = useUsersContext();
   const handleChatSelect = (chatId) => {
     navigation.navigate("ChatWindow", { id: chatId });
   };
@@ -17,9 +22,9 @@ export default function ChatsList() {
     if (item?.messages?.length == 0) return null;
     return (
       <ChatRow
-        name={item.name} // Replace with actual property names
-        city={item.city} // Replace with actual property names
-        image={item.image} // Replace with actual property names
+        name={getChatName(allUsers, item)} // Replace with actual property names
+        city={getLastMessageTextAndName(allUsers, item)} // Default to "Tel Aviv" if city is not provided
+        image={item?.profilePic} // Provide a default image if not provided
         onClick={() => handleChatSelect(item.id)}
         id={item.id}
       />

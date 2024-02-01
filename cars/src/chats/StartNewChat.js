@@ -1,23 +1,19 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { View, Text, FlatList, Button, StyleSheet } from "react-native";
 import Header from "../layout/Header";
 import ChatRow from "./ChatRow";
 import { useContacts } from "../providers/ContactsProvider";
-import useUsers from "../hooks/useUsers";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
+import { useUsersContext } from "../providers/UsersProvider";
 
 export default function StartNewChat() {
   const contacts = useContacts();
-  const { getAllUsers, allUsers, usersNumbers } = useUsers();
+  const { allUsers, usersNumbers } = useUsersContext();
   const navigation = useNavigation();
   const { user } = useAuth();
   const { createChat } = useChatsContext();
-
-  useEffect(() => {
-    getAllUsers();
-  }, []);
 
   const handleRowClickUser = async (id) => {
     const chatId = await createChat(user.uid, id);
@@ -38,17 +34,16 @@ export default function StartNewChat() {
         .map((contact) => ({ type: "contact", ...contact })),
     ];
   }, [allUsers, contacts]);
-
   const renderItem = ({ item }) => {
     if (item.type === "header") {
       return <Text style={styles.subtitle}>{item.title}</Text>;
     }
     return (
       <ChatRow
-        name={item.name}
-        id={item.id || "no id"}
-        city={item.city || "מרכז"} // Default to "Tel Aviv" if city is not provided
-        image={item.image} // Provide a default image if not provided
+        name={item?.name}
+        id={item?.id || "no id"}
+        city={item?.selectedLocations?.join("-") || ""} // Default to "Tel Aviv" if city is not provided
+        image={item?.profilePic} // Provide a default image if not provided
         onClick={
           usersNumbers.includes(item.phoneNumber)
             ? () => handleRowClickUser(item.id)

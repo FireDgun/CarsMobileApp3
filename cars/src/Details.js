@@ -15,11 +15,14 @@ import { uploadImage } from "./utils/FireStorageHelper";
 import { months, years } from "./utils/datesHelper";
 import { locationOptions } from "./utils/locationsList";
 import CustomImagePicker from "./components/CustomImagePicker";
+import { useUsersContext } from "./providers/UsersProvider";
+import { useAuth } from "./providers/AuthContext";
 
 export default function Details({ route, navigation }) {
   const uid = route.params?.uid || "H5GqTwrMdfZfOteMVD5JdBwO4l63"; // the OR statement only for testing
   const phoneNumber = route.params?.phoneNumber || "0511111111"; // the OR statement only for testing
-  const { saveDetails } = useUsers();
+  const { saveDetails } = useUsersContext();
+  const { addDataFromDbToUser } = useAuth();
   const [name, setName] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("01");
   const [selectedYear, setSelectedYear] = useState(
@@ -49,6 +52,7 @@ export default function Details({ route, navigation }) {
         profilePic,
         navigation
       );
+      await addDataFromDbToUser(uid);
     } catch (error) {
       console.log("Error saving the details :" + error);
     }

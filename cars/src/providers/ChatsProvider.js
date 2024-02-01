@@ -16,8 +16,9 @@ export const ChatsProvider = ({ children }) => {
   const { user } = useAuth();
 
   useEffect(() => {
-    console.log("render");
     if (user) {
+      console.log("render");
+
       const unsubscribeFunctions = applyListenersToAllMyChats(myChats);
       return () => {
         unsubscribeFunctions();
