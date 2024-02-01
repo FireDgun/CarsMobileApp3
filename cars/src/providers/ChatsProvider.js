@@ -17,10 +17,12 @@ export const ChatsProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("render");
-    const unsubscribeFunctions = applyListenersToAllMyChats(myChats);
-    return () => {
-      unsubscribeFunctions();
-    };
+    if (user) {
+      const unsubscribeFunctions = applyListenersToAllMyChats(myChats);
+      return () => {
+        unsubscribeFunctions();
+      };
+    }
   }, [user, refreshListeners]);
 
   return (

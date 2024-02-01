@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import TopNavigation from "./TopNavigation";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import auth from "@react-native-firebase/auth";
 
 const Header = ({ setSelectedTab }) => {
   const navigation = useNavigation();
@@ -50,9 +51,9 @@ const Header = ({ setSelectedTab }) => {
             <MaterialIcons name="settings" size={30} color="black" />
           </TouchableOpacity>
         </View>
-        {/* <TouchableOpacity onPress={handleLogout}>
+        <TouchableOpacity onPress={handleLogout}>
           <Text>🚪</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       {route.name === "Dashboard" && (
         <View style={styles.menu}>

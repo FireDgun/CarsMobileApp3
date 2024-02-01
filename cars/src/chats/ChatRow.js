@@ -7,7 +7,7 @@ const ChatRow = ({ name, city, image, onClick, id }) => {
   const imageSource = image ? { uri: image } : defaultImage;
   const { user } = useContext(AuthContext);
 
-  if (user.uid == id) return;
+  if (user && user.uid == id) return;
 
   return (
     <TouchableOpacity style={styles.row} onPress={onClick}>

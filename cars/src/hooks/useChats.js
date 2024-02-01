@@ -11,7 +11,7 @@ export default function useChats() {
     try {
       const querySnapshot = await firestore()
         .collection("chats")
-        .where("chatParticipants", "array-contains", user.uid)
+        .where("chatParticipants", "array-contains", user?.uid)
         .get();
 
       const chats = querySnapshot.docs.map((doc) => ({
@@ -22,13 +22,13 @@ export default function useChats() {
     } catch (error) {
       console.error("Error fetching chats: ", error);
     }
-  }, [user.uid]);
+  }, [user]);
 
   const sendMessage = async (chatId, messageContent) => {
     try {
       const message = {
         ...messageContent, // The text or other content of the message
-        senderId: user.uid,
+        senderId: user?.uid,
         timestamp: new Date(), // Set the timestamp
       };
 
