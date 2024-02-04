@@ -11,23 +11,36 @@ import {
 import CustomImagePicker from "../components/CustomImagePicker";
 import Header from "../layout/Header";
 import uuid from "react-native-uuid";
+import useChats from "../hooks/useChats";
+import { useChatsContext } from "../providers/ChatsProvider";
+import { useAuth } from "../providers/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
 const StartNewChatGroupDetails = ({ route }) => {
   const [groupName, setGroupName] = useState("");
-  const [groupImage, setGroupImage] = useState(null);
-  const uniqueId = uuid.v4();
-
+  const [groupImage, setGroupImage] = useState("");
+  const [imageGroupChatId, setImageGroupChatId] = useState(uuid.v4());
+  const { createGroupChat } = useChatsContext();
+  const { user } = useAuth();
+  const navigation = useNavigation();
   const { selectedUsers } = route.params;
 
   const handleGroupNameChange = (text) => {
     setGroupName(text);
   };
 
-  const handleCreateGroup = () => {
-    // Here you will handle the creation of the group with the groupName and groupImage
-    console.log("Group name:", groupName);
-    console.log("Group image:", groupImage);
-    // Add the logic to create the group or navigate as necessary
+  const handleCreateGroup = async () => {
+    try {
+      let newChatId = await createGroupChat(
+        [...selectedUsers.map((u) => u.id), user.uid],
+        groupImage ?? "",
+        groupName ?? ""
+      );
+      console.log("New chat created with id ", newChatId);
+      navigation.navigate("Dashboard");
+    } catch (err) {
+      console.log("Error while creating new group chat ", err);
+    }
   };
 
   const renderSelectedUser = ({ item }) => (
@@ -43,7 +56,7 @@ const StartNewChatGroupDetails = ({ route }) => {
       <View style={styles.container}>
         <CustomImagePicker
           folderName="group_images"
-          uid={uniqueId} // This should be a unique ID for the group
+          uid={imageGroupChatId} // This should be a unique ID for the group
           handleSetState={setGroupImage}
         />
         <TextInput

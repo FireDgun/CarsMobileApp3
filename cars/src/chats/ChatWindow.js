@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -15,6 +16,16 @@ import {
   formatDateTodayYesterdayDate,
   formatMessageTime,
 } from "../utils/chatsDataHelpers";
+const defaultImage = require("../../assets/avatars/driver.png"); // Replace with the actual path
+const getColorById = (senderId) => {
+  // You can create a more complex logic here to assign colors
+  // This is a simple example where a color is derived from the senderId hash code
+  const hash = senderId
+    .split("")
+    .reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+  return `hsl(${hash % 360}, 60%, 50%)`; // HSL color format
+};
+
 const groupMessagesByDate = (messages) => {
   const groupedMessages = [];
   let lastDate = null;
@@ -41,6 +52,7 @@ function ChatWindow({ route }) {
   const { sendMessage, myChats } = useChatsContext();
 
   const [messages, setMessages] = useState([]);
+  const [chat, setChat] = useState({});
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
@@ -48,6 +60,7 @@ function ChatWindow({ route }) {
     if (chat && chat.messages) {
       const groupedMessages = groupMessagesByDate(chat.messages);
       setMessages(groupedMessages);
+      setChat(chat);
     }
   }, [myChats, chatId]);
 
@@ -69,6 +82,8 @@ function ChatWindow({ route }) {
   };
 
   const renderMessage = ({ item }) => {
+    const imageSource = item.senderImg ? { uri: item.senderImg } : defaultImage;
+    console.log(imageSource);
     if (item.type === "date") {
       return (
         <View style={styles.dateSeparator}>
@@ -79,14 +94,41 @@ function ChatWindow({ route }) {
       // item.type === 'message'
       return (
         <View
-          style={
-            item.senderId === user.uid ? styles.myMessage : styles.otherMessage
-          }
+          style={[
+            styles.messageContainer,
+            item.senderId === user.uid
+              ? styles.myMessageContainer
+              : styles.otherMessageContainer,
+            chat.type !== "group" &&
+              item.senderId === user.uid &&
+              styles.alignRight,
+          ]}
         >
-          <Text>{item.text}</Text>
-          <Text style={styles.time}>
-            {formatMessageTime(item.timestamp.toDate())}
-          </Text>
+          {chat.type == "group" && item.senderId !== user.uid && (
+            <Image source={imageSource} style={styles.profileImage} />
+          )}
+          <View
+            style={
+              item.senderId === user.uid
+                ? styles.myMessage
+                : styles.otherMessage
+            }
+          >
+            {chat.type == "group" && item.senderId !== user.uid && (
+              <Text
+                style={[
+                  styles.senderName,
+                  { color: getColorById(item.senderId) },
+                ]}
+              >
+                {item.senderName}
+              </Text>
+            )}
+            <Text>{item.text}</Text>
+            <Text style={styles.time}>
+              {formatMessageTime(item.timestamp.toDate())}
+            </Text>
+          </View>
         </View>
       );
     }
@@ -141,6 +183,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDD",
     paddingTop: 50,
   },
+  messageContainer: {
+    flexDirection: "row",
+    marginVertical: 4,
+  },
+  myMessageContainer: {
+    justifyContent: "flex-end",
+  },
+  otherMessageContainer: {
+    justifyContent: "flex-start",
+  },
+  alignRight: {
+    alignSelf: "flex-end",
+  },
+  profileImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 6,
+  },
+  senderInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4, // Space between sender info and message bubble
+  },
   messagesList: {
     flex: 1,
   },
@@ -187,6 +253,10 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "#EEE",
     borderRadius: 10,
+  },
+  senderName: {
+    fontWeight: "bold",
+    marginBottom: 2,
   },
 });
 

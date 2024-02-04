@@ -79,9 +79,11 @@ export default function useChats() {
     let existingChat = myChats.find(
       (chat) =>
         chat.chatParticipants.includes(senderId) &&
-        chat.chatParticipants.includes(getterId)
+        chat.chatParticipants.includes(getterId) &&
+        chat.type == "private"
     );
-
+    console.log("existingggg");
+    console.log(existingChat);
     if (existingChat) {
       // Chat exists, get the chat ID and send message
       return existingChat.id;
@@ -90,6 +92,7 @@ export default function useChats() {
       const newChat = {
         chatParticipants: [senderId, getterId],
         messages: [],
+        type: "private",
 
         // ... other chat details (Image, Chat name, etc.)
       };
@@ -100,7 +103,26 @@ export default function useChats() {
       return newChatRef.id;
     }
   };
+  const createGroupChat = useCallback(
+    async (participants, image = "", name = "") => {
+      // If chat doesn't exist, create new chat
+      const newChat = {
+        chatParticipants: participants,
+        messages: [],
+        image: image,
+        name: name,
+        type: "group",
+        // ... other chat details (Image, Chat name, etc.)
+      };
 
+      const newChatRef = await firestore().collection("chats").add(newChat);
+      setMyChats((prev) => [...prev, { ...newChat, id: newChatRef.id }]);
+
+      setRefreshListeners((prev) => !prev);
+      return newChatRef.id;
+    },
+    []
+  );
   return {
     myChats,
     refreshListeners,
@@ -108,5 +130,6 @@ export default function useChats() {
     applyListenersToAllMyChats,
     createChat,
     fetchMyChats,
+    createGroupChat,
   };
 }

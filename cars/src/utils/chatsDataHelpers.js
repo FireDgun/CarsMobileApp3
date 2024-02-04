@@ -56,18 +56,22 @@ const formatDateTodayYesterdayDate = (date) => {
 };
 
 const getLastMessageTextAndNameAndTime = (allUsers, chat, myId) => {
-  let otherUserName = "את/ה";
-  if (chat?.messages[chat?.messages?.length - 1].senderId == myId) {
-    otherUserName = allUsers.find(
-      (user) => user.id == chat?.messages[chat?.messages?.length - 1].senderId
-    ).name;
+  let textAndName = "";
+  let timeOfLastMessage = "";
+  if (chat?.messages.length > 0) {
+    let otherUserName = "את/ה";
+    if (chat?.messages[chat?.messages?.length - 1].senderId == myId) {
+      otherUserName = allUsers.find(
+        (user) => user.id == chat?.messages[chat?.messages?.length - 1].senderId
+      ).name;
+    }
+    textAndName =
+      otherUserName + ": " + chat?.messages[chat?.messages?.length - 1].text ||
+      "";
+    timeOfLastMessage =
+      +chat?.messages[chat?.messages?.length - 1].timestamp.toDate();
+    timeOfLastMessage = formatDate(timeOfLastMessage);
   }
-  let textAndName =
-    otherUserName + ": " + chat?.messages[chat?.messages?.length - 1].text ||
-    "";
-  let timeOfLastMessage =
-    +chat?.messages[chat?.messages?.length - 1].timestamp.toDate();
-  timeOfLastMessage = formatDate(timeOfLastMessage);
 
   return { textAndName, timeOfLastMessage };
 };

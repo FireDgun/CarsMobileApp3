@@ -20,9 +20,11 @@ export default function ChatsList() {
     navigation.navigate("ChatWindow", { id: chatId });
   };
 
+  console.log(myChats.length);
+
   const renderItem = ({ item, myId }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
-    if (item?.messages?.length == 0) return null;
+    if (item?.messages?.length == 0 && item.type == "private") return null;
     const { textAndName, timeOfLastMessage } = getLastMessageTextAndNameAndTime(
       allUsers,
       item,
@@ -31,9 +33,9 @@ export default function ChatsList() {
     console.log(item.timestamp);
     return (
       <ChatRow
-        name={getChatName(allUsers, item, user.id)} // Replace with actual property names
+        name={item.name ?? getChatName(allUsers, item, user.id)} // Replace with actual property names
         city={textAndName} // Default to "Tel Aviv" if city is not provided
-        image={getChatImage(allUsers, item, user.id)} // Provide a default image if not provided
+        image={item.image ?? getChatImage(allUsers, item, user.id)} // Provide a default image if not provided
         onClick={() => handleChatSelect(item.id)}
         id={item.id}
         lastTimeMessage={timeOfLastMessage}

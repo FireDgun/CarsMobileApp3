@@ -58,7 +58,7 @@ export default function Login() {
           marginTop: 150,
         }}
       >
-        התחבר/י באמצעות הודעת סמס{" "}
+        התחבר/י באמצעות הודעת סמס
       </Text>
       {!confirm ? (
         <>
