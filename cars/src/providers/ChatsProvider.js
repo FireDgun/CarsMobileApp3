@@ -19,9 +19,25 @@ export const ChatsProvider = ({ children }) => {
     if (user) {
       console.log("render");
 
-      const unsubscribeFunctions = applyListenersToAllMyChats(myChats);
+      // Define an async function inside the useEffect
+      const setupListeners = async () => {
+        const unsubscribeFunctions = await applyListenersToAllMyChats();
+
+        // Return the cleanup function directly from the async function
+        return unsubscribeFunctions;
+      };
+
+      // Call the async function
+      let unsubscribe;
+      setupListeners().then((unsubscribeFunctions) => {
+        unsubscribe = unsubscribeFunctions;
+      });
+
+      // Return the cleanup function from the useEffect
       return () => {
-        unsubscribeFunctions();
+        if (unsubscribe) {
+          unsubscribe();
+        }
       };
     }
   }, [user, refreshListeners]);

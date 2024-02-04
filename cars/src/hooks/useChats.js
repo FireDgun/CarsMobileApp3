@@ -19,8 +19,10 @@ export default function useChats() {
         ...doc.data(),
       }));
       setMyChats(chats);
+      return chats;
     } catch (error) {
       console.error("Error fetching chats: ", error);
+      return [];
     }
   }, [user]);
 
@@ -47,10 +49,10 @@ export default function useChats() {
     }
   };
 
-  const applyListenersToAllMyChats = useCallback(() => {
+  const applyListenersToAllMyChats = useCallback(async () => {
     const unsubscribers = [];
-
-    myChats.forEach((chat, index) => {
+    const chats = await fetchMyChats();
+    chats.forEach((chat, index) => {
       const unsubscribe = firestore()
         .collection("chats")
         .doc(chat.id)
@@ -99,17 +101,12 @@ export default function useChats() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      fetchMyChats();
-    }
-  }, [user, fetchMyChats]);
-
   return {
     myChats,
     refreshListeners,
     sendMessage,
     applyListenersToAllMyChats,
     createChat,
+    fetchMyChats,
   };
 }

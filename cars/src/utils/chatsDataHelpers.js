@@ -8,11 +8,11 @@ const getLastMessageTextAndName = (allUsers, chat) => {
   return result;
 };
 
-const getChatName = (allUsers, chat) => {
+const getChatName = (allUsers, chat, myId) => {
   return (
     chat.name ||
     allUsers.find(
-      (user) => user.id == chat?.messages[chat?.messages?.length - 1].senderId
+      (user) => chat.chatParticipants.includes(user.id) && user.id != myId
     ).name
   );
 };

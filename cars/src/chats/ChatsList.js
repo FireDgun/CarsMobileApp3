@@ -8,21 +8,23 @@ import {
   getChatName,
   getLastMessageTextAndName,
 } from "../utils/chatsDataHelpers";
+import { useAuth } from "../providers/AuthContext";
 
 export default function ChatsList() {
   const { myChats } = useChatsContext();
   const navigation = useNavigation();
   const { allUsers } = useUsersContext();
+  const { user } = useAuth();
   const handleChatSelect = (chatId) => {
     navigation.navigate("ChatWindow", { id: chatId });
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item, myId }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
     if (item?.messages?.length == 0) return null;
     return (
       <ChatRow
-        name={getChatName(allUsers, item)} // Replace with actual property names
+        name={getChatName(allUsers, item, user.id)} // Replace with actual property names
         city={getLastMessageTextAndName(allUsers, item)} // Default to "Tel Aviv" if city is not provided
         image={item?.profilePic} // Provide a default image if not provided
         onClick={() => handleChatSelect(item.id)}
