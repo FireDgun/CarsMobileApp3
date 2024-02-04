@@ -8,6 +8,8 @@ import StartNewChat from "./src/chats/StartNewChat";
 import ChatWindow from "./src/chats/ChatWindow";
 import ContactsProvider from "./src/providers/ContactsProvider";
 import { AuthContext, useAuth } from "./src/providers/AuthContext";
+import StartNewGroupChat from "./src/chats/StartNewGroupChat";
+import StartNewChatGroupDetails from "./src/chats/StartNewChatGroupDetails";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +41,16 @@ export default function AppRouter() {
       <Stack.Screen
         name="ChatWindow"
         component={ChatWindow}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StartNewGroupChat"
+        component={StartNewGroupChat}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="StartNewChatGroupDetails"
+        component={StartNewChatGroupDetails}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

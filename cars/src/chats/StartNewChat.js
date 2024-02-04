@@ -1,5 +1,13 @@
 import React, { useMemo } from "react";
-import { View, Text, FlatList, Button, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Button,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import Header from "../layout/Header";
 import ChatRow from "./ChatRow";
 import { useContacts } from "../providers/ContactsProvider";
@@ -7,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
 import { useUsersContext } from "../providers/UsersProvider";
+const groupImage = require("../../assets/avatars/team.png"); // Replace with the actual path
 
 export default function StartNewChat() {
   const contacts = useContacts();
@@ -56,13 +65,18 @@ export default function StartNewChat() {
   return (
     <View style={styles.container}>
       <Header />
+
+      <TouchableOpacity
+        style={styles.row}
+        onPress={() => navigation.navigate("StartNewGroupChat")}
+      >
+        <Image source={groupImage} style={styles.image} />
+        <Text>קבוצה חדשה</Text>
+      </TouchableOpacity>
       <FlatList
         data={combinedData}
         renderItem={renderItem}
         keyExtractor={(item, index) => `item-${index}`}
-        ListHeaderComponent={() => (
-          <Text style={styles.title}>Start a New Chat</Text>
-        )}
       />
     </View>
   );
@@ -72,15 +86,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  row: {
+    flexDirection: "row",
+    padding: 10,
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     padding: 10,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 14,
     padding: 10,
     paddingTop: 20,
     backgroundColor: "#f8f8f8",
+  },
+  image: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
 });

@@ -11,6 +11,28 @@ import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
+import {
+  formatDateTodayYesterdayDate,
+  formatMessageTime,
+} from "../utils/chatsDataHelpers";
+const groupMessagesByDate = (messages) => {
+  const groupedMessages = [];
+  let lastDate = null;
+
+  messages.forEach((message) => {
+    const messageDate = message.timestamp.toDate();
+    const formattedDate = formatDateTodayYesterdayDate(messageDate); // Assuming this function can return just the date
+
+    if (formattedDate !== lastDate) {
+      groupedMessages.push({ type: "date", date: formattedDate });
+      lastDate = formattedDate;
+    }
+
+    groupedMessages.push({ type: "message", ...message });
+  });
+
+  return groupedMessages;
+};
 
 function ChatWindow({ route }) {
   const { id: chatId } = route.params; // The ID of the other user in the chat
@@ -22,10 +44,10 @@ function ChatWindow({ route }) {
   const [newMessage, setNewMessage] = useState("");
 
   useEffect(() => {
-    // Load the chat messages between the current user and the other user
     const chat = myChats.find((chat) => chat.id == chatId);
     if (chat && chat.messages) {
-      setMessages(chat.messages);
+      const groupedMessages = groupMessagesByDate(chat.messages);
+      setMessages(groupedMessages);
     }
   }, [myChats, chatId]);
 
@@ -36,16 +58,39 @@ function ChatWindow({ route }) {
       setNewMessage("");
     }
   };
+  const keyExtractor = (item, index) => {
+    if (item.type === "message") {
+      // Use a combination of timestamp and senderId for messages
+      return item.timestamp.toString() + item.senderId;
+    } else {
+      // Use the date and index for date separators
+      return `separator-${item.date}-${index}`;
+    }
+  };
 
-  const renderMessage = ({ item }) => (
-    <View
-      style={
-        item.senderId === user.uid ? styles.myMessage : styles.otherMessage
-      }
-    >
-      <Text>{item.text}</Text>
-    </View>
-  );
+  const renderMessage = ({ item }) => {
+    if (item.type === "date") {
+      return (
+        <View style={styles.dateSeparator}>
+          <Text style={styles.dateText}>{item.date}</Text>
+        </View>
+      );
+    } else {
+      // item.type === 'message'
+      return (
+        <View
+          style={
+            item.senderId === user.uid ? styles.myMessage : styles.otherMessage
+          }
+        >
+          <Text>{item.text}</Text>
+          <Text style={styles.time}>
+            {formatMessageTime(item.timestamp.toDate())}
+          </Text>
+        </View>
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -64,7 +109,7 @@ function ChatWindow({ route }) {
       <FlatList
         data={messages}
         renderItem={renderMessage}
-        keyExtractor={(item) => item.timestamp.toString() + item.senderId}
+        keyExtractor={keyExtractor}
         style={styles.messagesList}
         // Inverts the order so new messages are at the bottom
       />
@@ -125,6 +170,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#EFEFEF",
     borderRadius: 20,
     marginRight: 10,
+  },
+  time: {
+    fontSize: 12,
+    color: "#999",
+  },
+  dateSeparator: {
+    alignSelf: "stretch",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  dateText: {
+    fontSize: 12,
+    color: "#666",
+    padding: 5,
+    backgroundColor: "#EEE",
+    borderRadius: 10,
   },
 });
 

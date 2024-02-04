@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "../providers/AuthContext";
 const defaultImage = require("../../assets/avatars/driver.png"); // Replace with the actual path
 
-const ChatRow = ({ name, city, image, onClick, id }) => {
+const ChatRow = ({ name, city, image, onClick, id, lastTimeMessage = "" }) => {
   const imageSource = image ? { uri: image } : defaultImage;
   const { user } = useAuth();
   if (user && user.uid == id) return;
@@ -15,6 +15,7 @@ const ChatRow = ({ name, city, image, onClick, id }) => {
         <Text style={styles.name}>{name}</Text>
         {city && <Text style={styles.city}>{city}</Text>}
       </View>
+      <Text style={styles.time}>{lastTimeMessage}</Text>
     </TouchableOpacity>
   );
 };
@@ -45,6 +46,10 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 14,
     color: "#666",
+  },
+  time: {
+    fontSize: 12,
+    color: "#999",
   },
 });
 

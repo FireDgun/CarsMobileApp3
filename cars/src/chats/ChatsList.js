@@ -6,7 +6,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useUsersContext } from "../providers/UsersProvider";
 import {
   getChatName,
-  getLastMessageTextAndName,
+  getLastMessageTextAndNameAndTime,
+  getChatImage,
 } from "../utils/chatsDataHelpers";
 import { useAuth } from "../providers/AuthContext";
 
@@ -22,13 +23,20 @@ export default function ChatsList() {
   const renderItem = ({ item, myId }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
     if (item?.messages?.length == 0) return null;
+    const { textAndName, timeOfLastMessage } = getLastMessageTextAndNameAndTime(
+      allUsers,
+      item,
+      user.id
+    );
+    console.log(item.timestamp);
     return (
       <ChatRow
         name={getChatName(allUsers, item, user.id)} // Replace with actual property names
-        city={getLastMessageTextAndName(allUsers, item)} // Default to "Tel Aviv" if city is not provided
-        image={item?.profilePic} // Provide a default image if not provided
+        city={textAndName} // Default to "Tel Aviv" if city is not provided
+        image={getChatImage(allUsers, item, user.id)} // Provide a default image if not provided
         onClick={() => handleChatSelect(item.id)}
         id={item.id}
+        lastTimeMessage={timeOfLastMessage}
       />
     );
   };
