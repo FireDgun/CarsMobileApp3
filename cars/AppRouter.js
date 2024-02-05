@@ -11,6 +11,7 @@ import { AuthContext, useAuth } from "./src/providers/AuthContext";
 import StartNewGroupChat from "./src/chats/StartNewGroupChat";
 import StartNewChatGroupDetails from "./src/chats/StartNewChatGroupDetails";
 import ProfilePage from "./src/profile/ProfilePage";
+import PostNewRide from "./src/rides/postRide/PostNewRide";
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,11 @@ export default function AppRouter() {
       <Stack.Screen
         name="Profile"
         component={ProfilePage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostNewRide"
+        component={PostNewRide}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

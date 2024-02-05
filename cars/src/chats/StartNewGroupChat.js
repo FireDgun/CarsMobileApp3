@@ -12,11 +12,13 @@ import Header from "../layout/Header";
 import ChatRow from "./ChatRow"; // Ensure this path is correct
 import { useUsersContext } from "../providers/UsersProvider";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../providers/AuthContext";
 
 const StartNewGroupChat = () => {
   const { allUsers } = useUsersContext();
   const [selectedUsers, setSelectedUsers] = useState([]);
   const navigation = useNavigation();
+  const { user } = useAuth();
   const handleNavigate = () => {
     // Navigate and pass the selected users to the next screen
     navigation.navigate("StartNewChatGroupDetails", { selectedUsers });
@@ -70,7 +72,7 @@ const StartNewGroupChat = () => {
         {selectedUsers.map(renderSelectedUser)}
       </ScrollView>
       <FlatList
-        data={allUsers.filter((user) => !isSelected(user.uid))}
+        data={allUsers.filter((u) => !isSelected(u.uid) && u.uid != user.uid)}
         renderItem={renderItem}
         keyExtractor={(item) => item.uid.toString()}
         style={styles.list}

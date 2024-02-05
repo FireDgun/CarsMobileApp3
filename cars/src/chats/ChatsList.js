@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import ChatRow from "./ChatRow"; // Assuming ChatRow is in the same directory
 import { useChatsContext } from "../providers/ChatsProvider";
 import { useNavigation } from "@react-navigation/native";
@@ -22,7 +28,9 @@ export default function ChatsList() {
     },
     [navigation]
   );
-
+  const navigateToStartNewChat = () => {
+    navigation.navigate("StartNewChat");
+  };
   const renderItem = ({ item }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
     if (item?.messages?.length == 0 && item.type == "private") return null;
@@ -51,6 +59,12 @@ export default function ChatsList() {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={() => <Text style={styles.header}>My Chats</Text>}
       />
+      <TouchableOpacity
+        style={styles.newChatButton}
+        onPress={navigateToStartNewChat}
+      >
+        <Text style={styles.newChatButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -63,5 +77,26 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     padding: 10,
+  },
+  newChatButton: {
+    position: "absolute",
+    left: 20,
+    bottom: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#841584",
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4, // for Android shadow
+    shadowColor: "#000", // for iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  newChatButtonText: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
   },
 });

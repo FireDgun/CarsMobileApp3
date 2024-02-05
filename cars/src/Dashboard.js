@@ -1,30 +1,52 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import React, { useState, useRef } from "react";
+import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import Header from "./layout/Header";
 import RidesList from "./rides/RidesList";
 import ChatsList from "./chats/ChatsList";
-import { useNavigation } from "@react-navigation/native";
+
+const { width } = Dimensions.get("window");
 
 export default function Dashboard() {
   const [selectedTab, setSelectedTab] = useState("chats");
-  const navigation = useNavigation();
+  const refFlatList = useRef(null);
+  const [isLayoutReady, setIsLayoutReady] = useState(false);
 
-  const navigateToStartNewChat = () => {
-    navigation.navigate("StartNewChat");
+  const handleSetSelectedTab = (tab) => {
+    setSelectedTab(tab);
+    if (isLayoutReady) {
+      let index = tab === "rides" ? 1 : 0;
+      refFlatList.current.scrollToIndex({ animated: true, index });
+    }
+  };
+
+  const onLayout = () => {
+    setIsLayoutReady(true);
+    // Optionally scroll to the initial tab here if it's not "chats"
+    if (selectedTab !== "chats") {
+      let index = selectedTab === "rides" ? 1 : 0;
+      refFlatList.current.scrollToIndex({ animated: false, index });
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Header setSelectedTab={setSelectedTab} />
-      <View style={styles.contentContainer}>
-        {selectedTab === "chats" ? <ChatsList /> : <RidesList />}
-      </View>
-      <TouchableOpacity
-        style={styles.newChatButton}
-        onPress={navigateToStartNewChat}
-      >
-        <Text style={styles.newChatButtonText}>+</Text>
-      </TouchableOpacity>
+      <Header setSelectedTab={handleSetSelectedTab} />
+      <FlatList
+        ref={refFlatList}
+        horizontal
+        pagingEnabled
+        onLayout={onLayout}
+        showsHorizontalScrollIndicator={false}
+        data={[
+          { key: "chats", component: ChatsList },
+          { key: "rides", component: RidesList },
+        ]}
+        renderItem={({ item }) => (
+          <View style={{ width }}>{React.createElement(item.component)}</View>
+        )}
+        keyExtractor={(item) => item.key}
+        style={styles.contentContainer}
+      />
     </View>
   );
 }
@@ -36,26 +58,5 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-  },
-  newChatButton: {
-    position: "absolute",
-    left: 20,
-    bottom: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#841584",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 4, // for Android shadow
-    shadowColor: "#000", // for iOS shadow
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  newChatButtonText: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
   },
 });
