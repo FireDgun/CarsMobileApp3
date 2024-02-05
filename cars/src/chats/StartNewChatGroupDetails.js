@@ -32,7 +32,7 @@ const StartNewChatGroupDetails = ({ route }) => {
   const handleCreateGroup = async () => {
     try {
       let newChatId = await createGroupChat(
-        [...selectedUsers.map((u) => u.id), user.uid],
+        [...selectedUsers.map((u) => u.uid), user.uid],
         groupImage ?? "",
         groupName ?? ""
       );
@@ -68,7 +68,7 @@ const StartNewChatGroupDetails = ({ route }) => {
         <FlatList
           data={selectedUsers}
           renderItem={renderSelectedUser}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.uid}
           horizontal
           showsHorizontalScrollIndicator={false}
           style={styles.selectedUsersList}

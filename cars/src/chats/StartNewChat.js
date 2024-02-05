@@ -50,12 +50,12 @@ export default function StartNewChat() {
     return (
       <ChatRow
         name={item?.name}
-        id={item?.id || "no id"}
+        id={item?.uid || "no id"}
         city={item?.selectedLocations?.join("-") || ""} // Default to "Tel Aviv" if city is not provided
         image={item?.profilePic} // Provide a default image if not provided
         onClick={
           usersNumbers.includes(item.phoneNumber)
-            ? () => handleRowClickUser(item.id)
+            ? () => handleRowClickUser(item.uid)
             : () => handleRowClickContact(item.name)
         }
       />

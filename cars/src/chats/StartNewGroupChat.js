@@ -72,7 +72,7 @@ const StartNewGroupChat = () => {
       <FlatList
         data={allUsers.filter((user) => !isSelected(user.uid))}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.uid.toString()}
         style={styles.list}
       />
       <TouchableOpacity style={styles.continueButton} onPress={handleNavigate}>
