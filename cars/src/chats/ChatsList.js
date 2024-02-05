@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import ChatRow from "./ChatRow"; // Assuming ChatRow is in the same directory
 import { useChatsContext } from "../providers/ChatsProvider";
@@ -16,13 +16,14 @@ export default function ChatsList() {
   const navigation = useNavigation();
   const { allUsers } = useUsersContext();
   const { user } = useAuth();
-  const handleChatSelect = (chatId) => {
-    navigation.navigate("ChatWindow", { id: chatId });
-  };
+  const handleChatSelect = useCallback(
+    (chatId) => {
+      navigation.navigate("ChatWindow", { id: chatId });
+    },
+    [navigation]
+  );
 
-  console.log(myChats.length);
-
-  const renderItem = ({ item, myId }) => {
+  const renderItem = ({ item }) => {
     // Assuming each chat item has properties like id, name, city, image, etc.
     if (item?.messages?.length == 0 && item.type == "private") return null;
     const { textAndName, timeOfLastMessage } = getLastMessageTextAndNameAndTime(
@@ -30,7 +31,7 @@ export default function ChatsList() {
       item,
       user.id
     );
-    console.log(item.timestamp);
+
     return (
       <ChatRow
         name={item.name ?? getChatName(allUsers, item, user.id)} // Replace with actual property names

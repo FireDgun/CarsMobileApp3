@@ -82,8 +82,7 @@ export default function useChats() {
         chat.chatParticipants.includes(getterId) &&
         chat.type == "private"
     );
-    console.log("existingggg");
-    console.log(existingChat);
+
     if (existingChat) {
       // Chat exists, get the chat ID and send message
       return existingChat.id;

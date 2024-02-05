@@ -18,8 +18,6 @@ export const ChatsProvider = ({ children }) => {
 
   useEffect(() => {
     if (user) {
-      console.log("render");
-
       // Define an async function inside the useEffect
       const setupListeners = async () => {
         const unsubscribeFunctions = await applyListenersToAllMyChats();

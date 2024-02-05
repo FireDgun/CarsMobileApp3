@@ -83,7 +83,6 @@ function ChatWindow({ route }) {
 
   const renderMessage = ({ item }) => {
     const imageSource = item.senderImg ? { uri: item.senderImg } : defaultImage;
-    console.log(imageSource);
     if (item.type === "date") {
       return (
         <View style={styles.dateSeparator}>
