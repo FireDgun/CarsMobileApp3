@@ -60,9 +60,10 @@ const getLastMessageTextAndNameAndTime = (allUsers, chat, myId) => {
   let timeOfLastMessage = "";
   if (chat?.messages.length > 0) {
     let otherUserName = "את/ה";
-    if (chat?.messages[chat?.messages?.length - 1].senderId == myId) {
+    if (chat?.messages[chat?.messages?.length - 1].senderId != myId) {
       otherUserName = allUsers.find(
-        (user) => user.id == chat?.messages[chat?.messages?.length - 1].senderId
+        (user) =>
+          user.uid == chat?.messages[chat?.messages?.length - 1].senderId
       ).name;
     }
     textAndName =
@@ -80,7 +81,7 @@ const getChatName = (allUsers, chat, myId) => {
   return (
     chat.name ||
     allUsers.find(
-      (user) => chat.chatParticipants.includes(user.id) && user.id != myId
+      (user) => chat.chatParticipants.includes(user.uid) && user.uid != myId
     ).name
   );
 };
@@ -89,15 +90,41 @@ const getChatImage = (allUsers, chat, myId) => {
   return (
     chat.image ||
     allUsers.find(
-      (user) => chat.chatParticipants.includes(user.id) && user.id != myId
+      (user) => chat.chatParticipants.includes(user.uid) && user.uid != myId
     ).profilePic
   );
 };
+const groupMessagesByDate = (messages) => {
+  const groupedMessages = [];
+  let lastDate = null;
+
+  messages.forEach((message) => {
+    const messageDate = message.timestamp.toDate();
+    const formattedDate = formatDateTodayYesterdayDate(messageDate); // Assuming this function can return just the date
+
+    if (formattedDate !== lastDate) {
+      groupedMessages.push({ type: "date", date: formattedDate });
+      lastDate = formattedDate;
+    }
+
+    groupedMessages.push({ type: "message", ...message });
+  });
+
+  return groupedMessages;
+};
+const getColorById = (senderId) => {
+  const hash = senderId
+    .split("")
+    .reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+  return `hsl(${hash % 360}, 60%, 50%)`; // HSL color format
+};
 
 export {
+  getColorById,
   getChatName,
   getLastMessageTextAndNameAndTime,
   formatDateTodayYesterdayDate,
   getChatImage,
   formatMessageTime,
+  groupMessagesByDate,
 };

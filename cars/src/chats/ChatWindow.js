@@ -6,54 +6,39 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
-  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
-import {
-  formatDateTodayYesterdayDate,
-  formatMessageTime,
-} from "../utils/chatsDataHelpers";
-const defaultImage = require("../../assets/avatars/driver.png"); // Replace with the actual path
-const getColorById = (senderId) => {
-  // You can create a more complex logic here to assign colors
-  // This is a simple example where a color is derived from the senderId hash code
-  const hash = senderId
-    .split("")
-    .reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
-  return `hsl(${hash % 360}, 60%, 50%)`; // HSL color format
+import { getChatImage, groupMessagesByDate } from "../utils/chatsDataHelpers";
+import Message from "./Message";
+import { useUsersContext } from "../providers/UsersProvider";
+const keyExtractor = (item, index) => {
+  if (item.type === "message") {
+    // Use a combination of timestamp and senderId for messages
+    return item.timestamp.toString() + item.senderId;
+  } else {
+    // Use the date and index for date separators
+    return `separator-${item.date}-${index}`;
+  }
 };
-
-const groupMessagesByDate = (messages) => {
-  const groupedMessages = [];
-  let lastDate = null;
-
-  messages.forEach((message) => {
-    const messageDate = message.timestamp.toDate();
-    const formattedDate = formatDateTodayYesterdayDate(messageDate); // Assuming this function can return just the date
-
-    if (formattedDate !== lastDate) {
-      groupedMessages.push({ type: "date", date: formattedDate });
-      lastDate = formattedDate;
-    }
-
-    groupedMessages.push({ type: "message", ...message });
-  });
-
-  return groupedMessages;
-};
-
 function ChatWindow({ route }) {
   const { id: chatId } = route.params; // The ID of the other user in the chat
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const { sendMessage, myChats } = useChatsContext();
-
+  const { allUsers } = useUsersContext();
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({});
   const [newMessage, setNewMessage] = useState("");
+  const [chatImage, setChatImage] = useState();
+
+  useEffect(() => {
+    if (chat.chatParticipants) {
+      setChatImage(chat.image ?? getChatImage(allUsers, chat, user.uid));
+    }
+  }, [chat]);
 
   useEffect(() => {
     const chat = myChats.find((chat) => chat.id == chatId);
@@ -71,18 +56,8 @@ function ChatWindow({ route }) {
       setNewMessage("");
     }
   };
-  const keyExtractor = (item, index) => {
-    if (item.type === "message") {
-      // Use a combination of timestamp and senderId for messages
-      return item.timestamp.toString() + item.senderId;
-    } else {
-      // Use the date and index for date separators
-      return `separator-${item.date}-${index}`;
-    }
-  };
 
   const renderMessage = ({ item }) => {
-    const imageSource = item.senderImg ? { uri: item.senderImg } : defaultImage;
     if (item.type === "date") {
       return (
         <View style={styles.dateSeparator}>
@@ -91,45 +66,7 @@ function ChatWindow({ route }) {
       );
     } else {
       // item.type === 'message'
-      return (
-        <View
-          style={[
-            styles.messageContainer,
-            item.senderId === user.uid
-              ? styles.myMessageContainer
-              : styles.otherMessageContainer,
-            chat.type !== "group" &&
-              item.senderId === user.uid &&
-              styles.alignRight,
-          ]}
-        >
-          {chat.type == "group" && item.senderId !== user.uid && (
-            <Image source={imageSource} style={styles.profileImage} />
-          )}
-          <View
-            style={
-              item.senderId === user.uid
-                ? styles.myMessage
-                : styles.otherMessage
-            }
-          >
-            {chat.type == "group" && item.senderId !== user.uid && (
-              <Text
-                style={[
-                  styles.senderName,
-                  { color: getColorById(item.senderId) },
-                ]}
-              >
-                {item.senderName}
-              </Text>
-            )}
-            <Text>{item.text}</Text>
-            <Text style={styles.time}>
-              {formatMessageTime(item.timestamp.toDate())}
-            </Text>
-          </View>
-        </View>
-      );
+      return <Message messageInfo={item} user={user} chatType={chat.type} />;
     }
   };
 
@@ -182,46 +119,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDD",
     paddingTop: 50,
   },
-  messageContainer: {
-    flexDirection: "row",
-    marginVertical: 4,
-  },
-  myMessageContainer: {
-    justifyContent: "flex-end",
-  },
-  otherMessageContainer: {
-    justifyContent: "flex-start",
-  },
-  alignRight: {
-    alignSelf: "flex-end",
-  },
-  profileImage: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginRight: 6,
-  },
-  senderInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4, // Space between sender info and message bubble
-  },
   messagesList: {
     flex: 1,
-  },
-  myMessage: {
-    alignSelf: "flex-end",
-    backgroundColor: "#DFF7DF",
-    padding: 8,
-    borderRadius: 10,
-    margin: 5,
-  },
-  otherMessage: {
-    alignSelf: "flex-start",
-    backgroundColor: "#EFEFEF",
-    padding: 8,
-    borderRadius: 10,
-    margin: 5,
   },
   inputContainer: {
     flexDirection: "row",
@@ -236,10 +135,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 10,
   },
-  time: {
-    fontSize: 12,
-    color: "#999",
-  },
   dateSeparator: {
     alignSelf: "stretch",
     alignItems: "center",
@@ -252,10 +147,6 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "#EEE",
     borderRadius: 10,
-  },
-  senderName: {
-    fontWeight: "bold",
-    marginBottom: 2,
   },
 });
 

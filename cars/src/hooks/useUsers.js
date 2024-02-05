@@ -14,7 +14,7 @@ export default function useUsers() {
     const usersData = usersCollection.docs.map((doc) => {
       const docData = doc.data();
       return {
-        id: doc.id,
+        uid: doc.id,
         name: docData.name,
         phoneNumber: docData.phoneNumber,
         profilePic: docData.profilePic,

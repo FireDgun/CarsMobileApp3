@@ -29,14 +29,13 @@ export default function ChatsList() {
     const { textAndName, timeOfLastMessage } = getLastMessageTextAndNameAndTime(
       allUsers,
       item,
-      user.id
+      user.uid
     );
-
     return (
       <ChatRow
-        name={item.name ?? getChatName(allUsers, item, user.id)} // Replace with actual property names
+        name={item.name ?? getChatName(allUsers, item, user.uid)} // Replace with actual property names
         city={textAndName} // Default to "Tel Aviv" if city is not provided
-        image={item.image ?? getChatImage(allUsers, item, user.id)} // Provide a default image if not provided
+        image={item.image ?? getChatImage(allUsers, item, user.uid)} // Provide a default image if not provided
         onClick={() => handleChatSelect(item.id)}
         id={item.id}
         lastTimeMessage={timeOfLastMessage}

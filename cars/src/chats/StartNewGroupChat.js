@@ -28,12 +28,12 @@ const StartNewGroupChat = () => {
 
   const handleRemoveUser = (userId) => {
     setSelectedUsers((prevSelected) =>
-      prevSelected.filter((user) => user.id !== userId)
+      prevSelected.filter((user) => user.uid !== userId)
     );
   };
 
   const isSelected = (userId) => {
-    return selectedUsers.some((user) => user.id === userId);
+    return selectedUsers.some((user) => user.uid === userId);
   };
 
   const renderItem = ({ item }) => (
@@ -48,14 +48,14 @@ const StartNewGroupChat = () => {
   );
 
   const renderSelectedUser = (user) => (
-    <View key={user.id} style={styles.selectedUserContainer}>
+    <View key={user.uid} style={styles.selectedUserContainer}>
       <Image
         source={{ uri: user.profilePic }}
         style={styles.selectedUserImage}
       />
       <TouchableOpacity
         style={styles.removeUserButton}
-        onPress={() => handleRemoveUser(user.id)}
+        onPress={() => handleRemoveUser(user.uid)}
       >
         <Text style={styles.removeUserButtonText}>x</Text>
       </TouchableOpacity>
@@ -70,7 +70,7 @@ const StartNewGroupChat = () => {
         {selectedUsers.map(renderSelectedUser)}
       </ScrollView>
       <FlatList
-        data={allUsers.filter((user) => !isSelected(user.id))}
+        data={allUsers.filter((user) => !isSelected(user.uid))}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
