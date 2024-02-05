@@ -10,6 +10,7 @@ import ContactsProvider from "./src/providers/ContactsProvider";
 import { AuthContext, useAuth } from "./src/providers/AuthContext";
 import StartNewGroupChat from "./src/chats/StartNewGroupChat";
 import StartNewChatGroupDetails from "./src/chats/StartNewChatGroupDetails";
+import ProfilePage from "./src/profile/ProfilePage";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,11 @@ export default function AppRouter() {
       <Stack.Screen
         name="StartNewChatGroupDetails"
         component={StartNewChatGroupDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfilePage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

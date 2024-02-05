@@ -6,12 +6,17 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { AuthContext } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
-import { getChatImage, groupMessagesByDate } from "../utils/chatsDataHelpers";
+import {
+  getChatImage,
+  getChatName,
+  groupMessagesByDate,
+} from "../utils/chatsDataHelpers";
 import Message from "./Message";
 import { useUsersContext } from "../providers/UsersProvider";
 const keyExtractor = (item, index) => {
@@ -33,10 +38,11 @@ function ChatWindow({ route }) {
   const [chat, setChat] = useState({});
   const [newMessage, setNewMessage] = useState("");
   const [chatImage, setChatImage] = useState();
-
+  const [chatName, setChatName] = useState("");
   useEffect(() => {
     if (chat.chatParticipants) {
       setChatImage(chat.image ?? getChatImage(allUsers, chat, user.uid));
+      setChatName(chat.name ?? getChatName(allUsers, chat, user.uid));
     }
   }, [chat]);
 
@@ -73,14 +79,32 @@ function ChatWindow({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate("Dashboard")}>
-          <MaterialIcons name="arrow-forward" size={24} color="black" />
+        {chatImage && (
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <MaterialIcons name="arrow-forward-ios" size={24} color="black" />
+            <Image
+              source={{ uri: chatImage }}
+              style={{ width: 40, height: 40, borderRadius: 20 }}
+            />
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          style={{ flexGrow: 1, alignItems: "center" }}
+          onPress={() =>
+            navigation.navigate("Profile", { chatId, chatName, chatImage })
+          }
+        >
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 18 }}>
+            {chatName}
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log("Search")}>
-          <MaterialIcons name="search" size={24} color="black" />
-        </TouchableOpacity>
+
         <TouchableOpacity onPress={() => console.log("More options")}>
-          <MaterialIcons name="more-vert" size={24} color="black" />
+          <MaterialIcons name="more-vert" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -113,11 +137,11 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#DDD",
-    paddingTop: 50,
+    backgroundColor: "#075E54", // WhatsApp color
+    paddingTop: 50, // Adjust if necessary for your status bar
   },
   messagesList: {
     flex: 1,
