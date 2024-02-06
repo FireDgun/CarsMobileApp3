@@ -3,8 +3,17 @@ import React, { useState } from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-const TimePickerComponent = ({ time, onTimeChange }) => {
+const formatTime = (time, label) => {
+  if (!time) return label;
+  // Get hours and minutes
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  // Format hours and minutes to have leading zeros if necessary
+  hours = hours < 10 ? `0${hours}` : hours;
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+  return `${hours}:${minutes}`; // Format to hh:mm
+};
+const TimePickerComponent = ({ time, onTimeChange, label }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   return (
@@ -14,9 +23,7 @@ const TimePickerComponent = ({ time, onTimeChange }) => {
         style={styles.timePickerStyle}
       >
         <MaterialIcons name="access-time" size={20} color="#000" />
-        <Text style={styles.timePickerText}>
-          {time ? time.toLocaleTimeString() : "שעת התייצבות"}
-        </Text>
+        <Text style={styles.timePickerText}>{formatTime(time, label)}</Text>
       </TouchableOpacity>
       {showTimePicker && (
         <DateTimePicker

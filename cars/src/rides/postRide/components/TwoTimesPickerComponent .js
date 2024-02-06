@@ -9,13 +9,15 @@ const TwoTimesPickerComponent = ({
   endTime,
   onStartTimeChange,
   onEndTimeChange,
+  setOneWay,
 }) => {
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [showEndTimeField, setShowEndTimeField] = useState(false);
 
   const toggleEndTimeField = () => {
-    setShowEndTimeField(!showEndTimeField);
+    setShowEndTimeField((prev) => !prev);
+    setOneWay((prev) => !prev);
     if (showEndTimeField) {
       onEndTimeChange(null);
     }
@@ -28,6 +30,7 @@ const TwoTimesPickerComponent = ({
         onTimeChange={onStartTimeChange}
         showTimePicker={showStartTimePicker}
         setShowTimePicker={setShowStartTimePicker}
+        label={"שעת התייצבות"}
       />
       {showEndTimeField && (
         <TimePickerComponent
@@ -35,13 +38,14 @@ const TwoTimesPickerComponent = ({
           onTimeChange={onEndTimeChange}
           showTimePicker={showEndTimePicker}
           setShowTimePicker={setShowEndTimePicker}
+          label={"שעת חזור"}
         />
       )}
       <TouchableOpacity
         onPress={toggleEndTimeField}
         style={styles.toggleButton}
       >
-        <Text>{showEndTimeField ? "Remove End Time" : "Add End Time"}</Text>
+        <Text>{showEndTimeField ? "הסר שעת חזור" : "הוסף שעת חזור"}</Text>
         <MaterialIcons
           name={
             showEndTimeField ? "remove-circle-outline" : "add-circle-outline"

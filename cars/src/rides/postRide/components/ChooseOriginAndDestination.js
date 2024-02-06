@@ -7,32 +7,28 @@ const ChooseOriginAndDestination = ({
   origin,
   destination,
   handleInputChange,
+  setIsScrollEnabled,
 }) => {
   return (
     <View style={styles.container}>
       <GooglePlacesInput
         onLocationSelect={(location) => handleInputChange("origin", location)}
         placeholder="מוצא"
+        setIsScrollEnabled={setIsScrollEnabled}
       />
-      <View style={styles.spacer}></View>
-      {/* Add a spacer View between inputs */}
       <GooglePlacesInput
         onLocationSelect={(location) =>
           handleInputChange("destination", location)
         }
         placeholder="יעד"
+        setIsScrollEnabled={setIsScrollEnabled}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 30, // Ensure there's space between this and the next form element
-  },
-  spacer: {
-    height: 50, // Adjust height as necessary to create space between the inputs
-  },
+  container: {},
 });
 
 export default ChooseOriginAndDestination;

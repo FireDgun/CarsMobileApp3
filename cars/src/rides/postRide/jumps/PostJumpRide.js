@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
 import DatePickerComponent from "../components/DatePickerComponent";
 import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
 import ChooseOriginAndDestination from "../components/ChooseOriginAndDestination";
@@ -9,33 +9,35 @@ import usePostRide from "../../../hooks/usePostRide";
 const PostJumpRide = () => {
   const { formData, handleInputChange, handleSpecialOptionChange } =
     usePostRide();
-
+  const [oneWay, setOneWay] = useState(true);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Post Jump Ride</Text>
-
-      <View style={styles.section}>
-        <DatePickerComponent
-          date={formData.date}
-          onDateChange={(selectedDate) =>
-            handleInputChange("date", selectedDate)
-          }
-        />
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
+      <Text style={styles.title}>
+        {oneWay ? "הקפצה כיוון אחד" : "הקפצה הלוך חזור"}
+      </Text>
+      <View style={styles.dateAndTimeContainer}>
+        <View style={styles.section}>
+          <DatePickerComponent
+            date={formData.date}
+            onDateChange={(selectedDate) =>
+              handleInputChange("date", selectedDate)
+            }
+          />
+        </View>
+        <View style={styles.section}>
+          <TwoTimesPickerComponent
+            startTime={formData.startTime}
+            endTime={formData.endTime}
+            onStartTimeChange={(selectedTime) =>
+              handleInputChange("startTime", selectedTime)
+            }
+            onEndTimeChange={(selectedTime) =>
+              handleInputChange("endTime", selectedTime)
+            }
+            setOneWay={setOneWay}
+          />
+        </View>
       </View>
-
-      <View style={styles.section}>
-        <TwoTimesPickerComponent
-          startTime={formData.startTime}
-          endTime={formData.endTime}
-          onStartTimeChange={(selectedTime) =>
-            handleInputChange("startTime", selectedTime)
-          }
-          onEndTimeChange={(selectedTime) =>
-            handleInputChange("endTime", selectedTime)
-          }
-        />
-      </View>
-
       <View style={styles.section}>
         <ChooseOriginAndDestination
           origin={formData.origin}
@@ -57,7 +59,7 @@ const PostJumpRide = () => {
       </View>
 
       <Button onPress={() => console.log(formData)} title="פרסם נסיעה" />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -75,8 +77,13 @@ const styles = StyleSheet.create({
     color: "#333",
     alignSelf: "center",
     marginBottom: 20,
+    marginTop: 40,
   },
   section: {
     marginBottom: 20,
+  },
+  dateAndTimeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
