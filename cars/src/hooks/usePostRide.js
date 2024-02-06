@@ -3,6 +3,7 @@ import { useState } from "react";
 export default function usePostRide() {
   const [formData, setFormData] = useState({
     date: null,
+    endDate: null,
     startTime: null,
     endTime: null,
     origin: "",
@@ -12,6 +13,8 @@ export default function usePostRide() {
     paymentMethod: "מזומן מהלקוח",
     specialOption: [],
     notes: "",
+    flightNumber: null,
+    numberOfSuitcases: null,
   });
 
   const handleInputChange = (field, value) => {

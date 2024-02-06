@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import DatePickerComponent from "../components/DatePickerComponent";
 import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
 import ChooseOriginAndDestination from "../components/ChooseOriginAndDestination";
@@ -45,7 +52,6 @@ const PostJumpRide = () => {
           handleInputChange={handleInputChange}
         />
       </View>
-
       <View style={styles.section}>
         <RequireDetails
           numberOfPassengers={formData.numberOfPassengers}
@@ -57,8 +63,12 @@ const PostJumpRide = () => {
           handleSpecialOptionChange={handleSpecialOptionChange}
         />
       </View>
-
-      <Button onPress={() => console.log(formData)} title="פרסם נסיעה" />
+      <TouchableOpacity
+        style={styles.publishButton}
+        onPress={() => console.log(formData)}
+      >
+        <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -85,5 +95,16 @@ const styles = StyleSheet.create({
   dateAndTimeContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  publishButton: {
+    backgroundColor: "#007bff",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  publishButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

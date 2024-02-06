@@ -1,12 +1,181 @@
-import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import DatePickerComponent from "../components/DatePickerComponent";
+import AirportRideDetails from "./AirportRideDetails";
+import usePostRide from "../../../hooks/usePostRide";
+import TimePickerComponent from "../components/TimePickerComponent ";
+import GooglePlacesInput from "../../../components/GooglePlacesInput";
+import RequireDetails from "../components/RequireDetails";
 
 const PostAirportRide = () => {
+  const { formData, handleInputChange, handleSpecialOptionChange } =
+    usePostRide();
+  const [rideType, setRideType] = useState("arrival"); // Can be 'arrival', 'departure', or 'both'
+
   return (
-    <View>
-      <Text>PostAirportRide</Text>
-    </View>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+      <Text style={styles.title}>נתב"ג</Text>
+      <View style={styles.subNavbar}>
+        <TouchableOpacity
+          style={[
+            styles.subNavbarItem,
+            rideType === "arrival" && styles.subNavbarItemActive,
+          ]}
+          onPress={() => setRideType("arrival")}
+        >
+          <Text style={styles.subNavbarText}>נחיתה</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.subNavbarItem,
+            rideType === "departure" && styles.subNavbarItemActive,
+          ]}
+          onPress={() => setRideType("departure")}
+        >
+          <Text style={styles.subNavbarText}>המראה</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.subNavbarItem,
+            rideType === "both" && styles.subNavbarItemActive,
+          ]}
+          onPress={() => setRideType("both")}
+        >
+          <Text style={styles.subNavbarText}>גם וגם</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.section}>
+        <GooglePlacesInput
+          onLocationSelect={(location) =>
+            handleInputChange(
+              rideType === "departure" ? "destination" : "origin",
+              location
+            )
+          }
+          placeholder={rideType === "arrival" ? "כתובת לחזור" : "כתובת איסוף"}
+        />
+        <DatePickerComponent
+          date={formData.date}
+          onDateChange={(selectedDate) =>
+            handleInputChange("date", selectedDate)
+          }
+        />
+        <TimePickerComponent
+          time={formData.startTime}
+          onTimeChange={(selectedTime) =>
+            handleInputChange("startTime", selectedTime)
+          }
+          label={rideType === "arrival" ? "שעת נחיתה" : "שעת איסוף"}
+        />
+        {rideType === "both" && (
+          <>
+            <GooglePlacesInput
+              onLocationSelect={(location) =>
+                handleInputChange(rideType === "destination", location)
+              }
+              placeholder="כתובת לחזור"
+            />
+            <DatePickerComponent
+              date={formData.endDate}
+              onDateChange={(selectedDate) =>
+                handleInputChange("endDate", selectedDate)
+              }
+            />
+            <TimePickerComponent
+              time={formData.endTime}
+              onTimeChange={(selectedTime) =>
+                handleInputChange("endTime", selectedTime)
+              }
+              label="שעת נחיתה"
+            />
+          </>
+        )}
+        <AirportRideDetails
+          flightNumber={formData.flightNumber}
+          numberOfSuitcases={formData.numberOfSuitcases}
+          handleInputChange={handleInputChange}
+        />
+        {rideType === "both" && (
+          <AirportRideDetails
+            flightNumber={formData.flightNumber}
+            numberOfSuitcases={formData.numberOfSuitcases}
+            handleInputChange={handleInputChange}
+            optionalTextForTitle={"חזור"}
+          />
+        )}
+        <RequireDetails
+          numberOfPassengers={formData.numberOfPassengers}
+          price={formData.price}
+          paymentMethod={formData.paymentMethod}
+          handleInputChange={handleInputChange}
+          notes={formData.notes}
+          specialOption={formData.specialOption}
+          handleSpecialOptionChange={handleSpecialOptionChange}
+        />
+      </View>
+      <TouchableOpacity
+        style={styles.publishButton}
+        onPress={() => console.log(formData)}
+      >
+        <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#fff",
+  },
+  subNavbar: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  subNavbarItem: {
+    padding: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: "transparent",
+    marginHorizontal: 10,
+  },
+  subNavbarItemActive: {
+    borderBottomColor: "#007bff",
+  },
+  subNavbarText: {
+    fontSize: 16,
+    color: "#333",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 40,
+  },
+  section: {
+    marginBottom: 20,
+  },
+  publishButton: {
+    backgroundColor: "#007bff",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  publishButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});
 
 export default PostAirportRide;
