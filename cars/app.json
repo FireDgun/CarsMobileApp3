@@ -35,7 +35,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.tzachdabush.cars"
+      "package": "com.tzachdabush.cars",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDBtbyakiIPHvzc3l-DXuII-rQryWzzjeQ"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

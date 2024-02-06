@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import TopNavigation from "./TopNavigation";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 
 const Header = ({ setSelectedTab }) => {

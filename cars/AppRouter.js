@@ -12,6 +12,10 @@ import StartNewGroupChat from "./src/chats/StartNewGroupChat";
 import StartNewChatGroupDetails from "./src/chats/StartNewChatGroupDetails";
 import ProfilePage from "./src/profile/ProfilePage";
 import PostNewRide from "./src/rides/postRide/PostNewRide";
+import PostTripRide from "./src/rides/postRide/trip/PostTripRide";
+import PostLineRide from "./src/rides/postRide/lines/PostLineRide";
+import PostJumpRide from "./src/rides/postRide/jumps/PostJumpRide";
+import PostAirportRide from "./src/rides/postRide/airport/PostAirportRide";
 
 const Stack = createStackNavigator();
 
@@ -63,6 +67,26 @@ export default function AppRouter() {
       <Stack.Screen
         name="PostNewRide"
         component={PostNewRide}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostTripRide"
+        component={PostTripRide}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostLineRide"
+        component={PostLineRide}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostJumpRide"
+        component={PostJumpRide}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PostAirportRide"
+        component={PostAirportRide}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

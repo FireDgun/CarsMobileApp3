@@ -9,7 +9,7 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { AuthContext } from "../providers/AuthContext";
 import { useChatsContext } from "../providers/ChatsProvider";
 import {
