@@ -74,8 +74,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 6,
     color: "#333",
-    // Adjust height if necessary to match your design
-    height: 35, // Set height to ensure consistency with other inputs
+    // Make sure the height here matches with your text elements if they are on the same row
+    height: 50, // Adjust as necessary to match the height of other elements
+    // Add any additional styling to match the design of text elements
   },
   listView: {
     borderWidth: 1,

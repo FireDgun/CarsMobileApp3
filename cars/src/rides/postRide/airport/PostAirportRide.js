@@ -12,6 +12,8 @@ import usePostRide from "../../../hooks/usePostRide";
 import TimePickerComponent from "../components/TimePickerComponent ";
 import GooglePlacesInput from "../../../components/GooglePlacesInput";
 import RequireDetails from "../components/RequireDetails";
+import RideTypeSelector from "./RideTypeSelector";
+import OneFlightLocationSelector from "./OneFlightLocationSelector";
 
 const PostAirportRide = () => {
   const { formData, handleInputChange, handleSpecialOptionChange } =
@@ -21,45 +23,20 @@ const PostAirportRide = () => {
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>נתב"ג</Text>
-      <View style={styles.subNavbar}>
-        <TouchableOpacity
-          style={[
-            styles.subNavbarItem,
-            rideType === "arrival" && styles.subNavbarItemActive,
-          ]}
-          onPress={() => setRideType("arrival")}
-        >
-          <Text style={styles.subNavbarText}>נחיתה</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.subNavbarItem,
-            rideType === "departure" && styles.subNavbarItemActive,
-          ]}
-          onPress={() => setRideType("departure")}
-        >
-          <Text style={styles.subNavbarText}>המראה</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.subNavbarItem,
-            rideType === "both" && styles.subNavbarItemActive,
-          ]}
-          onPress={() => setRideType("both")}
-        >
-          <Text style={styles.subNavbarText}>גם וגם</Text>
-        </TouchableOpacity>
-      </View>
+      <RideTypeSelector rideType={rideType} setRideType={setRideType} />
+
       <View style={styles.section}>
-        <GooglePlacesInput
-          onLocationSelect={(location) =>
-            handleInputChange(
-              rideType === "departure" ? "destination" : "origin",
-              location
-            )
-          }
-          placeholder={rideType === "arrival" ? "כתובת לחזור" : "כתובת איסוף"}
+        <AirportRideDetails
+          flightNumber={formData.flightNumber}
+          numberOfSuitcases={formData.numberOfSuitcases}
+          handleInputChange={handleInputChange}
+          optionalTextForTitle={rideType == "both" ? "הלוך" : ""}
         />
+        <OneFlightLocationSelector
+          rideType={rideType}
+          handleInputChange={handleInputChange}
+        />
+
         <DatePickerComponent
           date={formData.date}
           onDateChange={(selectedDate) =>
@@ -73,8 +50,15 @@ const PostAirportRide = () => {
           }
           label={rideType === "arrival" ? "שעת נחיתה" : "שעת איסוף"}
         />
+
         {rideType === "both" && (
           <>
+            <AirportRideDetails
+              flightNumber={formData.flightNumber}
+              numberOfSuitcases={formData.numberOfSuitcases}
+              handleInputChange={handleInputChange}
+              optionalTextForTitle={"חזור"}
+            />
             <GooglePlacesInput
               onLocationSelect={(location) =>
                 handleInputChange(rideType === "destination", location)
@@ -96,19 +80,7 @@ const PostAirportRide = () => {
             />
           </>
         )}
-        <AirportRideDetails
-          flightNumber={formData.flightNumber}
-          numberOfSuitcases={formData.numberOfSuitcases}
-          handleInputChange={handleInputChange}
-        />
-        {rideType === "both" && (
-          <AirportRideDetails
-            flightNumber={formData.flightNumber}
-            numberOfSuitcases={formData.numberOfSuitcases}
-            handleInputChange={handleInputChange}
-            optionalTextForTitle={"חזור"}
-          />
-        )}
+
         <RequireDetails
           numberOfPassengers={formData.numberOfPassengers}
           price={formData.price}
@@ -117,6 +89,7 @@ const PostAirportRide = () => {
           notes={formData.notes}
           specialOption={formData.specialOption}
           handleSpecialOptionChange={handleSpecialOptionChange}
+          optionalMarginTop={40}
         />
       </View>
       <TouchableOpacity

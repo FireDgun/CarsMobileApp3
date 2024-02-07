@@ -30,6 +30,7 @@ const RequireDetails = ({
   notes,
   specialOption,
   handleSpecialOptionChange,
+  optionalMarginTop,
 }) => {
   const [showNotes, setShowNotes] = useState(false);
 
@@ -38,7 +39,7 @@ const RequireDetails = ({
   };
 
   return (
-    <>
+    <View style={{ marginTop: optionalMarginTop }}>
       <TextInput
         placeholder="מספר נוסעים"
         value={numberOfPassengers}
@@ -108,7 +109,7 @@ const RequireDetails = ({
           />
         </View>
       )}
-    </>
+    </View>
   );
 };
 
