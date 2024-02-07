@@ -10,10 +10,13 @@ const TwoTimesPickerComponent = ({
   onStartTimeChange,
   onEndTimeChange,
   setOneWay,
+  startTimeLabel = "שעת התייצבות",
+  endTimeLabel = "שעת חזור",
+  onlyTwoTimes = false,
 }) => {
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-  const [showEndTimeField, setShowEndTimeField] = useState(false);
+  const [showEndTimeField, setShowEndTimeField] = useState(onlyTwoTimes);
 
   const toggleEndTimeField = () => {
     setShowEndTimeField((prev) => !prev);
@@ -30,7 +33,7 @@ const TwoTimesPickerComponent = ({
         onTimeChange={onStartTimeChange}
         showTimePicker={showStartTimePicker}
         setShowTimePicker={setShowStartTimePicker}
-        label={"שעת התייצבות"}
+        label={startTimeLabel}
       />
       {showEndTimeField && (
         <TimePickerComponent
@@ -38,22 +41,24 @@ const TwoTimesPickerComponent = ({
           onTimeChange={onEndTimeChange}
           showTimePicker={showEndTimePicker}
           setShowTimePicker={setShowEndTimePicker}
-          label={"שעת חזור"}
+          label={endTimeLabel}
         />
       )}
-      <TouchableOpacity
-        onPress={toggleEndTimeField}
-        style={styles.toggleButton}
-      >
-        <Text>{showEndTimeField ? "הסר שעת חזור" : "הוסף שעת חזור"}</Text>
-        <MaterialIcons
-          name={
-            showEndTimeField ? "remove-circle-outline" : "add-circle-outline"
-          }
-          size={24}
-          color="black"
-        />
-      </TouchableOpacity>
+      {!onlyTwoTimes && (
+        <TouchableOpacity
+          onPress={toggleEndTimeField}
+          style={styles.toggleButton}
+        >
+          <Text>{showEndTimeField ? "הסר שעת חזור" : "הוסף שעת חזור"}</Text>
+          <MaterialIcons
+            name={
+              showEndTimeField ? "remove-circle-outline" : "add-circle-outline"
+            }
+            size={24}
+            color="black"
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -7,21 +7,18 @@ const ChooseOriginAndDestination = ({
   origin,
   destination,
   handleInputChange,
-  setIsScrollEnabled,
 }) => {
   return (
     <View style={styles.container}>
       <GooglePlacesInput
         onLocationSelect={(location) => handleInputChange("origin", location)}
         placeholder="מוצא"
-        setIsScrollEnabled={setIsScrollEnabled}
       />
       <GooglePlacesInput
         onLocationSelect={(location) =>
           handleInputChange("destination", location)
         }
         placeholder="יעד"
-        setIsScrollEnabled={setIsScrollEnabled}
       />
     </View>
   );

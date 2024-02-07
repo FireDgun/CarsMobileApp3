@@ -3,12 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 const apiKey = Constants.expoConfig.android.config.googleMaps.apiKey;
-const GooglePlacesInput = ({
-  onLocationSelect,
-  placeholder,
-  handleInputChange,
-  setIsScrollEnabled,
-}) => {
+const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
   const ref = useRef();
   const [addressText, setAddressText] = useState("");
 

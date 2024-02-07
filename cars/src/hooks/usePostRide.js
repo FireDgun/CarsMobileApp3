@@ -8,6 +8,9 @@ export default function usePostRide() {
     endTime: null,
     origin: "",
     destination: "",
+    tripLocations: [
+      { origin: "", destination: "", startTime: null, endTime: null },
+    ],
     numberOfPassengers: "",
     price: "",
     paymentMethod: "מזומן מהלקוח",
@@ -35,9 +38,20 @@ export default function usePostRide() {
     });
   };
 
+  const handleUpdateTripData = (data, index, originOrDestination) => {
+    let newTripLocations = formData.tripLocations;
+    newTripLocations[index][originOrDestination] = data;
+    setFormData((prev) => ({
+      ...prev,
+      tripLocations: newTripLocations,
+    }));
+  };
+
   return {
     formData,
     handleInputChange,
     handleSpecialOptionChange,
+    handleUpdateTripData,
+    setFormData,
   };
 }
