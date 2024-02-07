@@ -116,7 +116,10 @@ const PostTripRide = () => {
         />
         <TouchableOpacity
           style={styles.addButton}
-          onPress={() => setShowEndDatePicker(!showEndDatePicker)}
+          onPress={() => {
+            setShowEndDatePicker(!showEndDatePicker),
+              handleInputChange("endDate", null);
+          }}
         >
           {/* Icon Button (Toggle Date) */}
           <Text style={styles.addButtonText}>
