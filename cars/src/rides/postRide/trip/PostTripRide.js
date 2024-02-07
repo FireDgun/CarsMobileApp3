@@ -11,6 +11,10 @@ import ChooseOriginAndDestination from "../components/ChooseOriginAndDestination
 import RequireDetails from "../components/RequireDetails";
 import usePostRide from "../../../hooks/usePostRide";
 import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
+import { calculateDaysArray } from "../../../utils/ridesHelper";
+import { MaterialIcons } from "@expo/vector-icons";
+
+// Function to calculate the number of days between startDate and endDate
 
 const PostTripRide = () => {
   const {
@@ -60,25 +64,9 @@ const PostTripRide = () => {
     }
   }, [formData.date, formData.endDate]);
 
-  // Function to calculate the number of days between startDate and endDate
-  const calculateDaysArray = () => {
-    let daysArray = [];
-    let currentDay = new Date(formData.date);
-    let endDate = new Date(formData.endDate);
-    if (formData.endDate) {
-      while (currentDay <= endDate) {
-        daysArray.push(new Date(currentDay));
-        currentDay.setDate(currentDay.getDate() + 1);
-      }
-    } else {
-      daysArray.push(new Date(currentDay));
-    }
-    return daysArray;
-  };
-
   // Render ChooseOriginAndDestination for each day
   const renderTripLocationSelectors = () => {
-    const daysArray = calculateDaysArray();
+    const daysArray = calculateDaysArray(formData);
     return daysArray.map((day, index) => (
       <View key={index + day}>
         <ChooseOriginAndDestination
@@ -107,13 +95,25 @@ const PostTripRide = () => {
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
-      <View style={styles.section}>
-        <DatePickerComponent
-          date={formData.date}
-          onDateChange={(selectedDate) =>
-            handleInputChange("date", selectedDate)
-          }
-        />
+      <View style={styles.dateSection}>
+        <View style={styles.dateContainer}>
+          <DatePickerComponent
+            date={formData.date}
+            onDateChange={(selectedDate) =>
+              handleInputChange("date", selectedDate)
+            }
+          />
+        </View>
+        {showEndDatePicker && (
+          <View style={styles.dateContainer}>
+            <DatePickerComponent
+              date={formData.endDate}
+              onDateChange={(selectedDate) =>
+                handleInputChange("endDate", selectedDate)
+              }
+            />
+          </View>
+        )}
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
@@ -121,19 +121,15 @@ const PostTripRide = () => {
               handleInputChange("endDate", null);
           }}
         >
-          {/* Icon Button (Toggle Date) */}
-          <Text style={styles.addButtonText}>
-            {showEndDatePicker ? "Hide" : "Add"} End Date
-          </Text>
-        </TouchableOpacity>
-        {showEndDatePicker && (
-          <DatePickerComponent
-            date={formData.endDate}
-            onDateChange={(selectedDate) =>
-              handleInputChange("endDate", selectedDate)
-            }
+          <MaterialIcons
+            name={showEndDatePicker ? "remove" : "add-circle-outline"}
+            size={24}
+            color="#007bff"
           />
-        )}
+          {!showEndDatePicker && (
+            <Text style={styles.addButtonText}>חזור בתאריך אחר</Text>
+          )}
+        </TouchableOpacity>
       </View>
 
       {renderTripLocationSelectors()}
@@ -188,7 +184,7 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: "#007bff",
-    fontSize: 16,
+    fontSize: 12,
   },
   tripLocationContainer: {
     marginBottom: 20,
