@@ -75,6 +75,7 @@ const PostTripRide = () => {
           handleInputChange={(field, value) =>
             handleUpdateTripData(value, index, field)
           }
+          stops={formData.stops}
         />
         <TwoTimesPickerComponent
           startTime={formData.tripLocations[index]?.startTime}
@@ -148,7 +149,7 @@ const PostTripRide = () => {
 
       <TouchableOpacity
         style={styles.publishButton}
-        onPress={() => console.log(formData)}
+        onPress={() => console.log(JSON.stringify(formData))}
       >
         <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
       </TouchableOpacity>

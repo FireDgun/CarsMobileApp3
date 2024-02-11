@@ -8,8 +8,16 @@ export default function usePostRide() {
     endTime: null,
     origin: "",
     destination: "",
+    stops: [],
+    stopsReturn: [],
     tripLocations: [
-      { origin: "", destination: "", startTime: null, endTime: null },
+      {
+        origin: "",
+        destination: "",
+        stops: [],
+        startTime: null,
+        endTime: null,
+      },
     ],
     numberOfPassengers: "",
     price: "",
@@ -18,6 +26,10 @@ export default function usePostRide() {
     notes: "",
     flightNumber: null,
     numberOfSuitcases: null,
+    flightNumberReturn: null,
+    numberOfSuitcasesReturn: null,
+    frequency: "",
+    returnFrequency: "",
   });
 
   const handleInputChange = (field, value) => {

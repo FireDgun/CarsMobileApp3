@@ -35,6 +35,7 @@ const PostAirportRide = () => {
         <OneFlightLocationSelector
           rideType={rideType}
           handleInputChange={handleInputChange}
+          stops={formData.stops}
         />
 
         <DatePickerComponent
@@ -54,16 +55,17 @@ const PostAirportRide = () => {
         {rideType === "both" && (
           <>
             <AirportRideDetails
-              flightNumber={formData.flightNumber}
-              numberOfSuitcases={formData.numberOfSuitcases}
+              flightNumber={formData.flightNumberReturn}
+              numberOfSuitcases={formData.numberOfSuitcasesReturn}
               handleInputChange={handleInputChange}
               optionalTextForTitle={"חזור"}
             />
-            <GooglePlacesInput
-              onLocationSelect={(location) =>
-                handleInputChange(rideType === "destination", location)
-              }
-              placeholder="כתובת לחזור"
+
+            <OneFlightLocationSelector
+              rideType={"arrival"}
+              handleInputChange={handleInputChange}
+              stops={formData.stopsReturn}
+              returnFlight={"Return"}
             />
             <DatePickerComponent
               date={formData.endDate}

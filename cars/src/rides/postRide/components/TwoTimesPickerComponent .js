@@ -20,7 +20,9 @@ const TwoTimesPickerComponent = ({
 
   const toggleEndTimeField = () => {
     setShowEndTimeField((prev) => !prev);
-    setOneWay((prev) => !prev);
+    if (setOneWay) {
+      setOneWay((prev) => !prev);
+    }
     if (showEndTimeField) {
       onEndTimeChange(null);
     }
@@ -31,16 +33,12 @@ const TwoTimesPickerComponent = ({
       <TimePickerComponent
         time={startTime}
         onTimeChange={onStartTimeChange}
-        showTimePicker={showStartTimePicker}
-        setShowTimePicker={setShowStartTimePicker}
         label={startTimeLabel}
       />
       {showEndTimeField && (
         <TimePickerComponent
           time={endTime}
           onTimeChange={onEndTimeChange}
-          showTimePicker={showEndTimePicker}
-          setShowTimePicker={setShowEndTimePicker}
           label={endTimeLabel}
         />
       )}

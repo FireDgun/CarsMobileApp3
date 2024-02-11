@@ -4,7 +4,7 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const DatePickerComponent = ({ date, onDateChange }) => {
+const DatePickerComponent = ({ date, onDateChange, label = "בחר תאריך" }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   return (
     <>
@@ -14,7 +14,7 @@ const DatePickerComponent = ({ date, onDateChange }) => {
       >
         <MaterialIcons name="calendar-today" size={20} color="#000" />
         <Text style={styles.datePickerText}>
-          {date ? date.toLocaleDateString() : "בחר תאריך"}
+          {date ? date.toLocaleDateString() : label}
         </Text>
       </TouchableOpacity>
       {showDatePicker && (

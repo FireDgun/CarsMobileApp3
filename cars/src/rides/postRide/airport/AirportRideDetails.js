@@ -7,6 +7,7 @@ const AirportRideDetails = ({
   handleInputChange,
   optionalTextForTitle,
 }) => {
+  const addStringToName = optionalTextForTitle == "חזור" ? "Return" : "";
   return (
     <View style={styles.container}>
       <Text style={styles.label}>פרטי הטיסה {optionalTextForTitle}</Text>
@@ -14,7 +15,9 @@ const AirportRideDetails = ({
         <View style={styles.inputContainer}>
           <TextInput
             value={flightNumber}
-            onChangeText={(text) => handleInputChange("flightNumber", text)}
+            onChangeText={(text) =>
+              handleInputChange("flightNumber" + addStringToName, text)
+            }
             placeholder="מספר טיסה"
             style={styles.input}
           />
@@ -23,7 +26,7 @@ const AirportRideDetails = ({
           <TextInput
             value={numberOfSuitcases}
             onChangeText={(text) =>
-              handleInputChange("numberOfSuitcases", text)
+              handleInputChange("numberOfSuitcases" + addStringToName, text)
             }
             placeholder="כמות מזוודות"
             keyboardType="number-pad"

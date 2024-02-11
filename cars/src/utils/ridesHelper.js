@@ -12,5 +12,14 @@ const calculateDaysArray = (formData) => {
   }
   return daysArray;
 };
-
-export { calculateDaysArray };
+const formatTime = (time, label) => {
+  if (!time) return label;
+  // Get hours and minutes
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  // Format hours and minutes to have leading zeros if necessary
+  hours = hours < 10 ? `0${hours}` : hours;
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+  return `${hours}:${minutes}`; // Format to hh:mm
+};
+export { calculateDaysArray, formatTime };

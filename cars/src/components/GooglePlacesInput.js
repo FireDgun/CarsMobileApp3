@@ -21,19 +21,21 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
         }}
         fetchDetails={true}
         onPress={(data, details = null) => {
-          // Use ref to get the current address text
-          const currentAddressText = ref.current?.getAddressText();
-          setAddressText(currentAddressText);
+          try {
+            const currentAddressText = ref.current?.getAddressText();
+            setAddressText(currentAddressText);
 
-          // 'details' is provided when fetchDetails = true
-          const location = details.geometry.location;
-          onLocationSelect({
-            addressName: currentAddressText,
-            data: {
-              latitude: location.lat,
-              longitude: location.lng,
-            },
-          });
+            const location = details.geometry.location;
+            onLocationSelect({
+              addressName: currentAddressText,
+              data: {
+                latitude: location.lat,
+                longitude: location.lng,
+              },
+            });
+          } catch (error) {
+            console.error("GooglePlacesAutocomplete Error:", error);
+          }
         }}
         query={{
           key: apiKey,

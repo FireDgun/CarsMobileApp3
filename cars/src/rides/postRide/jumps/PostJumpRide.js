@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -49,6 +48,7 @@ const PostJumpRide = () => {
         <ChooseOriginAndDestination
           origin={formData.origin}
           destination={formData.destination}
+          stops={formData.stops}
           handleInputChange={handleInputChange}
         />
       </View>
