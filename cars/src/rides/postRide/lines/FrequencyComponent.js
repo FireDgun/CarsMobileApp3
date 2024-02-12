@@ -44,12 +44,12 @@ const FrequencyComponent = ({
 
   return (
     <View style={styles.container}>
-      <Switch
+      {/* <Switch
         value={isOther}
         onValueChange={toggleOther}
         trackColor={{ false: "#767577", true: "#81b0ff" }}
         thumbColor={isOther ? "#f5dd4b" : "#f4f3f4"}
-      />
+      /> */}
       <Text style={styles.label}>
         {isOther ? "טקסט חופשי" : "בחר ימים"}
         {optionalTitleText}

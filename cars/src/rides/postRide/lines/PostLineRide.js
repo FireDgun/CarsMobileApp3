@@ -25,33 +25,41 @@ const PostLineRide = () => {
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
+      <Text style={styles.title}>
+        {isOneTime ? "ביצוע חד פעמי של קו" : "פרסום קו קבוע"}
+      </Text>
       <View style={styles.switchContainer}>
         {isOneTime ? <Text>חד פעמי</Text> : <Text>קו קבוע</Text>}
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isOneTime ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
+          trackColor={{ false: "#8fa1ff", true: "#ff8f8f" }} // Equal visual weight colors
+          thumbColor={isOneTime ? "#ffd700" : "#00bfff"} // Distinct, but balanced colors
+          ios_backgroundColor="#ddd" // Neutral color for the background
           onValueChange={toggleSwitch}
           value={isOneTime}
         />
       </View>
-
-      <DatePickerComponent
-        date={formData.date}
-        onDateChange={(selectedDate) => handleInputChange("date", selectedDate)}
-        label={isOneTime ? "בחר תאריך" : "תאריך תחילת קו"}
-      />
-      <TwoTimesPickerComponent
-        startTime={formData.startTime}
-        endTime={formData.endTime}
-        onStartTimeChange={(selectedTime) =>
-          handleInputChange("startTime", selectedTime)
-        }
-        onEndTimeChange={(selectedTime) =>
-          handleInputChange("endTime", selectedTime)
-        }
-        setOneWay={setOneWay}
-      />
+      <View style={styles.dateAndTimeContainer}>
+        <View>
+          <DatePickerComponent
+            date={formData.date}
+            onDateChange={(selectedDate) =>
+              handleInputChange("date", selectedDate)
+            }
+            label={isOneTime ? "בחר תאריך" : "תאריך תחילת קו"}
+          />
+        </View>
+        <TwoTimesPickerComponent
+          startTime={formData.startTime}
+          endTime={formData.endTime}
+          onStartTimeChange={(selectedTime) =>
+            handleInputChange("startTime", selectedTime)
+          }
+          onEndTimeChange={(selectedTime) =>
+            handleInputChange("endTime", selectedTime)
+          }
+          setOneWay={setOneWay}
+        />
+      </View>
       {!isOneTime && (
         <FrequencyComponent
           handleInputChange={handleInputChange}
@@ -101,6 +109,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  dateAndTimeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 40,
   },
   section: {
     marginBottom: 20,
