@@ -13,6 +13,8 @@ import usePostRide from "../../../hooks/usePostRide";
 import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
 import { calculateDaysArray } from "../../../utils/ridesHelper";
 import { MaterialIcons } from "@expo/vector-icons";
+import Divider from "../../../components/Divider";
+import { formatDateInHebrew } from "../../../utils/datesHelper";
 
 // Function to calculate the number of days between startDate and endDate
 
@@ -25,12 +27,19 @@ const PostTripRide = () => {
     setFormData,
   } = usePostRide();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [endDateError, setEndDateError] = useState("");
 
   // Effect to adjust tripLocations array size
   useEffect(() => {
     const start = new Date(formData.date);
     const end = formData.endDate ? new Date(formData.endDate) : start;
     let dayDifference = (end - start) / (1000 * 3600 * 24);
+    if (dayDifference < 0) {
+      setEndDateError("תאריך סיום חייב להיות אחרי התאריך התחלה");
+      return;
+    } else {
+      setEndDateError(""); // Clear error if the condition is fixed
+    }
     if (dayDifference > 0) {
       dayDifference++;
       // Make sure we have the correct number of trip locations
@@ -68,7 +77,10 @@ const PostTripRide = () => {
   const renderTripLocationSelectors = () => {
     const daysArray = calculateDaysArray(formData);
     return daysArray.map((day, index) => (
-      <View key={index + day}>
+      <View key={index + day} style={{ marginBottom: 16 }}>
+        <Text style={styles.dayTitle}>
+          יום טיול {index + 1} - {formatDateInHebrew(day)}
+        </Text>
         <ChooseOriginAndDestination
           origin={formData.tripLocations[index]?.origin || ""}
           destination={formData.tripLocations[index]?.destination || ""}
@@ -90,12 +102,14 @@ const PostTripRide = () => {
           endTimeLabel={"שעת סיום"}
           onlyTwoTimes={true}
         />
+        <Divider style={{ marginTop: 16 }} />
       </View>
     ));
   };
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+      <Text style={styles.title}>הסעה צמודה</Text>
       <View style={styles.dateSection}>
         <View style={styles.dateContainer}>
           <DatePickerComponent
@@ -113,6 +127,9 @@ const PostTripRide = () => {
                 handleInputChange("endDate", selectedDate)
               }
             />
+            {endDateError ? (
+              <Text style={styles.errorText}>{endDateError}</Text>
+            ) : null}
           </View>
         )}
         <TouchableOpacity
@@ -162,6 +179,25 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
+  },
+  dayTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 8,
+  },
+  errorText: {
+    color: "red", // Change as needed
+    marginTop: 4,
+    // Add other styling for your error text
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 40,
   },
   section: {
     marginBottom: 20,
