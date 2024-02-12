@@ -68,10 +68,22 @@ const RidePreview = ({ ride }) => {
     } = ride;
 
     let rideDetails = [
-      { label: "תאריך", value: formatDate(date) },
-      { label: "מספר נוסעים", value: numberOfPassengers.toString() },
+      {
+        label: tripLocations.length > 1 ? "תאריך התחלה" : "תאריך",
+        value: formatDate(date),
+      },
     ];
+    if (tripLocations.length > 1) {
+      rideDetails.push({
+        label: "תאריך סיום",
+        value: formatDate(endDate),
+      });
+    }
 
+    rideDetails.push({
+      label: "מספר נוסעים",
+      value: numberOfPassengers.toString(),
+    });
     // Handling address-based fields (origin, destination) and special cases for airport rides
     if (origin && origin.addressName) {
       rideDetails.push({ label: "מוצא", value: formatAddress(origin) });
@@ -122,6 +134,7 @@ const RidePreview = ({ ride }) => {
       rideDetails.push({ label: "", value: "" });
 
       rideDetails.push({ label: "פרטי חזור", value: "" });
+
       rideDetails.push({ label: "תאריך חזור", value: formatDate(endDate) });
 
       rideDetails.push({ label: "מוצא", value: airport });
@@ -197,12 +210,33 @@ const RidePreview = ({ ride }) => {
     // Handling tripLocations for relevant ride types
     if (tripLocations && tripLocations.length > 0 && type === "tripRide") {
       tripLocations.forEach((location, index) => {
-        rideDetails.push({
-          label: `יום ${index + 1} מסלול`,
-          value: `מ-${formatAddress(location.origin)} אל ${formatAddress(
-            location.destination
-          )}`,
-        });
+        if (location.origin != "") {
+          rideDetails.push({ label: "", value: "" });
+
+          rideDetails.push({
+            label: `מסלול יום ${index + 1}`,
+            value: `מ-${formatAddress(location.origin)} אל ${formatAddress(
+              location.destination
+            )} \nמשעה ${formatTime(location.startTime)} עד שעה ${formatTime(
+              location.endTime
+            )}`,
+          });
+          if (location.stops?.length > 0) {
+            rideDetails.push({
+              label: "עצירות בדרך",
+              value: (
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowStopsModal(true);
+                    setStopsToDisplay(location.stops);
+                  }}
+                >
+                  <Text>{location.stops.length} (לחץ לפרטים)</Text>
+                </TouchableOpacity>
+              ),
+            });
+          }
+        }
       });
     }
     rideDetails.push({ label: "", value: "" });
