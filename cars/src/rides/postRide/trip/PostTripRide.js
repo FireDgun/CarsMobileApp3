@@ -15,6 +15,7 @@ import { calculateDaysArray } from "../../../utils/ridesHelper";
 import { MaterialIcons } from "@expo/vector-icons";
 import Divider from "../../../components/Divider";
 import { formatDateInHebrew } from "../../../utils/datesHelper";
+import { useNavigation } from "@react-navigation/native";
 
 // Function to calculate the number of days between startDate and endDate
 
@@ -28,6 +29,7 @@ const PostTripRide = () => {
   } = usePostRide();
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [endDateError, setEndDateError] = useState("");
+  const navigation = useNavigation();
 
   // Effect to adjust tripLocations array size
   useEffect(() => {
@@ -166,7 +168,11 @@ const PostTripRide = () => {
 
       <TouchableOpacity
         style={styles.publishButton}
-        onPress={() => console.log(JSON.stringify(formData))}
+        onPress={() =>
+          navigation.navigate("RidePreviewPage", {
+            ride: JSON.stringify({ ...formData, type: "tripRide" }),
+          })
+        }
       >
         <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
       </TouchableOpacity>

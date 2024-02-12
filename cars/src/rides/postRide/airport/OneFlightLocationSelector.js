@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import GooglePlacesInput from "../../../components/GooglePlacesInput"; // Adjust the path as necessary
 import { MaterialIcons } from "@expo/vector-icons"; // Ensure you have expo-vector-icons installed
@@ -9,7 +9,12 @@ const OneFlightLocationSelector = ({
   returnFlight = "",
 }) => {
   const [stops, setStops] = useState([]);
-
+  const [key, setKey] = useState(rideType); // Use rideType as initial key value
+  useEffect(() => {
+    // Reset stops and key whenever rideType changes
+    setStops([]);
+    setKey(rideType); // Changing the key will re-mount GooglePlacesInput
+  }, [rideType]);
   const addStop = () => {
     setStops([...stops, ""]); // Add a new empty stop
   };
@@ -32,6 +37,7 @@ const OneFlightLocationSelector = ({
       {rideType === "arrival" && <Text style={styles.text}>מנתב"ג</Text>}
       <View style={styles.addressContainer}>
         <GooglePlacesInput
+          key={key}
           onLocationSelect={(location) =>
             handleInputChange(
               rideType === "departure" || rideType === "both"

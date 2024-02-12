@@ -3,6 +3,20 @@ import { View, StyleSheet } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 const apiKey = Constants.expoConfig.android.config.googleMaps.apiKey;
+function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
+  const lastIndex = text.lastIndexOf(search);
+  if (lastIndex === -1) {
+    // The search string was not found
+    return text;
+  }
+  // If the search string appears more than once, replace the last occurrence
+  // Otherwise, remove it (which is effectively replacing it with an empty string)
+  return (
+    text.substring(0, lastIndex) +
+    replaceWith +
+    text.substring(lastIndex + search.length)
+  );
+}
 const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
   const ref = useRef();
   const [addressText, setAddressText] = useState("");
@@ -27,7 +41,10 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
 
             const location = details.geometry.location;
             onLocationSelect({
-              addressName: currentAddressText,
+              addressName: removeOrReplaceLastOccurrence(
+                currentAddressText,
+                ", ישראל"
+              ),
               data: {
                 latitude: location.lat,
                 longitude: location.lng,
@@ -39,7 +56,7 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
         }}
         query={{
           key: apiKey,
-          language: "en",
+          language: "he",
           components: "country:IL",
         }}
         onFail={(error) =>

@@ -13,10 +13,12 @@ import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
 import ChooseOriginAndDestination from "../components/ChooseOriginAndDestination";
 import RequireDetails from "../components/RequireDetails";
 import FrequencyComponent from "./FrequencyComponent";
+import { useNavigation } from "@react-navigation/native";
 
 const PostLineRide = () => {
   const [isOneTime, setIsOneTime] = useState(true);
   const [onWay, setOneWay] = useState(true);
+  const navigation = useNavigation();
 
   const { formData, handleInputChange, handleSpecialOptionChange } =
     usePostRide(); // Assuming usePostRide provides necessary handlers
@@ -97,7 +99,14 @@ const PostLineRide = () => {
 
       <TouchableOpacity
         style={styles.publishButton}
-        onPress={() => console.log(formData)} // Replace with actual submit logic
+        onPress={() =>
+          navigation.navigate("RidePreviewPage", {
+            ride: JSON.stringify({
+              ...formData,
+              type: isOneTime ? "oneTimeLine" : "lineRide",
+            }),
+          })
+        }
       >
         <Text style={styles.publishButtonText}>Publish Ride</Text>
       </TouchableOpacity>

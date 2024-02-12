@@ -12,9 +12,10 @@ const calculateDaysArray = (formData) => {
   }
   return daysArray;
 };
-const formatTime = (time, label) => {
-  if (!time) return label;
+const formatTime = (timeObject, label = "") => {
+  if (!timeObject) return label;
   // Get hours and minutes
+  let time = new Date(timeObject.toString());
   let hours = time.getHours();
   let minutes = time.getMinutes();
   // Format hours and minutes to have leading zeros if necessary
@@ -22,4 +23,26 @@ const formatTime = (time, label) => {
   minutes = minutes < 10 ? `0${minutes}` : minutes;
   return `${hours}:${minutes}`; // Format to hh:mm
 };
-export { calculateDaysArray, formatTime };
+
+const getRideTypeHebrewName = (type) => {
+  switch (type) {
+    case "tripRide":
+      return "נסיעה צמודה";
+    case "oneTimeLine":
+      return "ביצוע קו חד פעמי";
+    case "lineRide":
+      return "קו קבוע";
+    case "jumpOneWay":
+      return "הקפצה כיוון אחד";
+    case "jumpTwoWay":
+      return "הקפצה הלוך וחזור";
+    case "airportArrival":
+      return 'נתב"ג נחיתה';
+    case "airportDeparture":
+      return 'נסיעה לנתב"ג';
+    case "airportBoth":
+      return 'נתב"ג הלוך וחזור';
+  }
+};
+
+export { calculateDaysArray, formatTime, getRideTypeHebrewName };

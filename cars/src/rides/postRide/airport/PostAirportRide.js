@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,12 +14,17 @@ import GooglePlacesInput from "../../../components/GooglePlacesInput";
 import RequireDetails from "../components/RequireDetails";
 import RideTypeSelector from "./RideTypeSelector";
 import OneFlightLocationSelector from "./OneFlightLocationSelector";
+import { useNavigation } from "@react-navigation/native";
 
 const PostAirportRide = () => {
   const { formData, handleInputChange, handleSpecialOptionChange } =
     usePostRide();
   const [rideType, setRideType] = useState("arrival"); // Can be 'arrival', 'departure', or 'both'
-
+  const navigation = useNavigation();
+  useEffect(() => {
+    handleInputChange("origin", "");
+    handleInputChange("destination", "");
+  }, [rideType]);
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>נתב"ג</Text>
@@ -96,7 +101,19 @@ const PostAirportRide = () => {
       </View>
       <TouchableOpacity
         style={styles.publishButton}
-        onPress={() => console.log(formData)}
+        onPress={() =>
+          navigation.navigate("RidePreviewPage", {
+            ride: JSON.stringify({
+              ...formData,
+              type:
+                rideType == "arrival"
+                  ? "airportArrival"
+                  : rideType == "departure"
+                  ? "airportDeparture"
+                  : "airportBoth",
+            }),
+          })
+        }
       >
         <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
       </TouchableOpacity>

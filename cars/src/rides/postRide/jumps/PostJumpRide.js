@@ -11,10 +11,13 @@ import TwoTimesPickerComponent from "../components/TwoTimesPickerComponent ";
 import ChooseOriginAndDestination from "../components/ChooseOriginAndDestination";
 import RequireDetails from "../components/RequireDetails";
 import usePostRide from "../../../hooks/usePostRide";
+import { useNavigation } from "@react-navigation/native";
 
 const PostJumpRide = () => {
   const { formData, handleInputChange, handleSpecialOptionChange } =
     usePostRide();
+  const navigation = useNavigation();
+
   const [oneWay, setOneWay] = useState(true);
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
@@ -65,7 +68,14 @@ const PostJumpRide = () => {
       </View>
       <TouchableOpacity
         style={styles.publishButton}
-        onPress={() => console.log(formData)}
+        onPress={() =>
+          navigation.navigate("RidePreviewPage", {
+            ride: JSON.stringify({
+              ...formData,
+              type: oneWay ? "jumpOneWay" : "jumpTwoWay",
+            }),
+          })
+        }
       >
         <Text style={styles.publishButtonText}>פרסם נסיעה</Text>
       </TouchableOpacity>

@@ -16,6 +16,7 @@ import PostTripRide from "./src/rides/postRide/trip/PostTripRide";
 import PostLineRide from "./src/rides/postRide/lines/PostLineRide";
 import PostJumpRide from "./src/rides/postRide/jumps/PostJumpRide";
 import PostAirportRide from "./src/rides/postRide/airport/PostAirportRide";
+import RidePreviewPage from "./src/rides/shareRide/preview/RidePreviewPage";
 
 const Stack = createStackNavigator();
 
@@ -87,6 +88,11 @@ export default function AppRouter() {
       <Stack.Screen
         name="PostAirportRide"
         component={PostAirportRide}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RidePreviewPage"
+        component={RidePreviewPage}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
