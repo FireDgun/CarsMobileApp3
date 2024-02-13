@@ -20,7 +20,13 @@ const PostNewRide = () => {
       </TouchableOpacity>
 
       <Text style={styles.title}>בחר סוג נסיעה</Text>
-
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigateToScreen("PostJumpRide")}
+      >
+        <MaterialIcons name="directions-bus" size={24} />
+        <Text style={styles.buttonText}>הקפצה</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
         onPress={() => navigateToScreen("PostTripRide")}
@@ -31,26 +37,17 @@ const PostNewRide = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigateToScreen("PostLineRide")}
-      >
-        <MaterialIcons name="rv-hookup" size={24} />
-        <Text style={styles.buttonText}>קווים</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigateToScreen("PostJumpRide")}
-      >
-        <MaterialIcons name="directions-bus" size={24} />
-        <Text style={styles.buttonText}>הקפצה</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
         onPress={() => navigateToScreen("PostAirportRide")}
       >
         <MaterialIcons name="local-airport" size={24} />
         <Text style={styles.buttonText}>נתב"ג</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigateToScreen("PostLineRide")}
+      >
+        <MaterialIcons name="rv-hookup" size={24} />
+        <Text style={styles.buttonText}>קווים</Text>
       </TouchableOpacity>
     </View>
   );

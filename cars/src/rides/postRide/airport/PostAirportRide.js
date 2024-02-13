@@ -24,6 +24,7 @@ const PostAirportRide = () => {
   useEffect(() => {
     handleInputChange("origin", "");
     handleInputChange("destination", "");
+    handleInputChange("stops", []);
   }, [rideType]);
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">

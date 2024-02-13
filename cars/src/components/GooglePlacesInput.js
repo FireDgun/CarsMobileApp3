@@ -67,6 +67,7 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
             setAddressText(text);
           },
         }}
+        debounce={300}
       />
     </View>
   );
