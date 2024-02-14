@@ -5,10 +5,10 @@ const TopNavigation = ({ setSelectedTab }) => {
   return (
     <View style={styles.navContainer}>
       <TouchableOpacity onPress={() => setSelectedTab("chats")}>
-        <Text>Chats</Text>
+        <Text>צ'אט</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => setSelectedTab("rides")}>
-        <Text>Rides</Text>
+        <Text>נסיעות</Text>
       </TouchableOpacity>
     </View>
   );

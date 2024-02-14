@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { buildRidePostText } from "../../../utils/ridesHelper";
+import { buildRidePostView } from "../../../utils/ridesHelper";
 
 const RideDetails = ({ ride, setShowStopsModal, setStopsToDisplay }) => {
-  const rideDetails = buildRidePostText(
+  const rideDetails = buildRidePostView(
     ride,
     setShowStopsModal,
     setStopsToDisplay

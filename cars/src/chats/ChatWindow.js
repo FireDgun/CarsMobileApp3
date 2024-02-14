@@ -122,6 +122,7 @@ function ChatWindow({ route }) {
           value={newMessage}
           onChangeText={setNewMessage}
           placeholder="Type a message"
+          multiline
         />
         <TouchableOpacity onPress={clickOnSendMessage}>
           <MaterialIcons name="send" size={24} color="black" />

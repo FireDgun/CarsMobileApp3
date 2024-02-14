@@ -57,7 +57,6 @@ export default function ChatsList() {
         data={myChats}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={() => <Text style={styles.header}>My Chats</Text>}
       />
       <TouchableOpacity
         style={styles.newChatButton}
@@ -72,6 +71,7 @@ export default function ChatsList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 15,
   },
   header: {
     fontSize: 24,

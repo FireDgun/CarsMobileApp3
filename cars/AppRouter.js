@@ -17,6 +17,8 @@ import PostLineRide from "./src/rides/postRide/lines/PostLineRide";
 import PostJumpRide from "./src/rides/postRide/jumps/PostJumpRide";
 import PostAirportRide from "./src/rides/postRide/airport/PostAirportRide";
 import RidePreviewPage from "./src/rides/shareRide/preview/RidePreviewPage";
+import MySellRides from "./src/rides/myRides/sellRide/MySellRides";
+import MyBuyRides from "./src/rides/myRides/buyRide/MyBuyRides";
 
 const Stack = createStackNavigator();
 
@@ -93,6 +95,16 @@ export default function AppRouter() {
       <Stack.Screen
         name="RidePreviewPage"
         component={RidePreviewPage}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MySellRides"
+        component={MySellRides}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="MyBuyRides"
+        component={MyBuyRides}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

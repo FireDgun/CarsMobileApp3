@@ -3,35 +3,55 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { getRideTypeHebrewName } from "../../../utils/ridesHelper";
 import RideDetails from "../components/RideDetails";
 import StopsModal from "../components/StopsModal";
+import { useNavigation } from "@react-navigation/native";
+import { useRidesContext } from "../../../providers/RidesContext";
 
 const RidePreview = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
+  const navigation = useNavigation();
+  const { postNewRide } = useRidesContext();
+  const navigateToMySellRides = async () => {
+    await postNewRide({ ...ride, type: getRideTypeHebrewName(ride.type) });
+    navigation.navigate("Dashboard", { initialPage: "rides" });
+  };
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.rideType}>{getRideTypeHebrewName(ride.type)}</Text>
+    <View style={styles.fullScreen}>
+      <View style={styles.card}>
+        <Text style={styles.rideType}>{getRideTypeHebrewName(ride.type)}</Text>
 
-      <View style={styles.messageContainer}>
-        <RideDetails
-          ride={ride}
-          setShowStopsModal={setShowStopsModal}
-          setStopsToDisplay={setStopsToDisplay}
-        />
-        <StopsModal
-          setShowStopsModal={setShowStopsModal}
-          showStopsModal={showStopsModal}
-          stopsToDisplay={stopsToDisplay}
-        />
+        <View style={styles.messageContainer}>
+          <RideDetails
+            ride={ride}
+            setShowStopsModal={setShowStopsModal}
+            setStopsToDisplay={setStopsToDisplay}
+          />
+          <StopsModal
+            setShowStopsModal={setShowStopsModal}
+            showStopsModal={showStopsModal}
+            stopsToDisplay={stopsToDisplay}
+          />
+        </View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>שלח</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>שלח</Text>
+      <TouchableOpacity
+        style={styles.navigateButton}
+        onPress={navigateToMySellRides}
+      >
+        <Text style={styles.navigateButtonText}>שמור</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    justifyContent: "space-between", // Pushes the card to the top and button to the bottom
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 10,
@@ -49,13 +69,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#4A90E2",
     textAlign: "center",
-    marginBottom: 10, // Add some space between the ride type and the details below
+    marginBottom: 10,
   },
   messageContainer: {
     marginBottom: 16,
     alignItems: "flex-start",
   },
-
   button: {
     backgroundColor: "#34b7f1",
     padding: 10,
@@ -63,6 +82,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  // Styles for the new navigate button
+  navigateButton: {
+    backgroundColor: "#4CAF50", // A different color to distinguish this button
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 20, // Adjust as needed for spacing from the bottom
+  },
+  navigateButtonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",

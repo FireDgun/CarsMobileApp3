@@ -6,8 +6,9 @@ import ChatsList from "./chats/ChatsList";
 
 const { width } = Dimensions.get("window");
 
-export default function Dashboard() {
-  const [selectedTab, setSelectedTab] = useState("chats");
+export default function Dashboard({ route }) {
+  const initialPage = route?.params?.initialPage ?? "chats";
+  const [selectedTab, setSelectedTab] = useState(initialPage);
   const refFlatList = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
 

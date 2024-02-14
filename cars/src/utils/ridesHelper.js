@@ -57,7 +57,7 @@ const formatAddress = (address) => {
   return address ? address.addressName : "לא ידוע";
 };
 
-const buildRidePostText = (ride, setShowStopsModal, setStopsToDisplay) => {
+const buildRidePostView = (ride, setShowStopsModal, setStopsToDisplay) => {
   const {
     type,
     date,
@@ -267,9 +267,12 @@ const buildRidePostText = (ride, setShowStopsModal, setStopsToDisplay) => {
   // Render the details
   return rideDetails;
 };
+
 export {
   calculateDaysArray,
   formatTime,
   getRideTypeHebrewName,
-  buildRidePostText,
+  buildRidePostView,
+  formatDate,
+  formatAddress,
 };

@@ -73,7 +73,8 @@ const getLastMessageTextAndNameAndTime = (allUsers, chat, myId) => {
       +chat?.messages[chat?.messages?.length - 1].timestamp.toDate();
     timeOfLastMessage = formatDate(timeOfLastMessage);
   }
-
+  textAndName =
+    textAndName.slice(0, 30) + (textAndName.length > 30 ? "..." : "");
   return { textAndName, timeOfLastMessage };
 };
 

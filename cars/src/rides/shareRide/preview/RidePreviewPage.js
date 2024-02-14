@@ -6,7 +6,6 @@ import RidePreview from "./RidePreview";
 const RidePreviewPage = ({ route }) => {
   // Extract ride data from route params
   const { ride: serializedRide } = route.params;
-  console.log(serializedRide);
   const ride = JSON.parse(serializedRide);
   return (
     <View style={styles.container}>
@@ -23,6 +22,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    marginTop: 100,
   },
   title: {
     fontSize: 22,
