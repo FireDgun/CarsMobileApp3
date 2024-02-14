@@ -45,8 +45,11 @@ const getRideTypeHebrewName = (type) => {
       return 'נסיעה לנתב"ג';
     case "airportBoth":
       return 'נתב"ג הלוך וחזור';
+    default:
+      return type;
   }
 };
+
 const formatDate = (dateString) => {
   return dateString
     ? new Date(dateString).toLocaleDateString("he-IL")
@@ -268,6 +271,38 @@ const buildRidePostView = (ride, setShowStopsModal, setStopsToDisplay) => {
   return rideDetails;
 };
 
+const initialRideObject = {
+  type: "",
+  date: null,
+  endDate: null,
+  startTime: null,
+  endTime: null,
+  origin: "",
+  destination: "",
+  stops: [],
+  stopsReturn: [],
+  tripLocations: [
+    {
+      origin: "",
+      destination: "",
+      stops: [],
+      startTime: null,
+      endTime: null,
+    },
+  ],
+  numberOfPassengers: "",
+  price: "",
+  paymentMethod: "מזומן מהלקוח",
+  specialOption: [],
+  notes: "",
+  flightNumber: null,
+  numberOfSuitcases: null,
+  flightNumberReturn: null,
+  numberOfSuitcasesReturn: null,
+  frequency: "",
+  returnFrequency: "",
+};
+
 export {
   calculateDaysArray,
   formatTime,
@@ -275,4 +310,5 @@ export {
   buildRidePostView,
   formatDate,
   formatAddress,
+  initialRideObject,
 };

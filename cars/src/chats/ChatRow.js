@@ -3,13 +3,21 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { useAuth } from "../providers/AuthContext";
 const defaultImage = require("../../assets/avatars/driver.png"); // Replace with the actual path
 
-const ChatRow = ({ name, city, image, onClick, id, lastTimeMessage = "" }) => {
+const ChatRow = ({
+  name,
+  city,
+  image,
+  onClick,
+  id,
+  lastTimeMessage = "",
+  style = {},
+}) => {
   const imageSource = image ? { uri: image } : defaultImage;
   const { user } = useAuth();
   if (user && user.uid == id) return;
 
   return (
-    <TouchableOpacity style={styles.row} onPress={onClick}>
+    <TouchableOpacity style={[styles.row, style]} onPress={onClick}>
       <Image source={imageSource} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>

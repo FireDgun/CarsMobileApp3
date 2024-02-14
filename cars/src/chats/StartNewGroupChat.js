@@ -13,12 +13,14 @@ import ChatRow from "./ChatRow"; // Ensure this path is correct
 import { useUsersContext } from "../providers/UsersProvider";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../providers/AuthContext";
+import { useChatsContext } from "../providers/ChatsProvider";
 
 const StartNewGroupChat = () => {
   const { allUsers } = useUsersContext();
   const [selectedUsers, setSelectedUsers] = useState([]);
   const navigation = useNavigation();
   const { user } = useAuth();
+  const { myChats } = useChatsContext();
   const handleNavigate = () => {
     // Navigate and pass the selected users to the next screen
     navigation.navigate("StartNewChatGroupDetails", { selectedUsers });

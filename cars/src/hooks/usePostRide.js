@@ -1,36 +1,8 @@
 import { useState } from "react";
+import { initialRideObject } from "../utils/ridesHelper";
 
 export default function usePostRide() {
-  const [formData, setFormData] = useState({
-    date: null,
-    endDate: null,
-    startTime: null,
-    endTime: null,
-    origin: "",
-    destination: "",
-    stops: [],
-    stopsReturn: [],
-    tripLocations: [
-      {
-        origin: "",
-        destination: "",
-        stops: [],
-        startTime: null,
-        endTime: null,
-      },
-    ],
-    numberOfPassengers: "",
-    price: "",
-    paymentMethod: "מזומן מהלקוח",
-    specialOption: [],
-    notes: "",
-    flightNumber: null,
-    numberOfSuitcases: null,
-    flightNumberReturn: null,
-    numberOfSuitcasesReturn: null,
-    frequency: "",
-    returnFrequency: "",
-  });
+  const [formData, setFormData] = useState(initialRideObject);
 
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
