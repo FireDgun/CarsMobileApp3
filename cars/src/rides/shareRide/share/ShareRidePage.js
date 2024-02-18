@@ -6,10 +6,12 @@ import { initialRideObject } from "../../../utils/ridesHelper";
 import UsersChatsSelection from "./UsersChatsSelection";
 import { useChatsContext } from "../../../providers/ChatsProvider";
 import { useNavigation } from "@react-navigation/native";
-
+import { useAuth } from "../../../providers/AuthContext";
 const ShareRidePage = ({ route }) => {
   const rideId = route?.params?.rideId;
   const [selectedItems, setSelectedItems] = useState([]);
+  const { user } = useAuth();
+
   console.log(selectedItems);
   const { allRides } = useRidesContext();
   const [ride, setRide] = useState(initialRideObject);
@@ -21,7 +23,7 @@ const ShareRidePage = ({ route }) => {
     console.log(selectedItems);
     for (const item of selectedItems) {
       if (item.category === "user") {
-        const chatId = await createChat(item.id);
+        const chatId = await createChat(user.uid, item.id);
         sendMessage(chatId, { text: JSON.stringify(ride) }, "ride");
       } else {
         sendMessage(item.id, { text: JSON.stringify(ride) }, "ride");

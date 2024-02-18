@@ -43,15 +43,13 @@ const RideMessage = ({ ride }) => {
         />
       </View>
 
-      {user.uid === ride.rideOwner ? (
-        <TouchableOpacity
-          style={
-            ride.canceled ? styles.cancelButtonDisabled : styles.cancelButton
-          }
-          onPress={handleCancel}
-          disabled
-        >
-          <Text style={styles.disabledButtonText}>בוטלה </Text>
+      {ride.canceled ? (
+        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
+          <Text style={styles.disabledButtonText}>בוטלה</Text>
+        </TouchableOpacity>
+      ) : user.uid === ride.rideOwner ? (
+        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+          <Text style={styles.buttonText}>בטל</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity style={styles.sendButton} onPress={handleSend}>

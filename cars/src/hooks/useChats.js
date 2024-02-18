@@ -138,33 +138,35 @@ export default function useChats() {
     []
   );
 
-  const cancelRideOnChats = async (rideId) => {
-    try {
-      const chats = await fetchMyChats();
-      chats.forEach(async (chat) => {
-        const updatedMessages = chat.messages.map((message) => {
-          if (
-            message.type === "ride" &&
-            JSON.parse(message.text)?.id === rideId
-          ) {
-            const updatedRide = {
-              ...JSON.parse(message.text),
-              canceled: true,
-            };
-            message.text = JSON.stringify(updatedRide);
-          }
-          return message;
-        });
+  const cancelRideOnChats = useCallback(
+    async (rideId) => {
+      try {
+        myChats.forEach(async (chat) => {
+          const updatedMessages = chat.messages.map((message) => {
+            if (
+              message.type === "ride" &&
+              JSON.parse(message.text)?.id === rideId
+            ) {
+              const updatedRide = {
+                ...JSON.parse(message.text),
+                canceled: true,
+              };
+              message.text = JSON.stringify(updatedRide);
+            }
+            return message;
+          });
 
-        await firestore()
-          .collection("chats")
-          .doc(chat.id)
-          .update({ messages: updatedMessages });
-      });
-    } catch (error) {
-      console.error("Error canceling ride on chats: ", error);
-    }
-  };
+          await firestore()
+            .collection("chats")
+            .doc(chat.id)
+            .update({ messages: updatedMessages });
+        });
+      } catch (error) {
+        console.error("Error canceling ride on chats: ", error);
+      }
+    },
+    [myChats]
+  );
 
   return {
     myChats,
