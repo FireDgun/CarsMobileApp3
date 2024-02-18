@@ -42,20 +42,24 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
     return selectedItems.some((item) => item.id === itemId);
   };
 
+  const selectAllChats = () => {
+    const chats = combinedData.filter((item) => item.type === "group");
+    setSelectedItems(chats);
+  };
+
   const renderItem = ({ item }) => {
     const selected = isSelected(item.id ?? item.uid);
-
     // Directly pass the selected style to ChatRow
     return (
       <ChatRow
         name={
-          item.type === "chat"
+          item.category === "chat"
             ? getChatName(allUsers, item, user.uid)
             : item.name
         }
         city={""}
         image={
-          item.type === "chat"
+          item.category === "chat"
             ? getChatImage(allUsers, item, user.uid)
             : item.profilePic
         }
@@ -77,7 +81,7 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
           <Image
             source={{
               uri:
-                item.type === "chat"
+                item.category === "chat"
                   ? getChatImage(allUsers, item, user.uid)
                   : item.profilePic,
             }}
@@ -92,7 +96,7 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
   };
 
   const combinedData = [
-    ...myChats.map((chat) => ({ ...chat, type: "chat" })),
+    ...myChats.map((chat) => ({ ...chat, category: "chat" })),
     ...allUsers
       .filter(
         (u) =>
@@ -101,7 +105,7 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
               chat.chatParticipants.includes(u.uid) && chat.type === "private"
           )
       )
-      .map((user) => ({ ...user, type: "user" })),
+      .map((user) => ({ ...user, category: "user" })),
   ];
 
   return (
@@ -113,6 +117,12 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
       >
         {selectedItems.map(renderSelectedItem)}
       </ScrollView>
+      <TouchableOpacity onPress={selectAllChats}>
+        <Text style={styles.selectAllChatsText}>פרסם לכל הקבוצות</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => setSelectedItems([])}>
+        <Text style={styles.removeAllChatsText}>נקה בחירה</Text>
+      </TouchableOpacity>
       <FlatList
         data={combinedData}
         renderItem={renderItem}
@@ -171,6 +181,11 @@ const styles = StyleSheet.create({
     fontSize: 12, // Reduced font size for a more compact look
     color: "#fff", // Ensuring text is visible on the blue background
     marginLeft: 5, // Added some space between the image and the text
+  },
+  selectAllChatsText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginVertical: 10,
   },
 });
 

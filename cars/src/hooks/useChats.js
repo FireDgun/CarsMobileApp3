@@ -8,6 +8,7 @@ export default function useChats() {
   const [refreshListeners, setRefreshListeners] = useState(false);
 
   const fetchMyChats = useCallback(async () => {
+    if (!user) return [];
     try {
       const querySnapshot = await firestore()
         .collection("chats")

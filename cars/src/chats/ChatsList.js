@@ -22,50 +22,51 @@ export default function ChatsList() {
   const navigation = useNavigation();
   const { allUsers } = useUsersContext();
   const { user } = useAuth();
-  const handleChatSelect = useCallback(
-    (chatId) => {
-      navigation.navigate("ChatWindow", { id: chatId });
-    },
-    [navigation]
-  );
-  const navigateToStartNewChat = () => {
-    navigation.navigate("StartNewChat");
-  };
-  const renderItem = ({ item }) => {
-    // Assuming each chat item has properties like id, name, city, image, etc.
-    if (item?.messages?.length == 0 && item.type == "private") return null;
-    const { textAndName, timeOfLastMessage } = getLastMessageTextAndNameAndTime(
-      allUsers,
-      item,
-      user.uid
+  if (user) {
+    const handleChatSelect = useCallback(
+      (chatId) => {
+        navigation.navigate("ChatWindow", { id: chatId });
+      },
+      [navigation]
     );
-    return (
-      <ChatRow
-        name={item.name ?? getChatName(allUsers, item, user.uid)} // Replace with actual property names
-        city={textAndName} // Default to "Tel Aviv" if city is not provided
-        image={item.image ?? getChatImage(allUsers, item, user.uid)} // Provide a default image if not provided
-        onClick={() => handleChatSelect(item.id)}
-        id={item.id}
-        lastTimeMessage={timeOfLastMessage}
-      />
-    );
-  };
+    const navigateToStartNewChat = () => {
+      navigation.navigate("StartNewChat");
+    };
+    const renderItem = ({ item }) => {
+      // Assuming each chat item has properties like id, name, city, image, etc.
+      if (item?.messages?.length == 0 && item.type == "private") return null;
+      const { textAndName, timeOfLastMessage } =
+        getLastMessageTextAndNameAndTime(allUsers, item, user.uid);
+      return (
+        <ChatRow
+          name={item.name ?? getChatName(allUsers, item, user.uid)} // Replace with actual property names
+          city={textAndName} // Default to "Tel Aviv" if city is not provided
+          image={item.image ?? getChatImage(allUsers, item, user.uid)} // Provide a default image if not provided
+          onClick={() => handleChatSelect(item.id)}
+          id={item.id}
+          lastTimeMessage={timeOfLastMessage}
+        />
+      );
+    };
 
-  return (
-    <View style={styles.container}>
-      <FlatList
-        data={myChats}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
-      <TouchableOpacity
-        style={styles.newChatButton}
-        onPress={navigateToStartNewChat}
-      >
-        <Text style={styles.newChatButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={myChats}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+        <TouchableOpacity
+          style={styles.newChatButton}
+          onPress={navigateToStartNewChat}
+        >
+          <Text style={styles.newChatButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return null;
+  }
 }
 
 const styles = StyleSheet.create({
