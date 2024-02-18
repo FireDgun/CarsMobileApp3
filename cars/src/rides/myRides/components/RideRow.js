@@ -31,7 +31,16 @@ const RideRow = ({ ride }) => {
         <Text style={styles.rideText}>מחיר: {ride.price}₪</Text>
       </View>
       {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
-
+      {!ride.canceled && (
+        <>
+          <TouchableOpacity style={styles.shareButton} onPress={onSharePress}>
+            <Text style={styles.shareButtonText}>שתף</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cancelButton} onPress={onCancelPress}>
+            <Text style={styles.cancelButtonText}>בטל</Text>
+          </TouchableOpacity>
+        </>
+      )}
       <MaterialIcons name="chevron-right" size={24} color="gray" />
     </View>
   );
