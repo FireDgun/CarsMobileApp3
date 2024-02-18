@@ -19,15 +19,28 @@ export default function useChats() {
         id: doc.id,
         ...doc.data(),
       }));
-      setMyChats(chats);
-      return chats;
+
+      const chatWithIdLSwLk6Ph6VHUaRn1x4tL = await firestore()
+        .collection("chats")
+        .doc("LSwLk6Ph6VHUaRn1x4tL")
+        .get();
+
+      const chatDataLSwLk6Ph6VHUaRn1x4tL = {
+        id: chatWithIdLSwLk6Ph6VHUaRn1x4tL.id,
+        ...chatWithIdLSwLk6Ph6VHUaRn1x4tL.data(),
+      };
+
+      const allChats = [chatDataLSwLk6Ph6VHUaRn1x4tL, ...chats];
+
+      setMyChats(allChats);
+      return allChats;
     } catch (error) {
       console.error("Error fetching chats: ", error);
       return [];
     }
   }, [user]);
 
-  const sendMessage = async (chatId, messageContent) => {
+  const sendMessage = async (chatId, messageContent,type) => {
     try {
       const message = {
         ...messageContent, // The text or other content of the message
@@ -37,6 +50,7 @@ export default function useChats() {
         senderPhoneNumber: user?.phoneNumber,
         readBy: user ? [user.uid] : [],
         timestamp: new Date(), // Set the timestamp
+        type: type,
       };
 
       await firestore()

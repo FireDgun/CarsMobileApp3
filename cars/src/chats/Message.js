@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React, { memo } from "react";
 import { formatMessageTime, getColorById } from "../utils/chatsDataHelpers";
+import RidePreview from "../rides/shareRide/preview/RidePreview";
 const defaultImage = require("../../assets/avatars/driver.png"); // Replace with the actual path
 
 const Message = memo(({ messageInfo, user, chatType }) => {
@@ -40,7 +41,11 @@ const Message = memo(({ messageInfo, user, chatType }) => {
             {messageInfo.senderName}
           </Text>
         )}
-        <Text>{messageInfo.text}</Text>
+        {messageInfo.type == "message" ? (
+          <Text>{messageInfo.text}</Text>
+        ) : (
+          <RidePreview ride={JSON.parse(messageInfo.text)} />
+        )}
         <Text style={styles.time}>
           {formatMessageTime(messageInfo.timestamp.toDate())}
         </Text>

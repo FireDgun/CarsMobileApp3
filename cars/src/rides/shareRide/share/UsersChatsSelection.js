@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,32 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
   const { myChats } = useChatsContext();
   const { user } = useAuth();
   const navigation = useNavigation();
+  const [combinedData, setCombinedData] = useState([]);
+
+  useEffect(() => {
+    const updatedCombinedData = [
+      ...myChats.map((chat) => ({ ...chat, category: "chat" })),
+      ...allUsers
+        .filter(
+          (u) =>
+            !myChats.some(
+              (chat) =>
+                chat.chatParticipants.includes(u.uid) && chat.type === "private"
+            )
+        )
+        .map((user) => ({ ...user, category: "user" })),
+    ];
+    setCombinedData(updatedCombinedData);
+  }, [myChats, allUsers]);
+
+  useEffect(() => {
+    const defaultChatId = "LSwLk6Ph6VHUaRn1x4tL";
+    const defaultChat = myChats.find((chat) => chat.id === defaultChatId);
+    if (defaultChat) {
+      setSelectedItems([{ ...defaultChat, category: "chat" }]);
+    }
+  }, []);
+
   const handleSelectItem = (item) => {
     const index = selectedItems.findIndex(
       (selectedItem) =>
@@ -94,19 +120,6 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
       </View>
     );
   };
-
-  const combinedData = [
-    ...myChats.map((chat) => ({ ...chat, category: "chat" })),
-    ...allUsers
-      .filter(
-        (u) =>
-          !myChats.some(
-            (chat) =>
-              chat.chatParticipants.includes(u.uid) && chat.type === "private"
-          )
-      )
-      .map((user) => ({ ...user, category: "user" })),
-  ];
 
   return (
     <View style={styles.container}>

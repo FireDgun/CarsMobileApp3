@@ -58,7 +58,7 @@ function ChatWindow({ route }) {
   const clickOnSendMessage = () => {
     if (newMessage.trim()) {
       // Call handleSendMessage with the necessary parameters
-      sendMessage(chatId, { text: newMessage });
+      sendMessage(chatId, { text: newMessage }, "message");
       setNewMessage("");
     }
   };

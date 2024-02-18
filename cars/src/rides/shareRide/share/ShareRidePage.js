@@ -4,17 +4,30 @@ import { useRidesContext } from "../../../providers/RidesContext";
 import RidePreview from "../preview/RidePreview";
 import { initialRideObject } from "../../../utils/ridesHelper";
 import UsersChatsSelection from "./UsersChatsSelection";
+import { useChatsContext } from "../../../providers/ChatsProvider";
+import { useNavigation } from "@react-navigation/native";
 
 const ShareRidePage = ({ route }) => {
   const rideId = route?.params?.rideId;
   const [selectedItems, setSelectedItems] = useState([]);
-
+  console.log(selectedItems);
   const { allRides } = useRidesContext();
   const [ride, setRide] = useState(initialRideObject);
   const [showPreview, setShowPreview] = useState(false);
-  const handleConfirm = () => {
-    console.log("Send ride " + ride.id);
+  const { sendMessage, createChat } = useChatsContext();
+  const navigation = useNavigation();
+  const handleConfirm = async () => {
+    console.log("Send ride " + ride);
     console.log(selectedItems);
+    for (const item of selectedItems) {
+      if (item.category === "user") {
+        const chatId = await createChat(item.id);
+        sendMessage(chatId, { text: JSON.stringify(ride) }, "ride");
+      } else {
+        sendMessage(item.id, { text: JSON.stringify(ride) }, "ride");
+      }
+    }
+    navigation.navigate("Dashboard", { initialPage: "rides" });
   };
   useEffect(() => {
     setRide(allRides.find((r) => r.id === rideId));
