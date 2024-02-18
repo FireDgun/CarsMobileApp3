@@ -4,6 +4,7 @@ import Header from "../../../layout/Header";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
+import SubNavBarMyRides from "../components/SubNavBarMyRides";
 
 const MySellRides = () => {
   const { allRides } = useRidesContext();
@@ -11,19 +12,7 @@ const MySellRides = () => {
   const mySellRides = allRides.filter((ride) => ride.rideOwner === user.uid);
   return (
     <View style={{ flex: 1 }}>
-      <Text style={{ fontSize: 18, fontWeight: "bold", margin: 10 }}>
-        My Sell Rides
-      </Text>
-      {mySellRides.map((ride) => (
-        <TouchableOpacity
-          key={ride.id}
-          onPress={() => {
-            /* Navigate to ride details or perform an action */
-          }}
-        >
-          <RideRow ride={ride} />
-        </TouchableOpacity>
-      ))}
+      <SubNavBarMyRides mode={"sell"} allModeRides={mySellRides} />
     </View>
   );
 };
