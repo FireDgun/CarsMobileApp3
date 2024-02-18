@@ -3,13 +3,21 @@ import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { formatAddress, formatDate } from "../../../utils/ridesHelper";
 import { useNavigation } from "@react-navigation/native";
+import { useRidesContext } from "../../../providers/RidesContext";
+import { useChatsContext } from "../../../providers/ChatsProvider";
 
 const RideRow = ({ ride }) => {
   const navigation = useNavigation();
-
+  const { cancelRide } = useRidesContext();
+  const { cancelRideOnChats } = useChatsContext();
   const onSharePress = () => {
     // Navigate to the ShareRidePage and pass ride.id as a parameter
     navigation.navigate("ShareRidePage", { rideId: ride.id });
+  };
+
+  const onCancelPress = () => {
+    cancelRide(ride.id);
+    cancelRideOnChats(ride.id);
   };
 
   return (
@@ -22,9 +30,8 @@ const RideRow = ({ ride }) => {
         </Text>
         <Text style={styles.rideText}>מחיר: {ride.price}₪</Text>
       </View>
-      <TouchableOpacity onPress={onSharePress} style={styles.shareButton}>
-        <Text style={styles.shareButtonText}>Share</Text>
-      </TouchableOpacity>
+      {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
+
       <MaterialIcons name="chevron-right" size={24} color="gray" />
     </View>
   );
@@ -58,6 +65,20 @@ const styles = StyleSheet.create({
   shareButtonText: {
     color: "#FFF", // White color for the button text
     fontSize: 14,
+  },
+  cancelButton: {
+    marginRight: 10, // Add some margin to separate it from the text
+    backgroundColor: "#FF0000", // A red color for the button
+    padding: 5,
+    borderRadius: 5,
+  },
+  cancelButtonText: {
+    color: "#FFF", // White color for the button text
+    fontSize: 14,
+  },
+  canceledText: {
+    color: "#FF0000",
+    fontSize: 16,
   },
 });
 

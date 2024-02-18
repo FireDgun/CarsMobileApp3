@@ -10,6 +10,7 @@ export const RidesProvider = ({ children }) => {
     applyListenersToAllMyRides,
     postNewRide,
     cleanupListeners,
+    cancelRide,
   } = useMyRides();
   const { user } = useAuth();
 
@@ -30,6 +31,7 @@ export const RidesProvider = ({ children }) => {
       value={{
         allRides,
         postNewRide,
+        cancelRide,
       }}
     >
       {children}

@@ -66,9 +66,17 @@ const getLastMessageTextAndNameAndTime = (allUsers, chat, myId) => {
           user.uid == chat?.messages[chat?.messages?.length - 1].senderId
       ).name;
     }
-    textAndName =
-      otherUserName + ": " + chat?.messages[chat?.messages?.length - 1].text ||
-      "";
+    const lastMessageText = chat?.messages[chat?.messages?.length - 1].text;
+    if (typeof lastMessageText === "object") {
+      textAndName = "נסיעה חדשה";
+    } else if (
+      typeof lastMessageText === "string" &&
+      isJsonString(lastMessageText)
+    ) {
+      textAndName = otherUserName + ": נסיעה חדשה";
+    } else {
+      textAndName = otherUserName + ": " + lastMessageText || "";
+    }
     timeOfLastMessage =
       +chat?.messages[chat?.messages?.length - 1].timestamp.toDate();
     timeOfLastMessage = formatDate(timeOfLastMessage);
@@ -76,6 +84,15 @@ const getLastMessageTextAndNameAndTime = (allUsers, chat, myId) => {
   textAndName =
     textAndName.slice(0, 30) + (textAndName.length > 30 ? "..." : "");
   return { textAndName, timeOfLastMessage };
+};
+
+const isJsonString = (str) => {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
 
 const getChatName = (allUsers, chat, myId) => {

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import RideRow from "../components/RideRow";
 
@@ -8,7 +8,7 @@ const HistorySellRides = ({ allModeRides }) => {
     currentDate.setHours(0, 0, 0, 0); // Set time components to zero
     const rideDate = new Date(ride.date);
     rideDate.setHours(0, 0, 0, 0); // Set time components to zero
-    return rideDate < currentDate;
+    return rideDate < currentDate || ride.canceled;
   });
 
   return (
@@ -20,6 +20,10 @@ const HistorySellRides = ({ allModeRides }) => {
           onPress={() => {
             /* Navigate to ride details or perform an action */
           }}
+          style={[
+            styles.rideContainer,
+            ride.canceled && styles.canceledRideContainer,
+          ]}
         >
           <RideRow ride={ride} />
         </TouchableOpacity>
@@ -27,5 +31,20 @@ const HistorySellRides = ({ allModeRides }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  rideContainer: {
+    backgroundColor: "#F5F5F5",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+  canceledRideContainer: {
+    backgroundColor: "#FFCDD2",
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+});
 
 export default HistorySellRides;

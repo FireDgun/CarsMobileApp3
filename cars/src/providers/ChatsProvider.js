@@ -12,6 +12,7 @@ export const ChatsProvider = ({ children }) => {
     applyListenersToAllMyChats,
     createChat,
     createGroupChat,
+    cancelRideOnChats,
   } = useChats();
 
   const { user } = useAuth();
@@ -48,6 +49,7 @@ export const ChatsProvider = ({ children }) => {
         sendMessage,
         createChat,
         createGroupChat,
+        cancelRideOnChats,
       }}
     >
       {children}

@@ -7,6 +7,17 @@ const useMyRides = () => {
   const [allRides, setAllRides] = useState([]);
   const [unsubscribers, setUnsubscribers] = useState([]);
 
+  const cancelRide = async (rideId) => {
+    try {
+      // Mark ride.cancelled as true
+      await firestore().collection("rides").doc(rideId).update({
+        canceled: true,
+      });
+    } catch (error) {
+      console.error("Error cancelling ride:", error);
+    }
+  };
+
   const postNewRide = async (ride) => {
     try {
       // Add the ride to the 'rides' collection with an additional 'rideOwner' field
@@ -107,6 +118,7 @@ const useMyRides = () => {
     applyListenersToAllMyRides,
     allRides,
     cleanupListeners,
+    cancelRide,
   };
 };
 

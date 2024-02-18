@@ -40,7 +40,7 @@ export default function useChats() {
     }
   }, [user]);
 
-  const sendMessage = async (chatId, messageContent,type) => {
+  const sendMessage = async (chatId, messageContent, type) => {
     try {
       const message = {
         ...messageContent, // The text or other content of the message
@@ -137,6 +137,35 @@ export default function useChats() {
     },
     []
   );
+
+  const cancelRideOnChats = async (rideId) => {
+    try {
+      const chats = await fetchMyChats();
+      chats.forEach(async (chat) => {
+        const updatedMessages = chat.messages.map((message) => {
+          if (
+            message.type === "ride" &&
+            JSON.parse(message.text)?.id === rideId
+          ) {
+            const updatedRide = {
+              ...JSON.parse(message.text),
+              canceled: true,
+            };
+            message.text = JSON.stringify(updatedRide);
+          }
+          return message;
+        });
+
+        await firestore()
+          .collection("chats")
+          .doc(chat.id)
+          .update({ messages: updatedMessages });
+      });
+    } catch (error) {
+      console.error("Error canceling ride on chats: ", error);
+    }
+  };
+
   return {
     myChats,
     refreshListeners,
@@ -145,5 +174,6 @@ export default function useChats() {
     createChat,
     fetchMyChats,
     createGroupChat,
+    cancelRideOnChats,
   };
 }
