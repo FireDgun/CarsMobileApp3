@@ -128,6 +128,7 @@ const useMyRides = () => {
 
   const askForRide = async (ride) => {
     await addUserDataToRide(ride.id); // Add user data to the ride
+    await applyListenersToAllMyRides(ride.id); // Apply listeners to the ride
   };
 
   const addUserDataToRide = async (rideId) => {
