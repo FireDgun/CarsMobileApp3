@@ -38,7 +38,7 @@ export default function Login() {
         routes: [
           {
             name: userDocument.exists ? "Dashboard" : "Details",
-            params: { uid: user.uid, number },
+            params: { uid: user.uid, phoneNumber: number },
           },
         ],
       });

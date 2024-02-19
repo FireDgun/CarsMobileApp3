@@ -20,17 +20,8 @@ export default function useChats() {
         ...doc.data(),
       }));
 
-      const chatWithIdLSwLk6Ph6VHUaRn1x4tL = await firestore()
-        .collection("chats")
-        .doc("LSwLk6Ph6VHUaRn1x4tL")
-        .get();
-
-      const chatDataLSwLk6Ph6VHUaRn1x4tL = {
-        id: chatWithIdLSwLk6Ph6VHUaRn1x4tL.id,
-        ...chatWithIdLSwLk6Ph6VHUaRn1x4tL.data(),
-      };
-
-      const allChats = [chatDataLSwLk6Ph6VHUaRn1x4tL, ...chats];
+      let globalChat = await addGlobalGroup(); // Call the addGlobalGroup function
+      const allChats = globalChat ? [globalChat, ...chats] : chats;
 
       setMyChats(allChats);
       return allChats;
@@ -39,6 +30,25 @@ export default function useChats() {
       return [];
     }
   }, [user]);
+
+  const addGlobalGroup = useCallback(async () => {
+    try {
+      const chatWithIdLSwLk6Ph6VHUaRn1x4tL = await firestore()
+        .collection("chats")
+        .doc("LSwLk6Ph6VHUaRn1x4tL")
+        .get();
+      if (chatWithIdLSwLk6Ph6VHUaRn1x4tL.exists) {
+        const chatDataLSwLk6Ph6VHUaRn1x4tL = {
+          id: chatWithIdLSwLk6Ph6VHUaRn1x4tL.id,
+          ...chatWithIdLSwLk6Ph6VHUaRn1x4tL.data(),
+        };
+
+        return chatDataLSwLk6Ph6VHUaRn1x4tL;
+      }
+    } catch (error) {
+      console.error("Error adding global group chat: ", error);
+    }
+  }, []);
 
   const sendMessage = async (chatId, messageContent, type) => {
     try {

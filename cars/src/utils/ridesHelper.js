@@ -301,6 +301,7 @@ const initialRideObject = {
   numberOfSuitcasesReturn: null,
   frequency: "",
   returnFrequency: "",
+  interestedUsers: [],
 };
 
 export {

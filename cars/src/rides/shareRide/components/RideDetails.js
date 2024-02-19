@@ -3,7 +3,6 @@ import React from "react";
 import { buildRidePostView } from "../../../utils/ridesHelper";
 
 const RideDetails = ({ ride, setShowStopsModal, setStopsToDisplay }) => {
-  console.log(ride);
   const rideDetails = buildRidePostView(
     ride,
     setShowStopsModal,

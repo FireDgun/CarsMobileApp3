@@ -12,15 +12,12 @@ const ShareRidePage = ({ route }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const { user } = useAuth();
 
-  console.log(selectedItems);
   const { allRides } = useRidesContext();
   const [ride, setRide] = useState(initialRideObject);
   const [showPreview, setShowPreview] = useState(false);
   const { sendMessage, createChat } = useChatsContext();
   const navigation = useNavigation();
   const handleConfirm = async () => {
-    console.log("Send ride " + ride);
-    console.log(selectedItems);
     for (const item of selectedItems) {
       if (item.category === "user") {
         const chatId = await createChat(user.uid, item.id);

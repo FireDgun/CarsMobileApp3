@@ -10,7 +10,6 @@ const OpenSellRides = ({ allModeRides }) => {
     rideDate.setHours(0, 0, 0, 0); // Set time components to zero
     return rideDate >= currentDate && !ride.buyer && !ride.canceled;
   });
-  console.log(allModeRides);
   return (
     <View>
       <Text>OpenSellRides</Text>

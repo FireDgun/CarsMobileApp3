@@ -9,7 +9,6 @@ const Message = memo(({ messageInfo, user, chatType }) => {
   const imageSource = messageInfo.senderImg
     ? { uri: messageInfo.senderImg }
     : defaultImage;
-
   return (
     <View
       style={[

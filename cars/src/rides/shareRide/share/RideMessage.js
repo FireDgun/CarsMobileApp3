@@ -11,13 +11,14 @@ import { useChatsContext } from "../../../providers/ChatsProvider";
 const RideMessage = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
-  const { cancelRide } = useRidesContext();
+  const { cancelRide, askForRide } = useRidesContext();
   const { cancelRideOnChats } = useChatsContext();
   const { user } = useAuth();
   const navigation = useNavigation();
 
-  const handleSend = () => {
+  const handleSend = async () => {
     console.log("Send button clicked");
+    await askForRide(ride);
   };
 
   const handleCancel = () => {

@@ -18,14 +18,14 @@ const useMyRides = () => {
     }
   };
 
-  const postNewRide = async (ride) => {
+  const postNewRide = async (ride, rideOwner) => {
     try {
       // Add the ride to the 'rides' collection with an additional 'rideOwner' field
       const docRef = await firestore()
         .collection("rides")
         .add({
           ...ride,
-          rideOwner: user.uid, // Add the user's UID as the 'rideOwner' field
+          rideOwner: rideOwner || user.uid, // Add the user's UID as the 'rideOwner' field
         });
 
       // Fetch the newly added ride's ID
@@ -45,7 +45,7 @@ const useMyRides = () => {
 
   async function fetchMyRides() {
     if (!user?.uid) return []; // Ensure user UID is available
-    console.log("fetching");
+    console.log("fetching my rides");
     // Query to find rides where the current user is the rideOwner
     const ownerQuerySnapshot = await firestore()
       .collection("rides")
@@ -58,7 +58,13 @@ const useMyRides = () => {
       .where("rideBuyer", "==", user.uid)
       .get();
 
-    // Merge the results of both queries
+    // Query to find rides where the current user is in the interestedUsers array
+    const interestedQuerySnapshot = await firestore()
+      .collection("rides")
+      .where("interestedUsers", "array-contains", user.uid)
+      .get();
+
+    // Merge the results of all queries
     const rides = [];
 
     ownerQuerySnapshot.forEach((doc) => {
@@ -70,6 +76,13 @@ const useMyRides = () => {
         rides.push({ id: doc.id, ...doc.data() });
       }
     });
+    interestedQuerySnapshot.forEach((doc) => {
+      // Check to prevent potential duplicates if a user is already in owner or buyer
+      if (!rides.some((ride) => ride.id === doc.id)) {
+        rides.push({ id: doc.id, ...doc.data() });
+      }
+    });
+
     setAllRides(rides);
     return rides;
   }
@@ -113,12 +126,56 @@ const useMyRides = () => {
     setUnsubscribers([]);
   }, [unsubscribers]);
 
+  const askForRide = async (ride) => {
+    await addUserDataToRide(ride.id); // Add user data to the ride
+  };
+
+  const addUserDataToRide = async (rideId) => {
+    const rideRef = firestore().collection("rides").doc(rideId);
+    const rideDoc = await rideRef.get();
+
+    if (rideDoc.exists) {
+      const rideData = rideDoc.data();
+      const updatedRideData = {
+        ...rideData,
+        interestedUsers: [...rideData.interestedUsers, user.uid],
+        [user.uid]: {
+          messages: ["שלח"],
+          senderName: user.name,
+          senderImg: user.profilePic,
+        },
+      };
+
+      await rideRef.update(updatedRideData);
+    }
+  };
+
+  const sendMessageInNegotiation = async (rideId, userId, text) => {
+    const rideRef = firestore().collection("rides").doc(rideId);
+    const rideDoc = await rideRef.get();
+
+    if (rideDoc.exists) {
+      const rideData = rideDoc.data();
+      const updatedRideData = {
+        ...rideData,
+        [userId]: {
+          ...rideData[userId],
+          messages: [...rideData[userId].messages, text],
+        },
+      };
+
+      await rideRef.update(updatedRideData);
+    }
+  };
+
   return {
     postNewRide,
     applyListenersToAllMyRides,
     allRides,
     cleanupListeners,
     cancelRide,
+    askForRide,
+    sendMessageInNegotiation,
   };
 };
 

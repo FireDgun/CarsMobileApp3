@@ -97,7 +97,6 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
     );
   };
   const renderSelectedItem = (item) => {
-    console.log(item);
     return (
       <View key={item.id} style={styles.selectedUserContainer}>
         <TouchableOpacity
