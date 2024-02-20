@@ -305,6 +305,22 @@ const initialRideObject = {
   rideBuyer: null,
 };
 
+const flashRide = (ride) => {
+  const negotiations = [];
+  const newRide = JSON.parse(JSON.stringify(ride));
+  for (const property in newRide) {
+    if (
+      !initialRideObject.hasOwnProperty(property) &&
+      newRide[property].hasOwnProperty("messages")
+    ) {
+      negotiations.push({ senderId: property, ...newRide[property] });
+      delete newRide[property];
+    }
+  }
+  newRide.negotiations = negotiations;
+  return newRide;
+};
+
 // Create Enum for ride message types
 const RideMessageType = {
   CONTRACTOR_SEND: "Contractor - Send",
@@ -515,4 +531,5 @@ export {
   RideMessageType,
   getRideMessageTextByType,
   buildRideRowView,
+  flashRide,
 };

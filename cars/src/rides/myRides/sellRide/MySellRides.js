@@ -9,7 +9,7 @@ import SubNavBarMyRides from "../components/SubNavBarMyRides";
 const MySellRides = () => {
   const { allRides } = useRidesContext();
   const { user } = useAuth();
-  const mySellRides = allRides.filter((ride) => ride.rideOwner === user.uid);
+  const mySellRides = allRides.filter((ride) => ride.rideOwner === user?.uid);
   return (
     <View style={{ flex: 1 }}>
       <SubNavBarMyRides mode={"sell"} allModeRides={mySellRides} />

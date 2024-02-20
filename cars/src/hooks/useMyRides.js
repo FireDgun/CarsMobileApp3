@@ -47,9 +47,8 @@ const useMyRides = () => {
     }
   };
 
-  async function fetchMyRides() {
+  const fetchMyRides = async () => {
     if (!user?.uid) return []; // Ensure user UID is available
-    console.log("fetching my rides");
     // Query to find rides where the current user is the rideOwner
     const ownerQuerySnapshot = await firestore()
       .collection("rides")
@@ -66,7 +65,7 @@ const useMyRides = () => {
     const interestedQuerySnapshot = await firestore()
       .collection("rides")
       .where("interestedUsers", "array-contains", user.uid)
-      .where("rideBuyer", "in", [null, user.uid])
+      .where("rideBuyer", "==", null)
       .get();
 
     // Merge the results of all queries
@@ -90,7 +89,7 @@ const useMyRides = () => {
 
     setAllRides(rides);
     return rides;
-  }
+  };
   const applyListenerToRide = useCallback(
     (rideId) => {
       const unsubscribe = firestore()
@@ -134,7 +133,7 @@ const useMyRides = () => {
         });
       }
     },
-    [applyListenerToRide]
+    [applyListenerToRide, fetchMyRides]
   );
 
   const cleanupListeners = useCallback(() => {

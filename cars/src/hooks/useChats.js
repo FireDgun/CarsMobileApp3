@@ -14,13 +14,12 @@ export default function useChats() {
         .collection("chats")
         .where("chatParticipants", "array-contains", user?.uid)
         .get();
-
       const chats = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      let globalChat = await addGlobalGroup(); // Call the addGlobalGroup function
+      let globalChat;
+      //globalChat = await addGlobalGroup(); // Call the addGlobalGroup function
       const allChats = globalChat ? [globalChat, ...chats] : chats;
 
       setMyChats(allChats);
@@ -98,7 +97,7 @@ export default function useChats() {
     return () => {
       unsubscribers.forEach((unsubscribe) => unsubscribe());
     };
-  }, [myChats]);
+  }, [myChats, fetchMyChats]);
 
   const createChat = async (senderId, getterId) => {
     let existingChat = myChats.find(

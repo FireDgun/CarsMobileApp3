@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,51 +7,16 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import {
-  RideMessageType,
-  getRideTypeHebrewName,
-} from "../../../utils/ridesHelper";
+import { getRideTypeHebrewName } from "../../../utils/ridesHelper";
 import RideDetails from "../components/RideDetails";
 import StopsModal from "../components/StopsModal";
-import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../../../providers/AuthContext";
-import { useRidesContext } from "../../../providers/RidesContext";
-import { useChatsContext } from "../../../providers/ChatsProvider";
+
+import RideActionButtons from "./RideActionButtons";
 
 const RideMessage = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
   const [enableSendButton, setEnableSendButton] = useState(true);
-  const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
-    useState(false);
-  const [suggestedPrice, setSuggestedPrice] = useState("");
-  const { cancelRide, askForRide, allRides } = useRidesContext();
-  const { cancelRideOnChats } = useChatsContext();
-  const { user } = useAuth();
-  const [rideDetails, setRideDetails] = useState(
-    allRides.find(
-      (r) => r.id === ride.id && r.interestedUsers.includes(user.uid)
-    ) || ride
-  );
-  const navigation = useNavigation();
-
-  const handleSend = async (messageType, suggestionPrice) => {
-    console.log("Send button clicked");
-    setEnableSendButton(false);
-    const updatedRide = await askForRide(ride, messageType, suggestionPrice);
-    setRideDetails(updatedRide);
-  };
-
-  const handleSuggestPrice = () => {
-    console.log("Suggest price button clicked");
-    setShowPriceSuggestionModal(true);
-  };
-
-  const handleCancel = () => {
-    console.log("Cancel button clicked");
-    cancelRide(ride.id);
-    cancelRideOnChats(ride.id);
-  };
 
   return (
     <View style={[styles.card, ride.canceled && styles.canceledCard]}>
@@ -59,7 +24,7 @@ const RideMessage = ({ ride }) => {
 
       <View style={styles.messageContainer}>
         <RideDetails
-          ride={rideDetails}
+          ride={ride}
           setShowStopsModal={setShowStopsModal}
           setStopsToDisplay={setStopsToDisplay}
         />
@@ -69,93 +34,10 @@ const RideMessage = ({ ride }) => {
           stopsToDisplay={stopsToDisplay}
         />
       </View>
-      {ride.canceled ? (
-        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
-          <Text style={styles.disabledButtonText}>בוטלה</Text>
-        </TouchableOpacity>
-      ) : ride.rideBuyer ? (
-        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
-          <Text style={styles.disabledButtonText}>נסגרה</Text>
-        </TouchableOpacity>
-      ) : user.uid === ride.rideOwner ? (
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.buttonText}>בטל</Text>
-        </TouchableOpacity>
-      ) : rideDetails[user.uid] ? (
-        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
-          <Text style={styles.disabledButtonText}>בקשה נשלחה</Text>
-        </TouchableOpacity>
-      ) : (
-        <>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={() => handleSend(RideMessageType.CONTRACTOR_SEND)}
-            >
-              <Text style={styles.buttonText}>שלח</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={() =>
-                handleSend(RideMessageType.CONTRACTOR_SEND_DETAILS)
-              }
-            >
-              <Text style={styles.buttonText}>שלח פרטים</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSuggestPrice}
-            >
-              <Text style={styles.buttonText}>הצע מחיר</Text>
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showPriceSuggestionModal}
-        onRequestClose={() => {
-          setShowPriceSuggestionModal((prev) => !prev);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>הצע מחיר</Text>
-            <Text style={styles.modalText}>מחיר נוכחי: {ride.price}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="מה המחיר שאתה מציע?"
-              onChangeText={(text) => setSuggestedPrice(text)}
-            />
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => {
-                  handleSend(
-                    RideMessageType.CONTRACTOR_OFFER_PRICE,
-                    suggestedPrice
-                  );
-                  setShowPriceSuggestionModal(false);
-                }}
-              >
-                <Text style={styles.buttonText}>שלח</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => setShowPriceSuggestionModal(false)}
-              >
-                <Text style={styles.buttonText}>ביטול</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <RideActionButtons
+        ride={ride}
+        setEnableSendButton={setEnableSendButton}
+      />
     </View>
   );
 };

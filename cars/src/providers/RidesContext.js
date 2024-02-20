@@ -13,7 +13,6 @@ export const RidesProvider = ({ children }) => {
     cancelRide,
     askForRide,
     sendMessageInNegotiation,
-    buildRideRowView,
   } = useMyRides();
   const { user } = useAuth();
 
@@ -37,7 +36,6 @@ export const RidesProvider = ({ children }) => {
         cancelRide,
         askForRide,
         sendMessageInNegotiation,
-        buildRideRowView,
       }}
     >
       {children}

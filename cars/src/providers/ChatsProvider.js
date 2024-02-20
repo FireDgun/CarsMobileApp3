@@ -17,15 +17,18 @@ export const ChatsProvider = ({ children }) => {
   } = useChats();
 
   const { user } = useAuth();
-
   useEffect(() => {
     if (user) {
       // Define an async function inside the useEffect
       const setupListeners = async () => {
-        const unsubscribeFunctions = await applyListenersToAllMyChats();
+        try {
+          const unsubscribeFunctions = await applyListenersToAllMyChats();
+          return unsubscribeFunctions;
+        } catch (error) {
+          console.error("Error applying listeners to chats:", error);
+        }
 
         // Return the cleanup function directly from the async function
-        return unsubscribeFunctions;
       };
 
       // Call the async function
