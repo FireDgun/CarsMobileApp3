@@ -35,7 +35,6 @@ const RideRow = ({ ride }) => {
   const toggleExpanded = () => {
     setExpanded(!expanded); // Toggle the expanded state
   };
-
   return (
     <View>
       <TouchableOpacity style={styles.rideRow} onPress={toggleExpanded}>
@@ -89,20 +88,28 @@ const RideRow = ({ ride }) => {
         {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
         <MaterialIcons name="expand-more" size={24} color="gray" />
       </TouchableOpacity>
-      {ride.rideOwner == user.uid
-        ? flashRide(ride).negotiations.map((negotiation, index) => {
-            return (
-              <NegotiationRow
-                key={negotiation.senderId}
-                senderId={negotiation.senderId}
-                senderName={negotiation.senderName}
-                senderImg={negotiation.senderImg}
-                messages={negotiation.messages}
-                buttons={negotiation.buttons}
-              />
-            );
-          })
-        : null}
+      {ride.rideOwner == user.uid ? (
+        flashRide(ride).negotiations.map((negotiation, index) => {
+          return (
+            <NegotiationRow
+              key={negotiation.senderId}
+              senderId={negotiation.senderId}
+              senderName={negotiation.senderName}
+              senderImg={negotiation.senderImg}
+              messages={negotiation.messages}
+              buttons={negotiation.buttons}
+              ride={ride}
+            />
+          );
+        })
+      ) : (
+        <NegotiationRow
+          senderName={""}
+          senderId={user.uid}
+          messages={ride?.[user.uid]?.messages}
+          ride={ride}
+        />
+      )}
     </View>
   );
 };

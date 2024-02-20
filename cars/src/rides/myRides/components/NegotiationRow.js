@@ -1,23 +1,26 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import React, { useState } from "react";
 import NegotiationWindow from "./NegotiationWindow";
+const defaultImage = require("../../../../assets/avatars/driver.png"); // Replace with the actual path
 
 const NegotiationRow = ({
   senderName,
   senderImg,
   messages,
   buttons,
+  ride,
   senderId,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const handleRowClick = () => {
     setExpanded((prev) => !prev);
   };
+  const imageSource = senderImg ? { uri: senderImg } : defaultImage;
 
   return (
     <TouchableOpacity onPress={handleRowClick}>
       <View style={styles.rowContainer}>
-        <Image source={{ uri: senderImg }} style={styles.senderImage} />
+        <Image source={imageSource} style={styles.senderImage} />
         <Text style={styles.senderName}>{senderName}</Text>
       </View>
       {expanded && (
@@ -26,6 +29,7 @@ const NegotiationRow = ({
           buttons={buttons}
           expanded={expanded}
           setExpanded={setExpanded}
+          ride={ride}
           senderId={senderId}
         />
       )}

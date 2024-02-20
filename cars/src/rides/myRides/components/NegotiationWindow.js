@@ -2,18 +2,20 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import NegotiationButtons from "./NegotiationButtons";
 
 const NegotiationWindow = ({
   messages,
   buttons,
   expanded,
   setExpanded,
+  ride,
   senderId,
 }) => {
   const handleExpandCollapse = () => {
     setExpanded(!expanded);
   };
-
+  const [enableSendButton, setEnableSendButton] = useState(true);
   const renderMessages = () => {
     return messages.map((message, index) => {
       const isContractor = message.type.includes("Contractor");
@@ -50,7 +52,14 @@ const NegotiationWindow = ({
       style={expanded ? styles.containerExpanded : styles.containerCollapsed}
     >
       {renderMessages()}
-      {buttons && <View style={styles.buttonContainer}>{renderButtons()}</View>}
+      {enableSendButton && (
+        <NegotiationButtons
+          ride={ride}
+          messages={messages}
+          senderId={senderId}
+          setEnableSendButton={setEnableSendButton}
+        />
+      )}
       <TouchableOpacity
         style={styles.expandCollapseButton}
         onPress={handleExpandCollapse}
@@ -74,7 +83,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 100,
+    height: 180,
   },
   containerCollapsed: {
     backgroundColor: "#E6F2FF",

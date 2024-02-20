@@ -178,7 +178,8 @@ const useMyRides = () => {
     }
   };
 
-  const sendMessageInNegotiation = async (rideId, userId, text) => {
+  const sendMessageInNegotiation = async (rideId, userId, message) => {
+    console.log("sendMessageInNegotiation", rideId, userId, message);
     const rideRef = firestore().collection("rides").doc(rideId);
     const rideDoc = await rideRef.get();
 
@@ -188,7 +189,7 @@ const useMyRides = () => {
         ...rideData,
         [userId]: {
           ...rideData[userId],
-          messages: [...rideData[userId].messages, text],
+          messages: [...rideData[userId].messages, message],
         },
       };
 
