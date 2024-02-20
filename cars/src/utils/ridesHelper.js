@@ -304,6 +304,44 @@ const initialRideObject = {
   interestedUsers: [],
 };
 
+// Create Enum for ride message types
+const RideMessageType = {
+  CONTRACTOR_SEND: "Contractor - Send",
+  CONTRACTOR_SEND_DETAILS: "Contractor - Send Details",
+  CONTRACTOR_OFFER_PRICE: "Contractor - Offer Price X",
+  CONTRACTOR_FINALIZE: "Contractor - Finalize",
+  CONTRACTOR_ADDITIONAL_QUESTION: "Contractor - Additional Question",
+  PUBLISHER_APPROVED: "Publisher - Approved",
+  PUBLISHER_SEND_DETAILS: "Publisher - Send Additional Details",
+  PUBLISHER_OFFER_PRICE: "Publisher - Offer Price X",
+  PUBLISHER_RESPONSE_QUESTION: "Publisher - Response to Question",
+};
+
+const getRideMessageTextByType = (type, suggestPrice) => {
+  switch (type) {
+    case RideMessageType.CONTRACTOR_SEND:
+      return "שלח, מתאים לי";
+    case RideMessageType.CONTRACTOR_SEND_DETAILS:
+      return "שלח פרטים נוספים";
+    case RideMessageType.CONTRACTOR_OFFER_PRICE:
+      return "מעוניין, במחיר " + suggestPrice + "₪ לא כולל מעמ";
+    case RideMessageType.CONTRACTOR_FINALIZE:
+      return "סגור!";
+    case RideMessageType.CONTRACTOR_ADDITIONAL_QUESTION:
+      return "שאלה נוספת";
+    case RideMessageType.PUBLISHER_APPROVED:
+      return "מבחינתי מאושר";
+    case RideMessageType.PUBLISHER_SEND_DETAILS:
+      return "פרטים נוספים";
+    case RideMessageType.PUBLISHER_OFFER_PRICE:
+      return "מציע " + suggestPrice + "₪ לא כולל מעמ";
+    case RideMessageType.PUBLISHER_RESPONSE_QUESTION:
+      return "תשובה לשאלה";
+    default:
+      return "הודעה";
+  }
+};
+
 export {
   calculateDaysArray,
   formatTime,
@@ -312,4 +350,6 @@ export {
   formatDate,
   formatAddress,
   initialRideObject,
+  RideMessageType,
+  getRideMessageTextByType,
 };

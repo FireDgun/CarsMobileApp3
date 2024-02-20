@@ -1,6 +1,10 @@
 import firestore from "@react-native-firebase/firestore";
 import { useAuth } from "../providers/AuthContext";
 import { useCallback, useState } from "react";
+import {
+  RideMessageType,
+  getRideMessageTextByType,
+} from "../utils/ridesHelper";
 
 const useMyRides = () => {
   const { user } = useAuth();
@@ -126,12 +130,12 @@ const useMyRides = () => {
     setUnsubscribers([]);
   }, [unsubscribers]);
 
-  const askForRide = async (ride) => {
-    await addUserDataToRide(ride.id); // Add user data to the ride
+  const askForRide = async (ride, messageType, suggestionPrice) => {
+    await addUserDataToRide(ride.id, messageType, suggestionPrice); // Add user data to the ride
     await applyListenersToAllMyRides(ride.id); // Apply listeners to the ride
   };
 
-  const addUserDataToRide = async (rideId) => {
+  const addUserDataToRide = async (rideId, messageType, suggestionPrice) => {
     const rideRef = firestore().collection("rides").doc(rideId);
     const rideDoc = await rideRef.get();
 
@@ -141,7 +145,13 @@ const useMyRides = () => {
         ...rideData,
         interestedUsers: [...rideData.interestedUsers, user.uid],
         [user.uid]: {
-          messages: ["שלח"],
+          messages: [
+            {
+              text: getRideMessageTextByType(messageType, suggestionPrice),
+              type: messageType,
+              createdAt: new Date(),
+            },
+          ],
           senderName: user.name,
           senderImg: user.profilePic,
         },
