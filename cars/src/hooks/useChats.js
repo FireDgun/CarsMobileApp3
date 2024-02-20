@@ -152,6 +152,7 @@ export default function useChats() {
     async (rideId) => {
       try {
         myChats.forEach(async (chat) => {
+          let hasChanges = false;
           const updatedMessages = chat.messages.map((message) => {
             if (
               message.type === "ride" &&
@@ -162,14 +163,16 @@ export default function useChats() {
                 canceled: true,
               };
               message.text = JSON.stringify(updatedRide);
+              hasChanges = true;
             }
             return message;
           });
-
-          await firestore()
-            .collection("chats")
-            .doc(chat.id)
-            .update({ messages: updatedMessages });
+          if (hasChanges) {
+            await firestore()
+              .collection("chats")
+              .doc(chat.id)
+              .update({ messages: updatedMessages });
+          }
         });
       } catch (error) {
         console.error("Error canceling ride on chats: ", error);
@@ -177,7 +180,36 @@ export default function useChats() {
     },
     [myChats]
   );
+  const updateRideOnChat = useCallback(
+    async (rideId, updatedRide) => {
+      try {
+        myChats.forEach(async (chat) => {
+          let hasChanges = false;
 
+          const updatedMessages = chat.messages.map((message) => {
+            if (
+              message.type === "ride" &&
+              JSON.parse(message.text)?.id === rideId
+            ) {
+              message.text = JSON.stringify(updatedRide);
+              hasChanges = true;
+            }
+            return message;
+          });
+
+          if (hasChanges) {
+            await firestore()
+              .collection("chats")
+              .doc(chat.id)
+              .update({ messages: updatedMessages });
+          }
+        });
+      } catch (error) {
+        console.error("Error updating ride on chats: ", error);
+      }
+    },
+    [myChats]
+  );
   return {
     myChats,
     refreshListeners,
@@ -187,5 +219,6 @@ export default function useChats() {
     fetchMyChats,
     createGroupChat,
     cancelRideOnChats,
+    updateRideOnChat,
   };
 }

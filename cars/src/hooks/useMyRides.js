@@ -101,9 +101,20 @@ const useMyRides = () => {
             ...doc.data(),
           };
 
-          setAllRides((prevRides) =>
-            prevRides.map((c) => (c.id === updatedRide.id ? updatedRide : c))
-          );
+          setAllRides((prevRides) => {
+            const rideIndex = prevRides.findIndex(
+              (ride) => ride.id === updatedRide.id
+            );
+            if (rideIndex !== -1) {
+              // Update the existing ride
+              return prevRides.map((ride, index) =>
+                index === rideIndex ? updatedRide : ride
+              );
+            } else {
+              // Add the new ride to the array
+              return [...prevRides, updatedRide];
+            }
+          });
         });
 
       setUnsubscribers((prevUnsubs) => [...prevUnsubs, unsubscribe]);
@@ -131,8 +142,13 @@ const useMyRides = () => {
   }, [unsubscribers]);
 
   const askForRide = async (ride, messageType, suggestionPrice) => {
-    await addUserDataToRide(ride.id, messageType, suggestionPrice); // Add user data to the ride
+    const updatedRideData = await addUserDataToRide(
+      ride.id,
+      messageType,
+      suggestionPrice
+    ); // Add user data to the ride
     await applyListenersToAllMyRides(ride.id); // Apply listeners to the ride
+    return updatedRideData;
   };
 
   const addUserDataToRide = async (rideId, messageType, suggestionPrice) => {
@@ -158,6 +174,7 @@ const useMyRides = () => {
       };
 
       await rideRef.update(updatedRideData);
+      return updatedRideData;
     }
   };
 

@@ -13,6 +13,7 @@ export const ChatsProvider = ({ children }) => {
     createChat,
     createGroupChat,
     cancelRideOnChats,
+    updateRideOnChat,
   } = useChats();
 
   const { user } = useAuth();
@@ -50,6 +51,7 @@ export const ChatsProvider = ({ children }) => {
         createChat,
         createGroupChat,
         cancelRideOnChats,
+        updateRideOnChat,
       }}
     >
       {children}

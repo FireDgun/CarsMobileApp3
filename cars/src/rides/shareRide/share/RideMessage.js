@@ -25,13 +25,14 @@ const RideMessage = ({ ride }) => {
     useState(false);
   const [suggestedPrice, setSuggestedPrice] = useState("");
   const { cancelRide, askForRide } = useRidesContext();
-  const { cancelRideOnChats } = useChatsContext();
+  const { cancelRideOnChats, updateRideOnChat } = useChatsContext();
   const { user } = useAuth();
   const navigation = useNavigation();
 
   const handleSend = async (messageType, suggestionPrice) => {
     console.log("Send button clicked");
-    await askForRide(ride, messageType, suggestionPrice);
+    const updatedRide = await askForRide(ride, messageType, suggestionPrice);
+    await updateRideOnChat(ride.id, updatedRide);
   };
 
   const handleSuggestPrice = () => {
@@ -61,14 +62,22 @@ const RideMessage = ({ ride }) => {
           stopsToDisplay={stopsToDisplay}
         />
       </View>
-
+      {console.log(ride)}
       {ride.canceled ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בוטלה</Text>
         </TouchableOpacity>
+      ) : ride.buyer ? (
+        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
+          <Text style={styles.disabledButtonText}>נסגרה</Text>
+        </TouchableOpacity>
       ) : user.uid === ride.rideOwner ? (
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
           <Text style={styles.buttonText}>בטל</Text>
+        </TouchableOpacity>
+      ) : ride[user.uid] ? (
+        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
+          <Text style={styles.disabledButtonText}>בקשה נשלחה</Text>
         </TouchableOpacity>
       ) : (
         <>
