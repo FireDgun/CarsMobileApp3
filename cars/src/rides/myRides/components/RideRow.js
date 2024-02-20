@@ -1,17 +1,27 @@
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { formatAddress, formatDate } from "../../../utils/ridesHelper";
 import { useNavigation } from "@react-navigation/native";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useChatsContext } from "../../../providers/ChatsProvider";
+import { buildRideRowView } from "../../../utils/ridesHelper";
+import StopsModal from "../../shareRide/components/StopsModal";
 
 const RideRow = ({ ride }) => {
+  const [expanded, setExpanded] = useState(false); // State to manage the expanded/collapsed state
   const navigation = useNavigation();
   const { cancelRide } = useRidesContext();
   const { cancelRideOnChats } = useChatsContext();
+  const [showStopsModal, setShowStopsModal] = useState(false);
+  const [stopsToDisplay, setStopsToDisplay] = useState([]);
+
+  const { mainDetails, secondaryDetails } = buildRideRowView(
+    ride,
+    setShowStopsModal,
+    setStopsToDisplay
+  ); // Extract details using the utility function
+
   const onSharePress = () => {
-    // Navigate to the ShareRidePage and pass ride.id as a parameter
     navigation.navigate("ShareRidePage", { rideId: ride.id });
   };
 
@@ -20,17 +30,46 @@ const RideRow = ({ ride }) => {
     cancelRideOnChats(ride.id);
   };
 
+  const toggleExpanded = () => {
+    setExpanded(!expanded); // Toggle the expanded state
+  };
+
   return (
-    <View style={styles.rideRow}>
+    <TouchableOpacity style={styles.rideRow} onPress={toggleExpanded}>
       <View style={styles.rideInfo}>
-        <Text style={styles.rideText}>{formatDate(ride.date)}</Text>
-        <Text style={styles.rideText}>מוצא: {formatAddress(ride.origin)}</Text>
-        <Text style={styles.rideText}>
-          יעד: {formatAddress(ride.destination)}
-        </Text>
-        <Text style={styles.rideText}>מחיר: {ride.price}₪</Text>
+        {/* Displaying main details */}
+        {mainDetails.map((detail, index) => (
+          <Text key={index} style={styles.rideText}>
+            {detail}
+          </Text>
+        ))}
+        {/* Conditionally displaying secondary details */}
+        {expanded &&
+          secondaryDetails.map((detail, index) => {
+            if (detail.label) {
+              return (
+                <View
+                  key={`secondary-${index}`}
+                  style={{ flexDirection: "row" }}
+                >
+                  <Text style={styles.rideText}>{detail.label} </Text>
+                  {detail.value}
+                </View>
+              );
+            } else {
+              return (
+                <Text key={`secondary-${index}`} style={styles.rideText}>
+                  {detail}
+                </Text>
+              );
+            }
+          })}
       </View>
-      {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
+      <StopsModal
+        setShowStopsModal={setShowStopsModal}
+        showStopsModal={showStopsModal}
+        stopsToDisplay={stopsToDisplay}
+      />
       {!ride.canceled && (
         <>
           <TouchableOpacity style={styles.shareButton} onPress={onSharePress}>
@@ -41,8 +80,9 @@ const RideRow = ({ ride }) => {
           </TouchableOpacity>
         </>
       )}
-      <MaterialIcons name="chevron-right" size={24} color="gray" />
-    </View>
+      {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
+      <MaterialIcons name="expand-more" size={24} color="gray" />
+    </TouchableOpacity>
   );
 };
 

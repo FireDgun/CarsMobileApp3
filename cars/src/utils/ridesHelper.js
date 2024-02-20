@@ -341,6 +341,167 @@ const getRideMessageTextByType = (type, suggestPrice) => {
       return "הודעה";
   }
 };
+const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
+  const {
+    numberOfPassengers,
+    paymentMethod,
+    price,
+    specialOption,
+    notes,
+    frequency,
+    returnFrequency,
+    tripLocations,
+    numberOfSuitcases,
+    numberOfSuitcasesReturn,
+    stops,
+    stopsReturn,
+  } = ride;
+
+  let secondaryDetails = [];
+  if (stops && stops.length > 0) {
+    secondaryDetails.push({
+      label: "עצירות בדרך",
+      value: (
+        <TouchableOpacity
+          onPress={() => {
+            setShowStopsModal(true);
+            setStopsToDisplay(stops);
+          }}
+        >
+          <Text>{stops.length} (לחץ לפרטים)</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }
+
+  if (stopsReturn && stopsReturn.length > 0) {
+    secondaryDetails.push({
+      label: "עצירות בדרך חזור",
+      value: (
+        <TouchableOpacity
+          onPress={() => {
+            setShowStopsModal(true);
+            setStopsToDisplay(stopsReturn);
+          }}
+        >
+          <Text>{stopsReturn.length} (לחץ לפרטים)</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }
+
+  // Passengers, Payment, and Price
+  if (numberOfPassengers) {
+    secondaryDetails.push(`נוסעים: ${numberOfPassengers}`);
+  }
+  if (paymentMethod) {
+    secondaryDetails.push(`תשלום: ${paymentMethod}`);
+  }
+  if (price) {
+    secondaryDetails.push(`מחיר: ${price}₪`);
+  }
+
+  // Special Options and Notes
+  if (specialOption && specialOption.length) {
+    secondaryDetails.push(`בקשות מיוחדות: ${specialOption.join(", ")}`);
+  }
+  if (notes) {
+    secondaryDetails.push(`הערות: ${notes}`);
+  }
+
+  // Frequency and Suitcases
+  if (frequency) {
+    secondaryDetails.push(`ימי איסוף: ${frequency}`);
+  }
+  if (returnFrequency) {
+    secondaryDetails.push(`ימי פיזור: ${returnFrequency}`);
+  }
+  if (numberOfSuitcases || numberOfSuitcasesReturn) {
+    secondaryDetails.push(`מזוודות: ${numberOfSuitcases || 0}`);
+  }
+
+  return secondaryDetails;
+};
+
+const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
+  const {
+    type,
+    date,
+    destination,
+    origin,
+
+    startTime,
+    endTime,
+    tripLocations,
+    endDate,
+  } = ride;
+
+  // Main section details
+  const mainDetails = [];
+  const airport = 'נתב"ג';
+  mainDetails.push(formatDate(date));
+  mainDetails.push(`${type}`);
+  if (type == "ביצוע קו חד פעמי" && endTime) {
+    mainDetails.push(`הלוך וחזור`);
+  }
+
+  // Type, Date & Time
+  if (type !== "נסיעה צמודה") {
+    if (type === 'נתב"ג הלוך וחזור') {
+      mainDetails.push(`שעת איסוף ${formatTime(startTime)} `);
+      mainDetails.push(`שעת נחיתה ${formatTime(endTime)}`);
+    } else if (endTime) {
+      mainDetails.push(`${formatTime(startTime)} - ${formatTime(endTime)}`);
+    } else {
+      mainDetails.push(formatTime(startTime));
+    }
+  }
+
+  // Origin and Destination
+  let originDestinationDisplay = "";
+  if (type.includes('נתב"ג')) {
+    if (type === 'נתב"ג נחיתה') {
+      originDestinationDisplay = `ל${ride.destination.addressName}`;
+    }
+    if (type === 'נסיעה לנתב"ג') {
+      originDestinationDisplay = `מ${ride.origin.addressName}`;
+    }
+    if (type === 'נתב"ג הלוך וחזור') {
+      originDestinationDisplay = `מ${ride.origin.addressName} ל${airport} וחזור ל${ride.destination.addressName}`;
+    }
+  } else {
+    if (
+      tripLocations &&
+      tripLocations.length > 0 &&
+      ride.type === "נסיעה צמודה"
+    ) {
+      originDestinationDisplay = `${
+        tripLocations.length
+      } ימי טיול:\n מתחיל מ${formatAddress(
+        tripLocations[0].origin
+      )} ב${formatTime(tripLocations[0].startTime)}`;
+    } else {
+      originDestinationDisplay = `מ${
+        origin && origin.addressName ? formatAddress(origin) : "N/A"
+      } ל${
+        destination && destination.addressName
+          ? formatAddress(destination)
+          : "N/A"
+      }`;
+    }
+  }
+  mainDetails.push(originDestinationDisplay);
+
+  // Secondary section details
+  const secondaryDetails = buildSecondaryDetails(
+    ride,
+    setShowStopsModal,
+    setStopsToDisplay
+  );
+
+  // Combining main and secondary details
+  return { mainDetails, secondaryDetails };
+};
 
 export {
   calculateDaysArray,
@@ -352,4 +513,5 @@ export {
   initialRideObject,
   RideMessageType,
   getRideMessageTextByType,
+  buildRideRowView,
 };

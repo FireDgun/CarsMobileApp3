@@ -62,7 +62,6 @@ const RideMessage = ({ ride }) => {
           stopsToDisplay={stopsToDisplay}
         />
       </View>
-      {console.log(ride)}
       {ride.canceled ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בוטלה</Text>

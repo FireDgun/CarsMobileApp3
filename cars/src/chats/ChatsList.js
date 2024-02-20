@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   newChatButton: {
     position: "absolute",
-    left: 20,
+    right: 20,
     bottom: 20,
     width: 60,
     height: 60,
