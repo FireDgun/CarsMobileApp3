@@ -21,18 +21,25 @@ import { useChatsContext } from "../../../providers/ChatsProvider";
 const RideMessage = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
+  const [enableSendButton, setEnableSendButton] = useState(true);
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
     useState(false);
   const [suggestedPrice, setSuggestedPrice] = useState("");
-  const { cancelRide, askForRide } = useRidesContext();
-  const { cancelRideOnChats, updateRideOnChat } = useChatsContext();
+  const { cancelRide, askForRide, allRides } = useRidesContext();
+  const { cancelRideOnChats } = useChatsContext();
   const { user } = useAuth();
+  const [rideDetails, setRideDetails] = useState(
+    allRides.find(
+      (r) => r.id === ride.id && r.interestedUsers.includes(user.uid)
+    ) || ride
+  );
   const navigation = useNavigation();
 
   const handleSend = async (messageType, suggestionPrice) => {
     console.log("Send button clicked");
+    setEnableSendButton(false);
     const updatedRide = await askForRide(ride, messageType, suggestionPrice);
-    await updateRideOnChat(ride.id, updatedRide);
+    setRideDetails(updatedRide);
   };
 
   const handleSuggestPrice = () => {
@@ -52,7 +59,7 @@ const RideMessage = ({ ride }) => {
 
       <View style={styles.messageContainer}>
         <RideDetails
-          ride={ride}
+          ride={rideDetails}
           setShowStopsModal={setShowStopsModal}
           setStopsToDisplay={setStopsToDisplay}
         />
@@ -66,7 +73,7 @@ const RideMessage = ({ ride }) => {
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בוטלה</Text>
         </TouchableOpacity>
-      ) : ride.buyer ? (
+      ) : ride.rideBuyer ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>נסגרה</Text>
         </TouchableOpacity>
@@ -74,7 +81,7 @@ const RideMessage = ({ ride }) => {
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
           <Text style={styles.buttonText}>בטל</Text>
         </TouchableOpacity>
-      ) : ride[user.uid] ? (
+      ) : rideDetails[user.uid] ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בקשה נשלחה</Text>
         </TouchableOpacity>

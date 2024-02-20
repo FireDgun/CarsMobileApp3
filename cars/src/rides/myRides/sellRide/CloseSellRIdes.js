@@ -8,7 +8,7 @@ const CloseSellRIdes = ({ allModeRides }) => {
 
   const soldRides = allModeRides.filter(
     (ride) =>
-      ride.buyer &&
+      ride.rideBuyer &&
       new Date(ride.date).setHours(0, 0, 0, 0) > currentDate &&
       !ride.canceled
   );

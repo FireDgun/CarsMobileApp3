@@ -302,6 +302,7 @@ const initialRideObject = {
   frequency: "",
   returnFrequency: "",
   interestedUsers: [],
+  rideBuyer: null,
 };
 
 // Create Enum for ride message types

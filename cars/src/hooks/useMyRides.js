@@ -66,6 +66,7 @@ const useMyRides = () => {
     const interestedQuerySnapshot = await firestore()
       .collection("rides")
       .where("interestedUsers", "array-contains", user.uid)
+      .where("rideBuyer", "in", [null, user.uid])
       .get();
 
     // Merge the results of all queries
