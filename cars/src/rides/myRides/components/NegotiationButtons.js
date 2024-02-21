@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useAuth } from "../../../providers/AuthContext";
 import WaitingForResponse from "./WaitingForResponse";
@@ -8,6 +8,7 @@ import {
   RideMessageType,
   getRideMessageTextByType,
 } from "../../../utils/ridesHelper";
+import AdditionDetailsModal from "./AdditionDetailsModal";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -19,7 +20,8 @@ const NegotiationButtons = ({
   const type = messages[messages.length - 1].type;
   const { sendMessageInNegotiation } = useRidesContext();
   const { user } = useAuth();
-  console.log(ride);
+  const [additionalDetailsModalVisible, setAdditionalDetailsModalVisible] =
+    useState(false);
   const handlePublisherApprove = async () => {
     await sendMessageInNegotiation(ride.id, senderId, {
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_APPROVED),
@@ -27,6 +29,17 @@ const NegotiationButtons = ({
       createdAt: new Date(),
     });
   };
+
+  const handlePublisherReject = async () => {
+    await sendMessageInNegotiation(ride.id, senderId, {
+      text: getRideMessageTextByType(RideMessageType.PUBLISHER_REJECT),
+      type: RideMessageType.PUBLISHER_REJECT,
+      createdAt: new Date(),
+    });
+  };
+
+  const handlePublisherSendDetails = async () => {};
+
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
       return <WaitingForResponse isLoading={true} />;
@@ -55,9 +68,38 @@ const NegotiationButtons = ({
           <Text style={styles.buttonText}>קבל את ההצעה</Text>
           <Text style={styles.buttonText}>שלח לאישור סופי</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonReject}>
+        <TouchableOpacity
+          style={styles.buttonReject}
+          onPress={handlePublisherReject}
+        >
           <Text style={styles.buttonText}>דחה את ההצעה</Text>
         </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (type == RideMessageType.CONTRACTOR_SEND_DETAILS) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.buttonAccept}
+          onPress={handlePublisherSendDetails}
+        >
+          <Text style={styles.buttonText}>שלח פרטים נוספים</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonReject}
+          onPress={handlePublisherReject}
+        >
+          <Text style={styles.buttonText}>דחה את ההצעה</Text>
+        </TouchableOpacity>
+
+        {additionalDetailsModalVisible && (
+          <AdditionDetailsModal
+            setAdditionalDetailsModalVisible={setAdditionalDetailsModalVisible}
+            ride={ride}
+          />
+        )}
       </View>
     );
   }

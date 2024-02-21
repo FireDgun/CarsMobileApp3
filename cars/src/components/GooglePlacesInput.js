@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
 const apiKey = Constants.expoConfig.android.config.googleMaps.apiKey;
@@ -19,7 +19,9 @@ function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
 }
 const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
   const ref = useRef();
-  const [addressText, setAddressText] = useState("");
+  const [addressDetails, setAddressDetails] = useState({});
+  console.log(addressDetails);
+  const [isFullAddress, setIsFullAddress] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -37,11 +39,30 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
         onPress={(data, details = null) => {
           try {
             const currentAddressText = ref.current?.getAddressText();
-            setAddressText(currentAddressText);
-
+            const city = details?.address_components?.filter(
+              (f) =>
+                JSON.stringify(f?.types) ===
+                JSON.stringify(["locality", "political"])
+            )?.[0]?.short_name;
             const location = details.geometry.location;
             onLocationSelect({
-              addressName: removeOrReplaceLastOccurrence(
+              addressName:
+                city ||
+                removeOrReplaceLastOccurrence(currentAddressText, ", ישראל"),
+              fullAddressName: removeOrReplaceLastOccurrence(
+                currentAddressText,
+                ", ישראל"
+              ),
+              data: {
+                latitude: location.lat,
+                longitude: location.lng,
+              },
+            });
+            setAddressDetails({
+              addressName:
+                city ||
+                removeOrReplaceLastOccurrence(currentAddressText, ", ישראל"),
+              fullAddressName: removeOrReplaceLastOccurrence(
                 currentAddressText,
                 ", ישראל"
               ),
@@ -62,20 +83,64 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
         onFail={(error) =>
           console.error("GooglePlacesAutocomplete Error:", error)
         }
-        textInputProps={{
-          onChangeText: (text) => {
-            setAddressText(text);
-          },
-        }}
         debounce={300}
       />
+      <View style={styles.buttonContainer}>
+        <Text style={styles.addressText}>כתובת לפרסום:</Text>
+        <Text style={styles.addressText}>
+          {isFullAddress
+            ? addressDetails.fullAddressName
+            : addressDetails.addressName}
+        </Text>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            onLocationSelect({
+              addressName: isFullAddress
+                ? addressDetails.addressName
+                : addressDetails.fullAddressName,
+              fullAddressName: addressDetails.fullAddressName,
+              data: addressDetails.data,
+            });
+            setIsFullAddress((prev) => !prev);
+          }}
+        >
+          <Text style={styles.buttonText}>פרסם עם</Text>
+          <Text style={styles.buttonText}>
+            כתובת {isFullAddress ? "מקוצרת" : "מלאה"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
+  buttonContainer: {
+    marginTop: 10,
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: "#007bff",
+    padding: 5,
+    borderRadius: 6,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addressText: {
+    textAlign: "center",
+    marginBottom: 5,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
   container: {
     flex: 1,
     marginBottom: 5, // Adjust based on your layout needs
+    flexDirection: "row",
+    alignItems: "center",
   },
   textInputContainer: {
     backgroundColor: "transparent", // Adjust as needed

@@ -279,6 +279,7 @@ const initialRideObject = {
   endTime: null,
   origin: "",
   destination: "",
+
   stops: [],
   stopsReturn: [],
   tripLocations: [
@@ -295,6 +296,7 @@ const initialRideObject = {
   paymentMethod: "מזומן מהלקוח",
   specialOption: [],
   notes: "",
+  notesForLater: "",
   flightNumber: null,
   numberOfSuitcases: null,
   flightNumberReturn: null,
@@ -327,11 +329,14 @@ const RideMessageType = {
   CONTRACTOR_SEND_DETAILS: "Contractor - Send Details",
   CONTRACTOR_OFFER_PRICE: "Contractor - Offer Price X",
   CONTRACTOR_FINALIZE: "Contractor - Finalize",
+  CONTRACTOR_REJECT: "Contractor - Reject",
   CONTRACTOR_ADDITIONAL_QUESTION: "Contractor - Additional Question",
   PUBLISHER_APPROVED: "Publisher - Approved",
   PUBLISHER_SEND_DETAILS: "Publisher - Send Additional Details",
   PUBLISHER_OFFER_PRICE: "Publisher - Offer Price X",
   PUBLISHER_RESPONSE_QUESTION: "Publisher - Response to Question",
+  PUBLISHER_REJECT: "Publisher - Reject",
+  PUBLISHER_TIMEOUT: "Publisher - Timeout",
 };
 
 const getRideMessageTextByType = (type, suggestPrice) => {
@@ -354,6 +359,12 @@ const getRideMessageTextByType = (type, suggestPrice) => {
       return "מציע " + suggestPrice + "₪ לא כולל מעמ";
     case RideMessageType.PUBLISHER_RESPONSE_QUESTION:
       return "תשובה לשאלה";
+    case RideMessageType.PUBLISHER_REJECT:
+      return "מבטל את ההצעה";
+    case RideMessageType.PUBLISHER_TIMEOUT:
+      return "נגמר הזמן - נסה לשלוח שוב אם הנסיעה עדיין פתוחה";
+    case RideMessageType.CONTRACTOR_REJECT:
+      return "מבטל את ההצעה";
     default:
       return "הודעה";
   }
