@@ -52,6 +52,7 @@ const NegotiationWindow = ({
       style={expanded ? styles.containerExpanded : styles.containerCollapsed}
     >
       {renderMessages()}
+
       {enableSendButton && (
         <NegotiationButtons
           ride={ride}

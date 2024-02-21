@@ -9,6 +9,8 @@ import {
   getRideMessageTextByType,
 } from "../../../utils/ridesHelper";
 import AdditionDetailsModal from "./AdditionDetailsModal";
+import GooglePlacesInput from "../../../components/GooglePlacesInput";
+import { useMyModal } from "../../../providers/ModalProvider";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -22,6 +24,17 @@ const NegotiationButtons = ({
   const { user } = useAuth();
   const [additionalDetailsModalVisible, setAdditionalDetailsModalVisible] =
     useState(false);
+  const { showModal, hideModal } = useMyModal();
+
+  const handleCloseModal = () => {
+    hideModal();
+  };
+  const handleOpenModal = () => {
+    // Pass in the JSX content or component you want the modal to render
+    showModal(
+      <AdditionDetailsModal handleCloseModal={handleCloseModal} ride={ride} />
+    );
+  };
   const handlePublisherApprove = async () => {
     await sendMessageInNegotiation(ride.id, senderId, {
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_APPROVED),
@@ -38,7 +51,9 @@ const NegotiationButtons = ({
     });
   };
 
-  const handlePublisherSendDetails = async () => {};
+  const handlePublisherSendDetails = () => {
+    handleOpenModal();
+  };
 
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
@@ -77,29 +92,20 @@ const NegotiationButtons = ({
       </View>
     );
   }
-
   if (type == RideMessageType.CONTRACTOR_SEND_DETAILS) {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.buttonAccept}
-          onPress={handlePublisherSendDetails}
-        >
-          <Text style={styles.buttonText}>שלח פרטים נוספים</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonReject}
-          onPress={handlePublisherReject}
-        >
-          <Text style={styles.buttonText}>דחה את ההצעה</Text>
-        </TouchableOpacity>
-
-        {additionalDetailsModalVisible && (
-          <AdditionDetailsModal
-            setAdditionalDetailsModalVisible={setAdditionalDetailsModalVisible}
-            ride={ride}
-          />
-        )}
+      <View>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.buttonAccept}
+            onPress={handlePublisherSendDetails}
+          >
+            <Text style={styles.buttonText}>שלח פרטים נוספים</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonReject} onPress={() => {}}>
+            <Text style={styles.buttonText}>דחה את ההצעה</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }

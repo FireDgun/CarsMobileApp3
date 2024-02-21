@@ -20,7 +20,7 @@ const RidesList = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="always">
         <View style={styles.navbar}>
           <TouchableOpacity
             style={[

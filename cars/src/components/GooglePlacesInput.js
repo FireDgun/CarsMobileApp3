@@ -17,7 +17,11 @@ function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
     text.substring(lastIndex + search.length)
   );
 }
-const GooglePlacesInput = ({ onLocationSelect, placeholder }) => {
+const GooglePlacesInput = ({
+  onLocationSelect,
+  placeholder,
+  defaultValue = "",
+}) => {
   const ref = useRef();
   const [addressDetails, setAddressDetails] = useState({});
   console.log(addressDetails);
@@ -154,20 +158,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderRadius: 6,
     color: "#333",
+
     // Make sure the height here matches with your text elements if they are on the same row
     height: 50, // Adjust as necessary to match the height of other elements
     // Add any additional styling to match the design of text elements
   },
   listView: {
     borderWidth: 1,
-    zIndex: 1000, // Ensure it's rendered above other components
-    elevation: 100, // For Android to ensure it's above other components
-    height: 200,
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    elevation: 3000, // Use elevation for Android to ensure it floats above other components
+    zIndex: 1051, // Adjust the zIndex to ensure it is on top of other components
     position: "absolute",
-    top: 60, // Adjust this value so that the list drops down from the input
-    left: 0,
-    right: 0,
+    top: 52, // You might need to adjust this based on the position of your input field
+    left: 10,
+    right: 10,
   },
+
   row: {
     backgroundColor: "white", // Or any contrasting color for visibility
   },

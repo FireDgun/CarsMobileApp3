@@ -8,6 +8,9 @@ import AppRouter from "./AppRouter";
 import { ChatsProvider } from "./src/providers/ChatsProvider";
 import { UsersProvider } from "./src/providers/UsersProvider";
 import { RidesProvider } from "./src/providers/RidesContext";
+import { Modal, StyleSheet, View, Text } from "react-native";
+import GooglePlacesInput from "./src/components/GooglePlacesInput";
+import ModalProvider from "./src/providers/ModalProvider";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +22,9 @@ export default function App() {
           <ChatsProvider>
             <ContactsProvider>
               <NavigationContainer>
-                <AppRouter />
+                <ModalProvider>
+                  <AppRouter />
+                </ModalProvider>
               </NavigationContainer>
             </ContactsProvider>
           </ChatsProvider>
