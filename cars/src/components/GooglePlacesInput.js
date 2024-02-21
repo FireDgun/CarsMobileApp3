@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
@@ -17,16 +17,17 @@ function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
     text.substring(lastIndex + search.length)
   );
 }
-const GooglePlacesInput = ({
-  onLocationSelect,
-  placeholder,
-  defaultValue = "",
-}) => {
+const GooglePlacesInput = ({ onLocationSelect, placeholder, defaultValue }) => {
   const ref = useRef();
   const [addressDetails, setAddressDetails] = useState({});
   console.log(addressDetails);
   const [isFullAddress, setIsFullAddress] = useState(false);
-
+  useEffect(() => {
+    if (defaultValue) {
+      console.log(defaultValue);
+      ref.current?.setAddressText(defaultValue);
+    }
+  }, []);
   return (
     <View style={styles.container}>
       <GooglePlacesAutocomplete
@@ -89,33 +90,35 @@ const GooglePlacesInput = ({
         }
         debounce={300}
       />
-      <View style={styles.buttonContainer}>
-        <Text style={styles.addressText}>כתובת לפרסום:</Text>
-        <Text style={styles.addressText}>
-          {isFullAddress
-            ? addressDetails.fullAddressName
-            : addressDetails.addressName}
-        </Text>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            onLocationSelect({
-              addressName: isFullAddress
-                ? addressDetails.addressName
-                : addressDetails.fullAddressName,
-              fullAddressName: addressDetails.fullAddressName,
-              data: addressDetails.data,
-            });
-            setIsFullAddress((prev) => !prev);
-          }}
-        >
-          <Text style={styles.buttonText}>פרסם עם</Text>
-          <Text style={styles.buttonText}>
-            כתובת {isFullAddress ? "מקוצרת" : "מלאה"}
+      {!defaultValue && (
+        <View style={styles.buttonContainer}>
+          <Text style={styles.addressText}>כתובת לפרסום:</Text>
+          <Text style={styles.addressText}>
+            {isFullAddress
+              ? addressDetails.fullAddressName
+              : addressDetails.addressName}
           </Text>
-        </TouchableOpacity>
-      </View>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              onLocationSelect({
+                addressName: isFullAddress
+                  ? addressDetails.addressName
+                  : addressDetails.fullAddressName,
+                fullAddressName: addressDetails.fullAddressName,
+                data: addressDetails.data,
+              });
+              setIsFullAddress((prev) => !prev);
+            }}
+          >
+            <Text style={styles.buttonText}>פרסם עם</Text>
+            <Text style={styles.buttonText}>
+              כתובת {isFullAddress ? "מקוצרת" : "מלאה"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

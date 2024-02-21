@@ -49,8 +49,6 @@ const PostJumpRide = () => {
       </View>
       <View style={styles.section}>
         <ChooseOriginAndDestination
-          origin={formData.origin}
-          destination={formData.destination}
           stops={formData.stops}
           handleInputChange={handleInputChange}
         />

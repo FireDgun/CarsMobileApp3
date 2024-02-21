@@ -7,6 +7,8 @@ const OneFlightLocationSelector = ({
   rideType,
   handleInputChange,
   returnFlight = "",
+  defaultAddress,
+  defaultStops,
 }) => {
   const [stops, setStops] = useState([]);
   const [key, setKey] = useState(rideType); // Use rideType as initial key value
@@ -46,6 +48,7 @@ const OneFlightLocationSelector = ({
               location
             )
           }
+          defaultValue={defaultAddress}
           placeholder={rideType === "arrival" ? "כתובת חזור" : "כתובת איסוף"}
         />
         {stops.map((_, index) => (
@@ -53,6 +56,7 @@ const OneFlightLocationSelector = ({
             <GooglePlacesInput
               onLocationSelect={(location) => handleStopChange(location, index)}
               placeholder={`עצירה ${index + 1}`}
+              defaultValue={defaultStops[index]}
             />
             <TouchableOpacity
               onPress={() => removeStop(index)}

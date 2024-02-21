@@ -4,8 +4,9 @@ import GooglePlacesInput from "../../../components/GooglePlacesInput"; // Adjust
 import { MaterialIcons } from "@expo/vector-icons"; // Ensure you have expo-vector-icons installed
 
 const ChooseOriginAndDestination = ({
-  origin,
-  destination,
+  defaultOrigin,
+  defaultDestination,
+  defaultStops,
   handleInputChange,
   stops: initialStops,
 }) => {
@@ -29,16 +30,18 @@ const ChooseOriginAndDestination = ({
   };
 
   return (
-    <View style={styles.container}>
+    <>
       <GooglePlacesInput
         onLocationSelect={(location) => handleInputChange("origin", location)}
         placeholder="מוצא"
+        defaultValue={defaultOrigin}
       />
       {stops.map((stop, index) => (
         <View key={index} style={styles.stopRow}>
           <GooglePlacesInput
             onLocationSelect={(location) => handleStopChange(location, index)}
             placeholder={`עצירה ${index + 1}`}
+            defaultValue={defaultStops[index]}
           />
           <TouchableOpacity
             onPress={() => removeStop(index)}
@@ -53,11 +56,12 @@ const ChooseOriginAndDestination = ({
           handleInputChange("destination", location)
         }
         placeholder="יעד"
+        defaultValue={defaultDestination}
       />
       <TouchableOpacity onPress={addStop} style={styles.addButton}>
         <MaterialIcons name="add" size={24} color="black" />
       </TouchableOpacity>
-    </View>
+    </>
   );
 };
 
