@@ -84,12 +84,9 @@ const PostTripRide = () => {
           יום טיול {index + 1} - {formatDateInHebrew(day)}
         </Text>
         <ChooseOriginAndDestination
-          origin={formData.tripLocations[index]?.origin || ""}
-          destination={formData.tripLocations[index]?.destination || ""}
           handleInputChange={(field, value) =>
             handleUpdateTripData(value, index, field)
           }
-          stops={formData.stops}
         />
         <TwoTimesPickerComponent
           startTime={formData.tripLocations[index]?.startTime}

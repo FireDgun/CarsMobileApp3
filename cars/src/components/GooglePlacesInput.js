@@ -17,13 +17,19 @@ function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
     text.substring(lastIndex + search.length)
   );
 }
-const GooglePlacesInput = ({ onLocationSelect, placeholder, defaultValue }) => {
+const GooglePlacesInput = ({
+  onLocationSelect,
+  placeholder,
+  defaultValue,
+  showShowFullAddress = true,
+}) => {
   const ref = useRef();
   const [addressDetails, setAddressDetails] = useState({});
-  console.log(addressDetails);
+
   const [isFullAddress, setIsFullAddress] = useState(false);
   useEffect(() => {
     if (defaultValue) {
+      console.log("default value");
       console.log(defaultValue);
       ref.current?.setAddressText(defaultValue);
     }
@@ -90,7 +96,7 @@ const GooglePlacesInput = ({ onLocationSelect, placeholder, defaultValue }) => {
         }
         debounce={300}
       />
-      {!defaultValue && (
+      {showShowFullAddress && (
         <View style={styles.buttonContainer}>
           <Text style={styles.addressText}>כתובת לפרסום:</Text>
           <Text style={styles.addressText}>

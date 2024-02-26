@@ -6,12 +6,12 @@ import { MaterialIcons } from "@expo/vector-icons"; // Ensure you have expo-vect
 const ChooseOriginAndDestination = ({
   defaultOrigin,
   defaultDestination,
-  defaultStops,
+  defaultStops = [],
   handleInputChange,
-  stops: initialStops,
+  showShowFullAddress = true,
 }) => {
-  const [stops, setStops] = useState(initialStops);
-
+  const [stops, setStops] = useState(defaultStops);
+  console.log(defaultStops);
   const addStop = () => {
     setStops([...stops, ""]); // Add a new empty stop
   };
@@ -35,13 +35,15 @@ const ChooseOriginAndDestination = ({
         onLocationSelect={(location) => handleInputChange("origin", location)}
         placeholder="מוצא"
         defaultValue={defaultOrigin}
+        showShowFullAddress={showShowFullAddress}
       />
       {stops.map((stop, index) => (
         <View key={index} style={styles.stopRow}>
           <GooglePlacesInput
             onLocationSelect={(location) => handleStopChange(location, index)}
             placeholder={`עצירה ${index + 1}`}
-            defaultValue={defaultStops[index]}
+            defaultValue={defaultStops?.[index]?.fullAddressName}
+            showShowFullAddress={showShowFullAddress}
           />
           <TouchableOpacity
             onPress={() => removeStop(index)}
@@ -57,6 +59,7 @@ const ChooseOriginAndDestination = ({
         }
         placeholder="יעד"
         defaultValue={defaultDestination}
+        showShowFullAddress={showShowFullAddress}
       />
       <TouchableOpacity onPress={addStop} style={styles.addButton}>
         <MaterialIcons name="add" size={24} color="black" />

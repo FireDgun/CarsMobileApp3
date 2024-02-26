@@ -22,19 +22,9 @@ const NegotiationButtons = ({
   const type = messages[messages.length - 1].type;
   const { sendMessageInNegotiation } = useRidesContext();
   const { user } = useAuth();
-  const [additionalDetailsModalVisible, setAdditionalDetailsModalVisible] =
-    useState(false);
+
   const { showModal, hideModal } = useMyModal();
 
-  const handleCloseModal = () => {
-    hideModal();
-  };
-  const handleOpenModal = () => {
-    // Pass in the JSX content or component you want the modal to render
-    showModal(
-      <AdditionDetailsModal handleCloseModal={handleCloseModal} ride={ride} />
-    );
-  };
   const handlePublisherApprove = async () => {
     await sendMessageInNegotiation(ride.id, senderId, {
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_APPROVED),
@@ -52,7 +42,9 @@ const NegotiationButtons = ({
   };
 
   const handlePublisherSendDetails = () => {
-    handleOpenModal();
+    showModal(
+      <AdditionDetailsModal handleCloseModal={hideModal} ride={ride} />
+    );
   };
 
   if (user.uid === senderId) {

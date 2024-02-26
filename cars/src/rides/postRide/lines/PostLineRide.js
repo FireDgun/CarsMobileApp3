@@ -80,12 +80,7 @@ const PostLineRide = () => {
         </>
       )}
       <View style={styles.section}>
-        <ChooseOriginAndDestination
-          origin={formData.origin}
-          destination={formData.destination}
-          handleInputChange={handleInputChange}
-          stops={formData.stops}
-        />
+        <ChooseOriginAndDestination handleInputChange={handleInputChange} />
       </View>
       <RequireDetails
         numberOfPassengers={formData.numberOfPassengers}

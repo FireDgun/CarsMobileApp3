@@ -8,19 +8,22 @@ const OneFlightLocationSelector = ({
   handleInputChange,
   returnFlight = "",
   defaultAddress,
-  defaultStops,
+  defaultStops = [],
+  showShowFullAddress = true,
 }) => {
-  const [stops, setStops] = useState([]);
+  const [stops, setStops] = useState(defaultStops);
   const [key, setKey] = useState(rideType); // Use rideType as initial key value
   useEffect(() => {
     // Reset stops and key whenever rideType changes
-    setStops([]);
+    setStops(defaultStops);
     setKey(rideType); // Changing the key will re-mount GooglePlacesInput
   }, [rideType]);
+
   const addStop = () => {
     setStops([...stops, ""]); // Add a new empty stop
   };
-
+  console.log("stops");
+  console.log(stops);
   const removeStop = (index) => {
     const updatedStops = stops.filter((_, idx) => idx !== index);
     setStops(updatedStops);
@@ -50,13 +53,15 @@ const OneFlightLocationSelector = ({
           }
           defaultValue={defaultAddress}
           placeholder={rideType === "arrival" ? "כתובת חזור" : "כתובת איסוף"}
+          showShowFullAddress={showShowFullAddress}
         />
         {stops.map((_, index) => (
           <View key={index} style={styles.stopRow}>
             <GooglePlacesInput
               onLocationSelect={(location) => handleStopChange(location, index)}
               placeholder={`עצירה ${index + 1}`}
-              defaultValue={defaultStops[index]}
+              defaultValue={defaultStops?.[index]?.fullAddressName}
+              showShowFullAddress={showShowFullAddress}
             />
             <TouchableOpacity
               onPress={() => removeStop(index)}
