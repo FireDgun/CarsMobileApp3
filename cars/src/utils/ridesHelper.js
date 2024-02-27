@@ -171,7 +171,7 @@ const buildRideFullAddressesText = (ride, specificNotes) => {
     rideDetails.push({ label: "מספר טיסה חזור", value: flightNumberReturn });
   }
 
-  rideDetails.push({ label: "פרטים נוספים", value: specificNotes });
+  rideDetails.push({ label: "פרטים נוספים", value: specificNotes ?? "אין" });
 
   let textResult = rideDetails
     .map((detail) => `${detail.label}: ${detail.value}`)

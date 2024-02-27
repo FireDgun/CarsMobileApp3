@@ -19,18 +19,15 @@ const HistoryBuyRides = ({ allModeRides }) => {
     <View>
       <Text>HistorySellRides</Text>
       {pastRides.map((ride) => (
-        <TouchableOpacity
+        <View
           key={ride.id}
-          onPress={() => {
-            /* Navigate to ride details or perform an action */
-          }}
           style={[
             styles.rideContainer,
             ride.canceled && styles.canceledRideContainer,
           ]}
         >
           <RideRow ride={ride} />
-        </TouchableOpacity>
+        </View>
       ))}
     </View>
   );

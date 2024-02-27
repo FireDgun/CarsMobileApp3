@@ -21,14 +21,9 @@ const OpenBuyRides = ({ allModeRides }) => {
     <View>
       <Text>OpenSellRides</Text>
       {futureRides.map((ride) => (
-        <TouchableOpacity
-          key={ride.id}
-          onPress={() => {
-            /* Navigate to ride details or perform an action */
-          }}
-        >
+        <View key={ride.id}>
           <RideRow ride={ride} />
-        </TouchableOpacity>
+        </View>
       ))}
     </View>
   );

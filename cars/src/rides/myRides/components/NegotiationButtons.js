@@ -26,6 +26,7 @@ const NegotiationButtons = ({
   const { showModal, hideModal } = useMyModal();
 
   const handlePublisherApprove = async () => {
+    console.log("publisher approve");
     await sendMessageInNegotiation(ride.id, senderId, {
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_APPROVED),
       type: RideMessageType.PUBLISHER_APPROVED,
@@ -34,6 +35,7 @@ const NegotiationButtons = ({
   };
 
   const handlePublisherReject = async () => {
+    console.log("publisher reject");
     await sendMessageInNegotiation(ride.id, senderId, {
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_REJECT),
       type: RideMessageType.PUBLISHER_REJECT,
@@ -90,18 +92,16 @@ const NegotiationButtons = ({
   }
   if (type == RideMessageType.CONTRACTOR_SEND_DETAILS) {
     return (
-      <View>
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.buttonAccept}
-            onPress={handlePublisherSendDetails}
-          >
-            <Text style={styles.buttonText}>שלח פרטים נוספים</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonReject} onPress={() => {}}>
-            <Text style={styles.buttonText}>דחה את ההצעה</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.buttonAccept}
+          onPress={handlePublisherSendDetails}
+        >
+          <Text style={styles.buttonText}>שלח פרטים נוספים</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonReject} onPress={() => {}}>
+          <Text style={styles.buttonText}>דחה את ההצעה</Text>
+        </TouchableOpacity>
       </View>
     );
   }

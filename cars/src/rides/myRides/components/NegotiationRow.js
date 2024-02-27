@@ -18,11 +18,13 @@ const NegotiationRow = ({
   const imageSource = senderImg ? { uri: senderImg } : defaultImage;
 
   return (
-    <TouchableOpacity onPress={handleRowClick}>
-      <View style={styles.rowContainer}>
-        <Image source={imageSource} style={styles.senderImage} />
-        <Text style={styles.senderName}>{senderName}</Text>
-      </View>
+    <View>
+      <TouchableOpacity onPress={handleRowClick}>
+        <View style={styles.rowContainer}>
+          <Image source={imageSource} style={styles.senderImage} />
+          <Text style={styles.senderName}>{senderName}</Text>
+        </View>
+      </TouchableOpacity>
       {expanded && (
         <NegotiationWindow
           messages={messages}
@@ -33,7 +35,7 @@ const NegotiationRow = ({
           senderId={senderId}
         />
       )}
-    </TouchableOpacity>
+    </View>
   );
 };
 

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -51,8 +51,9 @@ const NegotiationWindow = ({
     <View
       style={expanded ? styles.containerExpanded : styles.containerCollapsed}
     >
-      {renderMessages()}
-
+      <ScrollView style={{ width: "100%", height: "100%" }}>
+        {renderMessages()}
+      </ScrollView>
       {enableSendButton && (
         <NegotiationButtons
           ride={ride}
@@ -61,7 +62,7 @@ const NegotiationWindow = ({
           setEnableSendButton={setEnableSendButton}
         />
       )}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.expandCollapseButton}
         onPress={handleExpandCollapse}
       >
@@ -70,7 +71,7 @@ const NegotiationWindow = ({
           size={24}
           color="white"
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -84,6 +85,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
+
     height: 180,
   },
   containerCollapsed: {
@@ -92,8 +94,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 50,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   contractorMessage: {
     backgroundColor: "#E6F2FF",

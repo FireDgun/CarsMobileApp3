@@ -32,7 +32,7 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
             !myChats.some(
               (chat) =>
                 chat.chatParticipants.includes(u.uid) && chat.type === "private"
-            )
+            ) && u.uid !== user.uid
         )
         .map((user) => ({ ...user, category: "user" })),
     ];
