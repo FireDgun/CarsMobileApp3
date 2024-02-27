@@ -49,6 +49,28 @@ const getRideTypeHebrewName = (type) => {
       return type;
   }
 };
+const getRideTypeEnglishName = (hebrewName) => {
+  switch (hebrewName) {
+    case "נסיעה צמודה":
+      return "tripRide";
+    case "ביצוע קו חד פעמי":
+      return "oneTimeLine";
+    case "קו קבוע":
+      return "lineRide";
+    case "הקפצה כיוון אחד":
+      return "jumpOneWay";
+    case "הקפצה הלוך וחזור":
+      return "jumpTwoWay";
+    case 'נתב"ג נחיתה':
+      return "airportArrival";
+    case 'נסיעה לנתב"ג':
+      return "airportDeparture";
+    case 'נתב"ג הלוך וחזור':
+      return "airportBoth";
+    default:
+      return hebrewName; // or any default value you see fit
+  }
+};
 
 const formatDate = (dateString) => {
   return dateString
@@ -61,7 +83,7 @@ const formatAddress = (address) => {
 };
 
 const buildRidePostView = (ride, setShowStopsModal, setStopsToDisplay) => {
-  const {
+  let {
     type,
     date,
     destination,
@@ -85,7 +107,7 @@ const buildRidePostView = (ride, setShowStopsModal, setStopsToDisplay) => {
     stopsReturn,
     // Additional fields for airport rides not explicitly listed but handled below
   } = ride;
-
+  type = getRideTypeEnglishName(type);
   let rideDetails = [
     {
       label:

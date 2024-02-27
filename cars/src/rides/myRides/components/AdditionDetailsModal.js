@@ -18,6 +18,8 @@ import { calculateDaysArray } from "../../../utils/ridesHelper";
 import { formatDateInHebrew } from "../../../utils/datesHelper";
 import TwoTimesPickerComponent from "../../postRide/components/TwoTimesPickerComponent ";
 import Divider from "../../../components/Divider";
+import usePostRide from "../../../hooks/usePostRide";
+import { useRidesContext } from "../../../providers/RidesContext";
 
 const { width, height } = Dimensions.get("window");
 
@@ -78,25 +80,24 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center content horizontally
     backgroundColor: "white", // Assuming you want a white background
   },
+  rideType: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
 });
 
 function AdditionDetailsModal({ handleCloseModal, ride }) {
-  const [origin, setOrigin] = useState(ride.origin.fullAddressName);
-  const [destination, setDestination] = useState(
-    ride.destination.fullAddressName
-  );
-  const [stops, setStops] = useState(ride.stops);
-  const [stopsReturn, setStopsReturn] = useState(ride.stopsReturn);
-  const [tripLocations, setTripLocations] = useState(ride.tripLocations);
-  const [flightNumber, setFlightNumber] = useState(ride.flightNumber);
-  const [returnFlightNumber, setReturnFlightNumber] = useState(
-    ride.flightNumberReturn
-  );
-
-  const [notes, setNotes] = useState(ride.notes);
-  console.log(ride.stops);
-
+  const { formData, handleInputChange, handleUpdateTripData } =
+    usePostRide(ride);
+  const [notes, setNotes] = useState(ride.notes || "");
+  const { updateRide } = useRidesContext();
   const handleSendFullDetails = () => {
+    console.log(JSON.stringify(formData));
+    if (JSON.stringify(formData) !== JSON.stringify(ride)) {
+      console.log("editing ride on db");
+      updateRide(ride.id, formData);
+    }
+
     handleCloseModal();
   };
 
@@ -112,15 +113,21 @@ function AdditionDetailsModal({ handleCloseModal, ride }) {
           defaultDestination={
             ride.tripLocations[index]?.destination.fullAddressName
           }
-          handleInputChange={(field, value) => {}}
+          handleInputChange={(field, value) =>
+            handleUpdateTripData(value, index, field, true)
+          }
           defaultStops={ride.tripLocations[index]?.stops}
           showShowFullAddress={false}
         />
         <TwoTimesPickerComponent
-          startTime={ride.tripLocations[index]?.startTime}
-          endTime={ride.tripLocations[index]?.endTime}
-          onStartTimeChange={(selectedTime) => {}}
-          onEndTimeChange={(selectedTime) => {}}
+          startTime={formData.tripLocations[index]?.startTime}
+          endTime={formData.tripLocations[index]?.endTime}
+          onStartTimeChange={(selectedTime) =>
+            handleUpdateTripData(selectedTime, index, "startTime")
+          }
+          onEndTimeChange={(selectedTime) =>
+            handleUpdateTripData(selectedTime, index, "endTime")
+          }
           startTimeLabel={"שעת התייצבות"}
           endTimeLabel={"שעת סיום"}
           onlyTwoTimes={true}
@@ -142,14 +149,17 @@ function AdditionDetailsModal({ handleCloseModal, ride }) {
         paddingTop: 25,
       }}
     >
-      <Text style={styles.modalTitle}>פרטים נוספים</Text>
+      <Text style={styles.rideType}>סוג הנסיעה: {ride.type}</Text>
+      <Text style={styles.modalTitle}>כתובות מדויקות</Text>
       {!ride.type.includes('נתב"ג') && ride.type !== "נסיעה צמודה" && (
         <View style={styles.googleInputsContainer}>
           <ChooseOriginAndDestination
-            defaultStops={ride.stops}
-            defaultOrigin={origin}
-            defaultDestination={destination}
-            handleInputChange={() => {}}
+            defaultStops={formData.stops}
+            defaultOrigin={formData.origin.fullAddressName}
+            defaultDestination={formData.destination.fullAddressName}
+            handleInputChange={(field, value) =>
+              handleInputChange(field, value, true)
+            }
             showShowFullAddress={false}
           />
         </View>
@@ -160,18 +170,21 @@ function AdditionDetailsModal({ handleCloseModal, ride }) {
             <OneFlightLocationSelector
               rideType={ride.type === 'נתב"ג נחיתה' ? "arrival" : "departure"}
               defaultAddress={
-                ride.type === 'נתב"ג נחיתה' ? destination : origin
+                ride.type === 'נתב"ג נחיתה'
+                  ? formData.destination.fullAddressName
+                  : formData.origin.fullAddressName
               }
-              handleInputChange={() => {}}
-              defaultStops={stops}
+              handleInputChange={(field, value) =>
+                handleInputChange(field, value, true)
+              }
+              defaultStops={formData.stops}
               showShowFullAddress={false}
             />
             <TextInput
-              value={flightNumber}
-              onChangeText={setFlightNumber}
+              value={formData.flightNumber}
               placeholder="מספר טיסה"
               style={styles.input}
-              helperText="kkk"
+              onChangeText={(text) => handleInputChange("flightNumber", text)}
             />
           </>
         )}
@@ -179,17 +192,21 @@ function AdditionDetailsModal({ handleCloseModal, ride }) {
           <>
             <OneFlightLocationSelector
               rideType="arrival"
-              handleInputChange={() => {}}
-              defaultStops={stopsReturn}
+              handleInputChange={(field, value) =>
+                handleInputChange(field, value, true)
+              }
+              defaultStops={formData.stopsReturn}
               returnFlight="Return"
-              defaultAddress={destination}
+              defaultAddress={formData.destination.fullAddressName}
               showShowFullAddress={false}
             />
             <TextInput
-              value={returnFlightNumber}
-              onChangeText={setReturnFlightNumber}
+              value={formData.flightNumberReturn}
               placeholder="מספר טיסה חזרה"
               style={styles.input}
+              onChangeText={(text) =>
+                handleInputChange("flightNumberReturn", text)
+              }
             />
           </>
         )}

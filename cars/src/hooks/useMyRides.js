@@ -197,6 +197,10 @@ const useMyRides = () => {
     }
   };
 
+  const updateRide = async (rideId, updatedRideData) => {
+    await firestore().collection("rides").doc(rideId).update(updatedRideData);
+  };
+
   return {
     postNewRide,
     applyListenersToAllMyRides,
@@ -205,6 +209,7 @@ const useMyRides = () => {
     cancelRide,
     askForRide,
     sendMessageInNegotiation,
+    updateRide,
   };
 };
 

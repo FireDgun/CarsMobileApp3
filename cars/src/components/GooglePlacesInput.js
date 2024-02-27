@@ -111,7 +111,7 @@ const GooglePlacesInput = ({
             style={styles.button}
             onPress={() => {
               onLocationSelect({
-                addressName: isFullAddress
+                addressName: isFullAddress //its to oposite because we want to execute the function before the next render
                   ? addressDetails.addressName
                   : addressDetails.fullAddressName,
                 fullAddressName: addressDetails.fullAddressName,

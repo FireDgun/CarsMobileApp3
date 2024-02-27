@@ -7,7 +7,6 @@ import { formatTime } from "../../../utils/ridesHelper";
 
 const TimePickerComponent = ({ time, onTimeChange, label }) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
-
   return (
     <>
       <TouchableOpacity
@@ -19,7 +18,7 @@ const TimePickerComponent = ({ time, onTimeChange, label }) => {
       </TouchableOpacity>
       {showTimePicker && (
         <DateTimePicker
-          value={time ?? new Date()}
+          value={typeof time === "string" ? new Date(time) : time ?? new Date()}
           mode="time"
           is24Hour={true}
           display="default"
