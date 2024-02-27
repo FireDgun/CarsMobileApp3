@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import Constants from "expo-constants";
+import { translateCityName } from "../utils/addressesHelper";
 const apiKey = Constants.expoConfig.android.config.googleMaps.apiKey;
 function removeOrReplaceLastOccurrence(text, search, replaceWith = "") {
   const lastIndex = text.lastIndexOf(search);
@@ -50,11 +51,12 @@ const GooglePlacesInput = ({
         onPress={(data, details = null) => {
           try {
             const currentAddressText = ref.current?.getAddressText();
-            const city = details?.address_components?.filter(
+            let city = details?.address_components?.filter(
               (f) =>
                 JSON.stringify(f?.types) ===
                 JSON.stringify(["locality", "political"])
             )?.[0]?.short_name;
+            city = translateCityName(city);
             const location = details.geometry.location;
             onLocationSelect({
               addressName:
