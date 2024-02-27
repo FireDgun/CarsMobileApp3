@@ -14,7 +14,12 @@ import {
 import GooglePlacesInput from "../../../components/GooglePlacesInput";
 import OneFlightLocationSelector from "../../postRide/airport/OneFlightLocationSelector";
 import ChooseOriginAndDestination from "../../postRide/components/ChooseOriginAndDestination";
-import { calculateDaysArray } from "../../../utils/ridesHelper";
+import {
+  RideMessageType,
+  buildRideFullAddressesText,
+  calculateDaysArray,
+  getRideMessageTextByType,
+} from "../../../utils/ridesHelper";
 import { formatDateInHebrew } from "../../../utils/datesHelper";
 import TwoTimesPickerComponent from "../../postRide/components/TwoTimesPickerComponent ";
 import Divider from "../../../components/Divider";
@@ -86,17 +91,25 @@ const styles = StyleSheet.create({
   },
 });
 
-function AdditionDetailsModal({ handleCloseModal, ride }) {
+function AdditionDetailsModal({ handleCloseModal, ride, senderId }) {
   const { formData, handleInputChange, handleUpdateTripData } =
     usePostRide(ride);
+
   const [notes, setNotes] = useState(ride.notes || "");
-  const { updateRide } = useRidesContext();
+  const { updateRide, sendMessageInNegotiation } = useRidesContext();
   const handleSendFullDetails = () => {
-    console.log(JSON.stringify(formData));
     if (JSON.stringify(formData) !== JSON.stringify(ride)) {
       console.log("editing ride on db");
       updateRide(ride.id, formData);
     }
+    sendMessageInNegotiation(ride.id, senderId, {
+      text:
+        getRideMessageTextByType(RideMessageType.PUBLISHER_SEND_DETAILS) +
+        "\n" +
+        buildRideFullAddressesText(formData, notes),
+      type: RideMessageType.PUBLISHER_SEND_DETAILS,
+      createdAt: new Date(),
+    });
 
     handleCloseModal();
   };

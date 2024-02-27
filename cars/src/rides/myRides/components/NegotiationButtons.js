@@ -43,7 +43,11 @@ const NegotiationButtons = ({
 
   const handlePublisherSendDetails = () => {
     showModal(
-      <AdditionDetailsModal handleCloseModal={hideModal} ride={ride} />
+      <AdditionDetailsModal
+        handleCloseModal={hideModal}
+        ride={ride}
+        senderId={senderId}
+      />
     );
   };
 

@@ -1,5 +1,6 @@
 import { TouchableOpacity, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const calculateDaysArray = (formData) => {
   let daysArray = [];
@@ -80,6 +81,102 @@ const formatDate = (dateString) => {
 
 const formatAddress = (address) => {
   return address ? address.addressName : "לא ידוע";
+};
+
+const buildRideFullAddressesText = (ride, specificNotes) => {
+  let {
+    type,
+    destination,
+    origin,
+    stops,
+    tripLocations,
+    flightNumber,
+    flightNumberReturn,
+    stopsReturn,
+    // Additional fields for airport rides not explicitly listed but handled below
+  } = ride;
+  type = getRideTypeEnglishName(type);
+  typeHebrew = getRideTypeHebrewName(type);
+  let rideDetails = [];
+
+  const airport = 'נתב"ג';
+
+  if (typeHebrew.includes('נתב"ג')) {
+    if (typeHebrew === 'נתב"ג נחיתה') {
+      originDestinationDisplay = `ל${ride.destination.fullAddressName}`;
+    }
+    if (typeHebrew === 'נסיעה לנתב"ג') {
+      originDestinationDisplay = `מ${ride.origin.fullAddressName}`;
+    }
+    if (typeHebrew === 'נתב"ג הלוך וחזור') {
+      originDestinationDisplay = `מ${ride.origin.fullAddressName} ל${airport} וחזור ל${ride.destination.fullAddressName}`;
+    }
+    rideDetails.push({ label: "", value: originDestinationDisplay });
+  } else {
+    if (origin && origin.fullAddressName) {
+      rideDetails.push({ label: "מוצא", value: origin.fullAddressName });
+    }
+    if (destination && destination.fullAddressName) {
+      rideDetails.push({ label: "יעד", value: destination.fullAddressName });
+    }
+  }
+
+  if (stops.length > 0) {
+    rideDetails.push({ label: "עצירות בדרך", value: "" });
+    stops.forEach((stop, index) => {
+      rideDetails.push({
+        label: `עצירה ${index + 1}`,
+        value: stop.fullAddressName,
+      });
+    });
+  }
+
+  if (stopsReturn.length > 0) {
+    rideDetails.push({ label: "עצירות בדרך חזור", value: "" });
+    stopsReturn.forEach((stop, index) => {
+      rideDetails.push({
+        label: `עצירה ${index + 1}`,
+        value: stop.fullAddressName,
+      });
+    });
+  }
+  if (tripLocations && tripLocations.length > 0 && type === "tripRide") {
+    tripLocations.forEach((location, index) => {
+      if (location.origin != "") {
+        rideDetails.push({ label: "", value: "" });
+
+        rideDetails.push({
+          label: `מסלול יום ${index + 1}`,
+          value: `מ-${location.origin.fullAddressName} אל ${
+            location.destination.fullAddressName
+          } \nמשעה ${formatTime(location.startTime)} עד שעה ${formatTime(
+            location.endTime
+          )}`,
+        });
+        if (location.stops?.length > 0) {
+          location.stops.forEach((stop, index) => {
+            rideDetails.push({
+              label: `עצירה ${index + 1}`,
+              value: stop.fullAddressName,
+            });
+          });
+        }
+      }
+    });
+  }
+  if (flightNumber) {
+    rideDetails.push({ label: "מספר טיסה", value: flightNumber });
+  }
+  if (flightNumberReturn) {
+    rideDetails.push({ label: "מספר טיסה חזור", value: flightNumberReturn });
+  }
+
+  rideDetails.push({ label: "פרטים נוספים", value: specificNotes });
+
+  let textResult = rideDetails
+    .map((detail) => `${detail.label}: ${detail.value}`)
+    .join("\n");
+  return textResult;
 };
 
 const buildRidePostView = (ride, setShowStopsModal, setStopsToDisplay) => {
@@ -565,4 +662,5 @@ export {
   getRideMessageTextByType,
   buildRideRowView,
   flashRide,
+  buildRideFullAddressesText,
 };
