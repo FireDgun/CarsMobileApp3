@@ -10,6 +10,7 @@ const NegotiationRow = ({
   buttons,
   ride,
   senderId,
+  setScrollEnabled,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const handleRowClick = () => {
@@ -33,6 +34,7 @@ const NegotiationRow = ({
           setExpanded={setExpanded}
           ride={ride}
           senderId={senderId}
+          setScrollEnabled={setScrollEnabled}
         />
       )}
     </View>

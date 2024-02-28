@@ -3,7 +3,7 @@ import React from "react";
 import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
 
-const OpenBuyRides = ({ allModeRides }) => {
+const OpenBuyRides = ({ allModeRides, setScrollEnabled }) => {
   const { user } = useAuth();
   const futureRides = allModeRides.filter((ride) => {
     const currentDate = new Date();
@@ -22,7 +22,7 @@ const OpenBuyRides = ({ allModeRides }) => {
       <Text>OpenSellRides</Text>
       {futureRides.map((ride) => (
         <View key={ride.id}>
-          <RideRow ride={ride} />
+          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
         </View>
       ))}
     </View>

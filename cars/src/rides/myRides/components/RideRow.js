@@ -9,7 +9,7 @@ import StopsModal from "../../shareRide/components/StopsModal";
 import NegotiationRow from "./NegotiationRow";
 import { useAuth } from "../../../providers/AuthContext";
 
-const RideRow = ({ ride }) => {
+const RideRow = ({ ride, setScrollEnabled }) => {
   const [expanded, setExpanded] = useState(false); // State to manage the expanded/collapsed state
   const navigation = useNavigation();
   const { cancelRide } = useRidesContext();
@@ -99,6 +99,7 @@ const RideRow = ({ ride }) => {
               messages={negotiation.messages}
               buttons={negotiation.buttons}
               ride={ride}
+              setScrollEnabled={setScrollEnabled}
             />
           );
         })
@@ -108,6 +109,7 @@ const RideRow = ({ ride }) => {
           senderId={user.uid}
           messages={ride?.[user.uid]?.messages}
           ride={ride}
+          setScrollEnabled={setScrollEnabled}
         />
       )}
     </View>

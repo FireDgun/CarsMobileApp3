@@ -7,7 +7,7 @@ import HistoryBuyRides from "../buyRide/HistoryBuyRides";
 import HistorySellRides from "../sellRide/HistorySellRides";
 import CloseSellRIdes from "../sellRide/CloseSellRIdes";
 
-const SubNavBarMyRides = ({ mode, allModeRides }) => {
+const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
   const [activeTab, setActiveTab] = useState("Open");
 
   const handleTabClick = (tab) => {
@@ -16,25 +16,55 @@ const SubNavBarMyRides = ({ mode, allModeRides }) => {
 
   const renderCloseComponent = () => {
     if (mode === "buy") {
-      return <CloseBuyRides allModeRides={allModeRides} />;
+      return (
+        <CloseBuyRides
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     } else if (mode === "sell") {
-      return <CloseSellRIdes allModeRides={allModeRides} />;
+      return (
+        <CloseSellRIdes
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     }
   };
 
   const renderOpenComponent = () => {
     if (mode === "buy") {
-      return <OpenBuyRides allModeRides={allModeRides} />;
+      return (
+        <OpenBuyRides
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     } else if (mode === "sell") {
-      return <OpenSellRides allModeRides={allModeRides} />;
+      return (
+        <OpenSellRides
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     }
   };
 
   const renderHistoryComponent = () => {
     if (mode === "buy") {
-      return <HistoryBuyRides allModeRides={allModeRides} />;
+      return (
+        <HistoryBuyRides
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     } else if (mode === "sell") {
-      return <HistorySellRides allModeRides={allModeRides} />;
+      return (
+        <HistorySellRides
+          allModeRides={allModeRides}
+          setScrollEnabled={setScrollEnabled}
+        />
+      );
     }
   };
   let content;

@@ -6,6 +6,7 @@ import WaitingForResponse from "./WaitingForResponse";
 import RideActionButtons from "../../shareRide/share/RideActionButtons";
 import {
   RideMessageType,
+  extractLastPriceFromMessagesArray,
   extractPriceFromMessage,
   getRideMessageTextByType,
 } from "../../../utils/ridesHelper";
@@ -13,6 +14,8 @@ import AdditionDetailsModal from "./AdditionDetailsModal";
 import GooglePlacesInput from "../../../components/GooglePlacesInput";
 import { useMyModal } from "../../../providers/ModalProvider";
 import SuggestPriceForRide from "../../shareRide/share/SuggestPriceForRide";
+import RideConstructorActionButtonsNegotiation from "./RideConstructorActionButtonsNegotiation";
+import AdditionalMessage from "../../shareRide/share/AdditionalMessage";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -26,6 +29,8 @@ const NegotiationButtons = ({
   const { sendMessageInNegotiation } = useRidesContext();
   const { user } = useAuth();
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
+    useState(false);
+  const [showAdditionalMessageModal, setShowAdditionalMessageModal] =
     useState(false);
   const { showModal, hideModal } = useMyModal();
 
@@ -68,24 +73,66 @@ const NegotiationButtons = ({
       type: messageType,
       createdAt: new Date(),
     });
-    setShowPriceSuggestionModal(true);
+    setShowPriceSuggestionModal(false);
   };
-
+  const handleAdditionalQuestion = () => {
+    setShowAdditionalMessageModal(true);
+  };
+  const handleSendResponseToAdditionalQuestion = (messageType, question) => {
+    console.log("send additional question", messageType);
+    sendMessageInNegotiation(ride.id, senderId, {
+      text: getRideMessageTextByType(messageType, "", question),
+      type: messageType,
+      createdAt: new Date(),
+    });
+    setShowAdditionalMessageModal(false);
+  };
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
       return <WaitingForResponse isLoading={true} />;
     }
 
-    return (
-      <View>
-        <RideActionButtons
+    //this we wont check here
+    //we will make context that will always check if there is ride that Im interested in
+    //and if I got publisher approved message
+    //then I will show pop up all over the app
+    if (type == RideMessageType.PUBLISHER_APPROVED) {
+      return <Text>ההצעה אושרה</Text>;
+    }
+    //this situation - no buttons
+    if (type == RideMessageType.PUBLISHER_REJECT) {
+      return null;
+    }
+    if (type == RideMessageType.PUBLISHER_OFFER_PRICE) {
+      return (
+        <RideConstructorActionButtonsNegotiation
           ride={ride}
-          setEnableSendButton={setEnableSendButton}
+          currentPrice={extractPriceFromMessage(messageText)}
+          isRideDetailsSent={
+            !!messages.find(
+              (m) => m.type == RideMessageType.PUBLISHER_SEND_DETAILS
+            )
+          }
         />
-      </View>
-    );
+      );
+    }
+    if (
+      type == RideMessageType.PUBLISHER_SEND_DETAILS ||
+      type == RideMessageType.PUBLISHER_RESPONSE_QUESTION
+    ) {
+      return (
+        <RideConstructorActionButtonsNegotiation
+          ride={ride}
+          currentPrice={extractLastPriceFromMessagesArray(
+            messages.map((m) => m.text),
+            ride.price
+          )}
+          isRideDetailsSent={true}
+        />
+      );
+    }
   }
-
+  console.log(type);
   if (
     type == RideMessageType.CONTRACTOR_OFFER_PRICE ||
     type == RideMessageType.CONTRACTOR_SEND
@@ -106,7 +153,7 @@ const NegotiationButtons = ({
           >
             <Text style={styles.buttonText}>דחה את ההצעה</Text>
           </TouchableOpacity>
-          {RideMessageType.CONTRACTOR_OFFER_PRICE && (
+          {type == RideMessageType.CONTRACTOR_OFFER_PRICE && (
             <TouchableOpacity
               style={styles.buttonSuggestPrice}
               onPress={handlePublisherOpenModalSuggestPrice}
@@ -137,6 +184,28 @@ const NegotiationButtons = ({
         <TouchableOpacity style={styles.buttonReject} onPress={() => {}}>
           <Text style={styles.buttonText}>דחה את ההצעה</Text>
         </TouchableOpacity>
+      </View>
+    );
+  }
+  if (type == RideMessageType.CONTRACTOR_ADDITIONAL_QUESTION) {
+    return (
+      <View>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.buttonSuggestPrice}
+            onPress={handleAdditionalQuestion}
+          >
+            <Text style={styles.buttonText}>שלח תגובה לשאלה</Text>
+          </TouchableOpacity>
+        </View>
+        <AdditionalMessage
+          setShowAdditionalMessageModal={setShowAdditionalMessageModal}
+          showAdditionalMessageModal={showAdditionalMessageModal}
+          handleSend={handleSendResponseToAdditionalQuestion}
+          title={"תגובה"}
+          question={messageText.replace("שאלה נוספת \n", "")}
+          IsConstructor={false}
+        />
       </View>
     );
   }

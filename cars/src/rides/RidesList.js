@@ -13,14 +13,17 @@ import MyBuyRides from "./myRides/buyRide/MyBuyRides";
 const RidesList = () => {
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("MySellRides");
-
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const navigateToPostNewRide = () => {
     navigation.navigate("PostNewRide");
   };
-
+  console.log(scrollEnabled);
   return (
     <View style={styles.container}>
-      <ScrollView keyboardShouldPersistTaps="always">
+      <ScrollView
+        keyboardShouldPersistTaps="always"
+        scrollEnabled={scrollEnabled}
+      >
         <View style={styles.navbar}>
           <TouchableOpacity
             style={[
@@ -41,7 +44,11 @@ const RidesList = () => {
             <Text style={styles.navButtonText}>לקחתי</Text>
           </TouchableOpacity>
         </View>
-        {selectedTab === "MySellRides" ? <MySellRides /> : <MyBuyRides />}
+        {selectedTab === "MySellRides" ? (
+          <MySellRides setScrollEnabled={setScrollEnabled} />
+        ) : (
+          <MyBuyRides setScrollEnabled={setScrollEnabled} />
+        )}
       </ScrollView>
       <TouchableOpacity
         style={styles.newChatButton}

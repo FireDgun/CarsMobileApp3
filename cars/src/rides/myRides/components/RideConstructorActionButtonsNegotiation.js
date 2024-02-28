@@ -7,34 +7,31 @@ import {
   Modal,
   TextInput,
 } from "react-native";
-import { RideMessageType } from "../../../utils/ridesHelper";
-
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../../../providers/AuthContext";
 import { useRidesContext } from "../../../providers/RidesContext";
-import { useChatsContext } from "../../../providers/ChatsProvider";
-import WaitingForResponse from "../../myRides/components/WaitingForResponse";
-import SuggestPriceForRide from "./SuggestPriceForRide";
+import { useAuth } from "../../../providers/AuthContext";
+import SuggestPriceForRide from "../../shareRide/share/SuggestPriceForRide";
+import {
+  RideMessageType,
+  getRideMessageTextByType,
+} from "../../../utils/ridesHelper";
+import { useMyModal } from "../../../providers/ModalProvider";
+import AdditionalMessage from "../../shareRide/share/AdditionalMessage";
 
-const RideActionButtons = ({ ride }) => {
+const RideConstructorActionButtonsNegotiation = ({
+  ride,
+  currentPrice,
+  isRideDetailsSent = false,
+}) => {
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
     useState(false);
-  const { cancelRide, askForRide, allRides } = useRidesContext();
-  const { cancelRideOnChats } = useChatsContext();
+  const [showAdditionalMessageModal, setShowAdditionalMessageModal] =
+    useState(false);
+  const { sendMessageInNegotiation, allRides } = useRidesContext();
   const { user } = useAuth();
+  const { showModal, hideModal } = useMyModal();
+
   const [rideDetails, setRideDetails] = useState(ride);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsReady(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Rest of the code...
-
   useEffect(() => {
     if (allRides) {
       setRideDetails(
@@ -42,14 +39,18 @@ const RideActionButtons = ({ ride }) => {
           (r) => r.id === ride.id && r.interestedUsers.includes(user.uid)
         ) || ride
       );
-      setIsReady(true);
     }
   }, [allRides]);
   const navigation = useNavigation();
+
   const handleSend = async (messageType, suggestionPrice) => {
-    console.log("Send button clicked");
-    const updatedRide = await askForRide(ride, messageType, suggestionPrice);
-    setRideDetails(updatedRide);
+    console.log("send or Suggest price from constructor", messageType);
+    await sendMessageInNegotiation(ride.id, user.uid, {
+      text: getRideMessageTextByType(messageType, suggestionPrice),
+      type: messageType,
+      createdAt: new Date(),
+    });
+    setShowPriceSuggestionModal(false);
   };
 
   const handleSuggestPrice = () => {
@@ -57,14 +58,18 @@ const RideActionButtons = ({ ride }) => {
     setShowPriceSuggestionModal(true);
   };
 
-  const handleCancel = () => {
-    console.log("Cancel button clicked");
-    cancelRide(ride.id);
-    cancelRideOnChats(ride.id);
+  const handleAdditionalQuestion = () => {
+    setShowAdditionalMessageModal(true);
   };
-  if (!isReady) {
-    return <WaitingForResponse isLoading={true} />;
-  }
+  const handleSendAdditionalQuestion = (messageType, question) => {
+    console.log("send additional question", messageType);
+    sendMessageInNegotiation(ride.id, user.uid, {
+      text: getRideMessageTextByType(messageType, "", question),
+      type: messageType,
+      createdAt: new Date(),
+    });
+    setShowAdditionalMessageModal(false);
+  };
 
   return (
     <View>
@@ -72,17 +77,13 @@ const RideActionButtons = ({ ride }) => {
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בוטלה</Text>
         </TouchableOpacity>
+      ) : ride.rideBuyer == user.uid ? (
+        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
+          <Text style={styles.disabledButtonText}>נסגרה איתי</Text>
+        </TouchableOpacity>
       ) : ride.rideBuyer ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
-          <Text style={styles.disabledButtonText}>נסגרה</Text>
-        </TouchableOpacity>
-      ) : user.uid === ride.rideOwner ? (
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.buttonText}>בטל</Text>
-        </TouchableOpacity>
-      ) : rideDetails[user.uid] ? (
-        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
-          <Text style={styles.disabledButtonText}>בקשה נשלחה</Text>
+          <Text style={styles.disabledButtonText}>נסגרה עם מישהו אחר</Text>
         </TouchableOpacity>
       ) : (
         <>
@@ -96,14 +97,23 @@ const RideActionButtons = ({ ride }) => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={() =>
-                handleSend(RideMessageType.CONTRACTOR_SEND_DETAILS)
-              }
-            >
-              <Text style={styles.buttonText}>שלח פרטים</Text>
-            </TouchableOpacity>
+            {isRideDetailsSent ? (
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={handleAdditionalQuestion}
+              >
+                <Text style={styles.buttonText}>שאלה נוספת</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={() =>
+                  handleSend(RideMessageType.CONTRACTOR_SEND_DETAILS)
+                }
+              >
+                <Text style={styles.buttonText}>שלח פרטים</Text>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity
               style={styles.sendButton}
@@ -118,8 +128,14 @@ const RideActionButtons = ({ ride }) => {
         showPriceSuggestionModal={showPriceSuggestionModal}
         setShowPriceSuggestionModal={setShowPriceSuggestionModal}
         handleSend={handleSend}
-        currentPrice={ride.price}
+        currentPrice={currentPrice ?? ride.price}
         IsConstructor={true}
+      />
+      <AdditionalMessage
+        setShowAdditionalMessageModal={setShowAdditionalMessageModal}
+        showAdditionalMessageModal={showAdditionalMessageModal}
+        handleSend={handleSendAdditionalQuestion}
+        title={"שאלה נוספת"}
       />
     </View>
   );
@@ -170,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RideActionButtons;
+export default RideConstructorActionButtonsNegotiation;

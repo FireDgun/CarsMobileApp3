@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -6,16 +12,24 @@ import NegotiationButtons from "./NegotiationButtons";
 
 const NegotiationWindow = ({
   messages,
-  buttons,
   expanded,
   setExpanded,
   ride,
   senderId,
+  setScrollEnabled,
 }) => {
   const handleExpandCollapse = () => {
     setExpanded(!expanded);
   };
   const [enableSendButton, setEnableSendButton] = useState(true);
+  const handleBeginDrag = () => {
+    setScrollEnabled(false);
+  };
+
+  // Handler to re-enable outer scroll when releasing the drag on the inner ScrollView
+  const handleEndDrag = () => {
+    setScrollEnabled(true);
+  };
   const renderMessages = () => {
     return messages.map((message, index) => {
       const isContractor = message.type.includes("Contractor");
@@ -24,25 +38,18 @@ const NegotiationWindow = ({
         : styles.userMessage;
 
       return (
-        <View key={index} style={messageStyle}>
-          <Text>{message.text}</Text>
-        </View>
-      );
-    });
-  };
-
-  const renderButtons = () => {
-    return buttons.map((button, index) => {
-      const buttonStyle = button.style || styles.defaultButtonStyle;
-
-      return (
-        <TouchableOpacity
+        <TouchableWithoutFeedback
           key={index}
-          style={buttonStyle}
-          onPress={button.onClick}
+          onPressIn={handleBeginDrag}
+          onPressOut={handleEndDrag}
+          style={{ width: "100%" }}
         >
-          <Text>{button.text}</Text>
-        </TouchableOpacity>
+          <View style={{ width: "100%", backgroundColor: "transparent" }}>
+            <View style={messageStyle}>
+              <Text>{message.text}</Text>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
       );
     });
   };

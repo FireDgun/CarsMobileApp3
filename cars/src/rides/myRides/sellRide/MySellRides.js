@@ -6,13 +6,17 @@ import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
 import SubNavBarMyRides from "../components/SubNavBarMyRides";
 
-const MySellRides = () => {
+const MySellRides = ({ setScrollEnabled }) => {
   const { allRides } = useRidesContext();
   const { user } = useAuth();
   const mySellRides = allRides.filter((ride) => ride.rideOwner === user?.uid);
   return (
     <View style={{ flex: 1 }}>
-      <SubNavBarMyRides mode={"sell"} allModeRides={mySellRides} />
+      <SubNavBarMyRides
+        mode={"sell"}
+        allModeRides={mySellRides}
+        setScrollEnabled={setScrollEnabled}
+      />
     </View>
   );
 };

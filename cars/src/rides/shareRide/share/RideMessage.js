@@ -16,7 +16,6 @@ import RideActionButtons from "./RideActionButtons";
 const RideMessage = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
-  const [enableSendButton, setEnableSendButton] = useState(true);
 
   return (
     <View style={[styles.card, ride.canceled && styles.canceledCard]}>
@@ -34,10 +33,7 @@ const RideMessage = ({ ride }) => {
           stopsToDisplay={stopsToDisplay}
         />
       </View>
-      <RideActionButtons
-        ride={ride}
-        setEnableSendButton={setEnableSendButton}
-      />
+      <RideActionButtons ride={ride} />
     </View>
   );
 };

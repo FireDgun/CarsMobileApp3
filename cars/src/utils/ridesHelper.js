@@ -171,7 +171,10 @@ const buildRideFullAddressesText = (ride, specificNotes) => {
     rideDetails.push({ label: "מספר טיסה חזור", value: flightNumberReturn });
   }
 
-  rideDetails.push({ label: "פרטים נוספים", value: specificNotes ?? "אין" });
+  rideDetails.push({
+    label: "פרטים נוספים",
+    value: specificNotes == "" ? "אין" : specificNotes,
+  });
 
   let textResult = rideDetails
     .map((detail) => `${detail.label}: ${detail.value}`)
@@ -458,7 +461,7 @@ const RideMessageType = {
   PUBLISHER_TIMEOUT: "Publisher - Timeout",
 };
 
-const getRideMessageTextByType = (type, suggestPrice) => {
+const getRideMessageTextByType = (type, suggestPrice, question) => {
   const formattedPrice = new Intl.NumberFormat("he-IL").format(suggestPrice);
   switch (type) {
     case RideMessageType.CONTRACTOR_SEND:
@@ -470,15 +473,15 @@ const getRideMessageTextByType = (type, suggestPrice) => {
     case RideMessageType.CONTRACTOR_FINALIZE:
       return "סגור!";
     case RideMessageType.CONTRACTOR_ADDITIONAL_QUESTION:
-      return "שאלה נוספת";
+      return "שאלה נוספת \n" + question;
     case RideMessageType.PUBLISHER_APPROVED:
       return "מבחינתי מאושר";
     case RideMessageType.PUBLISHER_SEND_DETAILS:
-      return "פרטים נוספים";
+      return "כתובות מדויקות";
     case RideMessageType.PUBLISHER_OFFER_PRICE:
       return "מציע " + formattedPrice + "₪ לא כולל מעמ";
     case RideMessageType.PUBLISHER_RESPONSE_QUESTION:
-      return "תשובה לשאלה";
+      return "תשובה לשאלה \n" + question;
     case RideMessageType.PUBLISHER_REJECT:
       return "מבטל את ההצעה";
     case RideMessageType.PUBLISHER_TIMEOUT:
@@ -493,6 +496,17 @@ const extractPriceFromMessage = (message) => {
   const pricePattern = /(\d{1,3}(,\d{3})*)(?=₪)/; // RegEx to match the price pattern
   const match = message.match(pricePattern);
   return match ? parseInt(match[0].replace(/,/g, ""), 10) : null; // Remove commas and convert to integer
+};
+const extractLastPriceFromMessagesArray = (messagesArray, defaultPrice) => {
+  // Iterate through the messages array from the end to find the last mentioned price
+  for (let i = messagesArray.length - 1; i >= 0; i--) {
+    const price = extractPriceFromMessage(messagesArray[i]);
+    if (price !== null) {
+      return price; // Return the last found price
+    }
+  }
+
+  return defaultPrice; // Return defaultPrice if no price is found in any message
 };
 
 const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
@@ -671,4 +685,5 @@ export {
   flashRide,
   buildRideFullAddressesText,
   extractPriceFromMessage,
+  extractLastPriceFromMessagesArray,
 };
