@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import useMyRides from "../hooks/useMyRides";
-import { RideMessageType } from "../utils/ridesHelper";
+import {
+  RideMessageType,
+  getRideMessageTextByType,
+} from "../utils/ridesHelper";
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useChatsContext } from "./ChatsProvider";
 const styles = StyleSheet.create({
   modalView: {
     flex: 1,
@@ -42,9 +47,48 @@ export const RidesProvider = ({ children }) => {
     sendMessageInNegotiation,
     updateRide,
   } = useMyRides();
+  const { closeRideWithMeOnChats } = useChatsContext();
   const { user } = useAuth();
   const [openNegotiationRides, setOpenNegotiationRides] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
+  const [approvedRide, setApprovedRide] = useState({});
+  const handleApprovedRide = async () => {
+    try {
+      // Run both async tasks in parallel and wait for them to complete
+      await updateRide(approvedRide.id, {
+        ...approvedRide,
+        rideBuyer: user.uid,
+        [user.uid]: {
+          ...approvedRide[user.uid],
+          messages: [
+            ...approvedRide[user.uid].messages,
+            {
+              text: getRideMessageTextByType(
+                RideMessageType.CONTRACTOR_FINALIZE
+              ),
+              type: RideMessageType.CONTRACTOR_FINALIZE,
+              createdAt: new Date(),
+            },
+          ],
+        },
+      });
+      closeRideWithMeOnChats(approvedRide.id);
+      setIsModalVisible(false);
+    } catch (error) {
+      // Handle any errors that occur during the execution of either promise
+      console.error("Error handling approved ride:", error);
+      // Optionally, update UI or state to reflect the error
+    }
+  };
+
+  const handleRejectRide = () => {
+    sendMessageInNegotiation(approvedRide.id, user.uid, {
+      type: RideMessageType.CONTRACTOR_REJECT,
+      text: getRideMessageTextByType(RideMessageType.CONTRACTOR_REJECT),
+      createdAt: new Date(),
+    });
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
     // Apply listeners only if there is a user logged in
@@ -69,14 +113,15 @@ export const RidesProvider = ({ children }) => {
     }
   }, [allRides]);
   useEffect(() => {
-    const hasApprovedMessage = openNegotiationRides.some(
+    const hasApprovedMessage = openNegotiationRides.find(
       (ride) =>
         ride[user.uid]?.messages?.length > 0 &&
         ride[user.uid].messages[ride[user.uid].messages.length - 1].type ===
           RideMessageType.PUBLISHER_APPROVED // Assuming "RideMessageTypes.PUBLISHER_APPROVED" is a valid type
     );
-
+    console.log(hasApprovedMessage);
     if (hasApprovedMessage) {
+      setApprovedRide(hasApprovedMessage);
       setIsModalVisible(true); // Show the modal if condition is met
     }
   }, [openNegotiationRides, user.uid]);
@@ -100,14 +145,22 @@ export const RidesProvider = ({ children }) => {
       >
         <View style={styles.modalView}>
           <Text style={styles.modalText}>
-            המוכר אישר את ההצעה שלך, כדי להשלים את הרכישה צור קשר עם המוכר
+            {approvedRide.rideOwnerName} אישר את ההצעה שלך
           </Text>
-          <TouchableOpacity
-            onPress={() => setIsModalVisible(false)}
-            style={styles.closeButton}
-          >
-            <Text style={styles.closeButtonText}>סגור</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              onPress={handleApprovedRide}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>אישור סופי</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleRejectRide}
+              style={styles.closeButton}
+            >
+              <Text style={styles.closeButtonText}>בסוף לא מתאים לי</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </RidesContext.Provider>

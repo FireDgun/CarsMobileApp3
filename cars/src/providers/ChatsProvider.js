@@ -14,6 +14,7 @@ export const ChatsProvider = ({ children }) => {
     createGroupChat,
     cancelRideOnChats,
     updateRideOnChat,
+    closeRideWithMeOnChats,
   } = useChats();
 
   const { user } = useAuth();
@@ -55,6 +56,7 @@ export const ChatsProvider = ({ children }) => {
         createGroupChat,
         cancelRideOnChats,
         updateRideOnChat,
+        closeRideWithMeOnChats,
       }}
     >
       {children}

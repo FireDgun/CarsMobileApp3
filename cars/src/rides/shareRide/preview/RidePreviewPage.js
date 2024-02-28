@@ -5,16 +5,21 @@ import RidePreview from "./RidePreview";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { getRideTypeHebrewName } from "../../../utils/ridesHelper";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../../../providers/AuthContext";
 
 const RidePreviewPage = ({ route }) => {
   // Extract ride data from route params
   const { ride: serializedRide } = route.params;
   const ride = JSON.parse(serializedRide);
   const navigation = useNavigation();
-
+  const { user } = useAuth();
   const { postNewRide } = useRidesContext();
   const navigateToMySellRides = async () => {
-    await postNewRide({ ...ride, type: getRideTypeHebrewName(ride.type) });
+    await postNewRide({
+      ...ride,
+      type: getRideTypeHebrewName(ride.type),
+      rideOwnerName: user.name,
+    });
     navigation.navigate("Dashboard", { initialPage: "rides" });
   };
   return (

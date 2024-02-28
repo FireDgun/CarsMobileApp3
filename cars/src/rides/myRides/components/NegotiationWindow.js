@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
 
-    height: 180,
+    height: 250,
   },
   containerCollapsed: {
     backgroundColor: "#E6F2FF",

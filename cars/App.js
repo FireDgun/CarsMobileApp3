@@ -18,8 +18,8 @@ export default function App() {
   return (
     <UsersProvider>
       <AuthProvider>
-        <RidesProvider>
-          <ChatsProvider>
+        <ChatsProvider>
+          <RidesProvider>
             <ContactsProvider>
               <NavigationContainer>
                 <ModalProvider>
@@ -27,8 +27,8 @@ export default function App() {
                 </ModalProvider>
               </NavigationContainer>
             </ContactsProvider>
-          </ChatsProvider>
-        </RidesProvider>
+          </RidesProvider>
+        </ChatsProvider>
       </AuthProvider>
     </UsersProvider>
   );

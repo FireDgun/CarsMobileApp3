@@ -179,6 +179,39 @@ export default function useChats() {
     },
     [myChats]
   );
+
+  const closeRideWithMeOnChats = useCallback(
+    async (rideId) => {
+      try {
+        myChats.forEach(async (chat) => {
+          let hasChanges = false;
+          const updatedMessages = chat.messages.map((message) => {
+            if (
+              message.type === "ride" &&
+              JSON.parse(message.text)?.id === rideId
+            ) {
+              const updatedRide = {
+                ...JSON.parse(message.text),
+                rideBuyer: user.uid,
+              };
+              message.text = JSON.stringify(updatedRide);
+              hasChanges = true;
+            }
+            return message;
+          });
+          if (hasChanges) {
+            await firestore()
+              .collection("chats")
+              .doc(chat.id)
+              .update({ messages: updatedMessages });
+          }
+        });
+      } catch (error) {
+        console.error("Error canceling ride on chats: ", error);
+      }
+    },
+    [myChats]
+  );
   const updateRideOnChat = useCallback(
     async (rideId, updatedRide) => {
       try {
@@ -219,5 +252,6 @@ export default function useChats() {
     createGroupChat,
     cancelRideOnChats,
     updateRideOnChat,
+    closeRideWithMeOnChats,
   };
 }

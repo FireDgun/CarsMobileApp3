@@ -87,6 +87,9 @@ const NegotiationButtons = ({
     });
     setShowAdditionalMessageModal(false);
   };
+  if (type == RideMessageType.CONTRACTOR_FINALIZE) {
+    return <Text>סגרתם את הנסיעה</Text>;
+  }
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
       return <WaitingForResponse isLoading={true} />;
@@ -96,9 +99,7 @@ const NegotiationButtons = ({
     //we will make context that will always check if there is ride that Im interested in
     //and if I got publisher approved message
     //then I will show pop up all over the app
-    if (type == RideMessageType.PUBLISHER_APPROVED) {
-      return <Text>ההצעה אושרה</Text>;
-    }
+
     //this situation - no buttons
     if (type == RideMessageType.PUBLISHER_REJECT) {
       return null;
