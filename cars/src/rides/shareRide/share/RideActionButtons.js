@@ -14,11 +14,11 @@ import { useAuth } from "../../../providers/AuthContext";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useChatsContext } from "../../../providers/ChatsProvider";
 import WaitingForResponse from "../../myRides/components/WaitingForResponse";
+import SuggestPriceForRide from "./SuggestPriceForRide";
 
 const RideActionButtons = ({ ride, setEnableSendButton }) => {
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
     useState(false);
-  const [suggestedPrice, setSuggestedPrice] = useState("");
   const { cancelRide, askForRide, allRides } = useRidesContext();
   const { cancelRideOnChats } = useChatsContext();
   const { user } = useAuth();
@@ -115,47 +115,12 @@ const RideActionButtons = ({ ride, setEnableSendButton }) => {
           </View>
         </>
       )}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showPriceSuggestionModal}
-        onRequestClose={() => {
-          setShowPriceSuggestionModal((prev) => !prev);
-        }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>הצע מחיר</Text>
-            <Text style={styles.modalText}>מחיר נוכחי: {ride.price}</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="מה המחיר שאתה מציע?"
-              onChangeText={(text) => setSuggestedPrice(text)}
-            />
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => {
-                  handleSend(
-                    RideMessageType.CONTRACTOR_OFFER_PRICE,
-                    suggestedPrice
-                  );
-                  setShowPriceSuggestionModal(false);
-                }}
-              >
-                <Text style={styles.buttonText}>שלח</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={() => setShowPriceSuggestionModal(false)}
-              >
-                <Text style={styles.buttonText}>ביטול</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <SuggestPriceForRide
+        showPriceSuggestionModal={showPriceSuggestionModal}
+        setShowPriceSuggestionModal={setShowPriceSuggestionModal}
+        handleSend={handleSend}
+        currentPrice={ride.price}
+      />
     </View>
   );
 };
@@ -197,47 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    width: "100%",
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 20,
-    padding: 10,
-  },
-  modalButtonContainer: {
-    flexDirection: "row-reverse",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  modalButton: {
-    backgroundColor: "#34b7f1",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    marginHorizontal: 10,
-  },
+
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "center",

@@ -52,6 +52,7 @@ const NegotiationButtons = ({
       />
     );
   };
+  const handlePublisherSuggestPrice = () => {};
 
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
@@ -87,6 +88,14 @@ const NegotiationButtons = ({
         >
           <Text style={styles.buttonText}>דחה את ההצעה</Text>
         </TouchableOpacity>
+        {RideMessageType.CONTRACTOR_OFFER_PRICE && (
+          <TouchableOpacity
+            style={styles.buttonSuggestPrice}
+            onPress={handlePublisherSuggestPrice}
+          >
+            <Text style={styles.buttonText}>הצע מחיר אחר</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   }
@@ -135,6 +144,13 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     fontSize: 12,
+  },
+  buttonSuggestPrice: {
+    backgroundColor: "blue",
+    padding: 5,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    justifyContent: "center",
   },
 });
 export default NegotiationButtons;
