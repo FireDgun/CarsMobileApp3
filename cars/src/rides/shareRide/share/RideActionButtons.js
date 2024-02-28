@@ -120,6 +120,7 @@ const RideActionButtons = ({ ride, setEnableSendButton }) => {
         setShowPriceSuggestionModal={setShowPriceSuggestionModal}
         handleSend={handleSend}
         currentPrice={ride.price}
+        IsConstructor={true}
       />
     </View>
   );

@@ -459,13 +459,14 @@ const RideMessageType = {
 };
 
 const getRideMessageTextByType = (type, suggestPrice) => {
+  const formattedPrice = new Intl.NumberFormat("he-IL").format(suggestPrice);
   switch (type) {
     case RideMessageType.CONTRACTOR_SEND:
       return "שלח, מתאים לי";
     case RideMessageType.CONTRACTOR_SEND_DETAILS:
       return "שלח פרטים נוספים";
     case RideMessageType.CONTRACTOR_OFFER_PRICE:
-      return "מעוניין, במחיר " + suggestPrice + "₪ לא כולל מעמ";
+      return "מעוניין, במחיר " + formattedPrice + "₪ לא כולל מעמ";
     case RideMessageType.CONTRACTOR_FINALIZE:
       return "סגור!";
     case RideMessageType.CONTRACTOR_ADDITIONAL_QUESTION:
@@ -475,7 +476,7 @@ const getRideMessageTextByType = (type, suggestPrice) => {
     case RideMessageType.PUBLISHER_SEND_DETAILS:
       return "פרטים נוספים";
     case RideMessageType.PUBLISHER_OFFER_PRICE:
-      return "מציע " + suggestPrice + "₪ לא כולל מעמ";
+      return "מציע " + formattedPrice + "₪ לא כולל מעמ";
     case RideMessageType.PUBLISHER_RESPONSE_QUESTION:
       return "תשובה לשאלה";
     case RideMessageType.PUBLISHER_REJECT:
@@ -488,6 +489,12 @@ const getRideMessageTextByType = (type, suggestPrice) => {
       return "הודעה";
   }
 };
+const extractPriceFromMessage = (message) => {
+  const pricePattern = /(\d{1,3}(,\d{3})*)(?=₪)/; // RegEx to match the price pattern
+  const match = message.match(pricePattern);
+  return match ? parseInt(match[0].replace(/,/g, ""), 10) : null; // Remove commas and convert to integer
+};
+
 const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
   const {
     numberOfPassengers,
@@ -663,4 +670,5 @@ export {
   buildRideRowView,
   flashRide,
   buildRideFullAddressesText,
+  extractPriceFromMessage,
 };

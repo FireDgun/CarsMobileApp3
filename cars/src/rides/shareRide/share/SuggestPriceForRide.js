@@ -14,6 +14,7 @@ const SuggestPriceForRide = ({
   setShowPriceSuggestionModal,
   handleSend,
   currentPrice,
+  IsConstructor = true,
 }) => {
   const [suggestedPrice, setSuggestedPrice] = useState("");
 
@@ -40,7 +41,9 @@ const SuggestPriceForRide = ({
               style={styles.modalButton}
               onPress={() => {
                 handleSend(
-                  RideMessageType.CONTRACTOR_OFFER_PRICE,
+                  IsConstructor
+                    ? RideMessageType.CONTRACTOR_OFFER_PRICE
+                    : RideMessageType.PUBLISHER_OFFER_PRICE,
                   suggestedPrice
                 );
                 setShowPriceSuggestionModal(false);

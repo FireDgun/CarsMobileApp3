@@ -6,11 +6,13 @@ import WaitingForResponse from "./WaitingForResponse";
 import RideActionButtons from "../../shareRide/share/RideActionButtons";
 import {
   RideMessageType,
+  extractPriceFromMessage,
   getRideMessageTextByType,
 } from "../../../utils/ridesHelper";
 import AdditionDetailsModal from "./AdditionDetailsModal";
 import GooglePlacesInput from "../../../components/GooglePlacesInput";
 import { useMyModal } from "../../../providers/ModalProvider";
+import SuggestPriceForRide from "../../shareRide/share/SuggestPriceForRide";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -20,9 +22,11 @@ const NegotiationButtons = ({
   setEnableSendButton,
 }) => {
   const type = messages[messages.length - 1].type;
+  const messageText = messages[messages.length - 1].text;
   const { sendMessageInNegotiation } = useRidesContext();
   const { user } = useAuth();
-
+  const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
+    useState(false);
   const { showModal, hideModal } = useMyModal();
 
   const handlePublisherApprove = async () => {
@@ -52,7 +56,20 @@ const NegotiationButtons = ({
       />
     );
   };
-  const handlePublisherSuggestPrice = () => {};
+  const handlePublisherOpenModalSuggestPrice = () => {
+    console.log("Suggest price button clicked");
+    setShowPriceSuggestionModal(true);
+  };
+
+  const handlePublisherSuggestPrice = async (messageType, suggestionPrice) => {
+    console.log("send Suggest price from publisher");
+    await sendMessageInNegotiation(ride.id, senderId, {
+      text: getRideMessageTextByType(messageType, suggestionPrice),
+      type: messageType,
+      createdAt: new Date(),
+    });
+    setShowPriceSuggestionModal(true);
+  };
 
   if (user.uid === senderId) {
     if (type.includes("Contractor")) {
@@ -74,28 +91,37 @@ const NegotiationButtons = ({
     type == RideMessageType.CONTRACTOR_SEND
   ) {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.buttonAccept}
-          onPress={handlePublisherApprove}
-        >
-          <Text style={styles.buttonText}>קבל את ההצעה</Text>
-          <Text style={styles.buttonText}>שלח לאישור סופי</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.buttonReject}
-          onPress={handlePublisherReject}
-        >
-          <Text style={styles.buttonText}>דחה את ההצעה</Text>
-        </TouchableOpacity>
-        {RideMessageType.CONTRACTOR_OFFER_PRICE && (
+      <View>
+        <View style={styles.container}>
           <TouchableOpacity
-            style={styles.buttonSuggestPrice}
-            onPress={handlePublisherSuggestPrice}
+            style={styles.buttonAccept}
+            onPress={handlePublisherApprove}
           >
-            <Text style={styles.buttonText}>הצע מחיר אחר</Text>
+            <Text style={styles.buttonText}>קבל את ההצעה</Text>
+            <Text style={styles.buttonText}>שלח לאישור סופי</Text>
           </TouchableOpacity>
-        )}
+          <TouchableOpacity
+            style={styles.buttonReject}
+            onPress={handlePublisherReject}
+          >
+            <Text style={styles.buttonText}>דחה את ההצעה</Text>
+          </TouchableOpacity>
+          {RideMessageType.CONTRACTOR_OFFER_PRICE && (
+            <TouchableOpacity
+              style={styles.buttonSuggestPrice}
+              onPress={handlePublisherOpenModalSuggestPrice}
+            >
+              <Text style={styles.buttonText}>הצע מחיר אחר</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        <SuggestPriceForRide
+          showPriceSuggestionModal={showPriceSuggestionModal}
+          setShowPriceSuggestionModal={setShowPriceSuggestionModal}
+          handleSend={handlePublisherSuggestPrice}
+          currentPrice={extractPriceFromMessage(messageText)}
+          IsConstructor={false}
+        />
       </View>
     );
   }
