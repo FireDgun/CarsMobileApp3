@@ -19,4 +19,32 @@ const formatDateInHebrew = (date) => {
   return ""; // Return an empty string or any placeholder if it's the default date
 };
 
-export { months, currentYear, years, formatDateInHebrew };
+//function that get time object look like this {seconds,nanoseconds} and return 120 seconds minus (now - time object)
+const getTimeLeft = (time) => {
+  const now = new Date();
+  const nowInSeconds = now.getTime() / 1000;
+
+  const timeLeft = 120 - Math.floor(nowInSeconds - time.seconds);
+  if (timeLeft <= 0) {
+    return 0;
+  }
+  return timeLeft;
+};
+
+const getRealTimeLeft = (time) => {
+  const now = new Date();
+  const nowInSeconds = now.getTime() / 1000;
+
+  const timeLeft = 120 - Math.floor(nowInSeconds - time.seconds);
+
+  return timeLeft;
+};
+
+export {
+  months,
+  currentYear,
+  years,
+  formatDateInHebrew,
+  getTimeLeft,
+  getRealTimeLeft,
+};

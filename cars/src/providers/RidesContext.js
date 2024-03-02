@@ -11,10 +11,18 @@ import {
   RideMessageType,
   getRideMessageTextByType,
 } from "../utils/ridesHelper";
-import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  AppState,
+} from "react-native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useChatsContext } from "./ChatsProvider";
 import Timer from "../rides/myRides/components/Timer";
+import { getTimeLeft } from "../utils/datesHelper";
 const styles = StyleSheet.create({
   modalView: {
     flex: 1,
@@ -60,8 +68,8 @@ export const RidesProvider = ({ children }) => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
   const [approvedRide, setApprovedRide] = useState({});
   const [stopTimerInMiddle, setStopTimerInMiddle] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(120);
   const handleTimesUp = useCallback(() => {
-    setIsModalVisible(false);
     sendMessageInNegotiation(approvedRide.id, user.uid, {
       type: RideMessageType.PUBLISHER_TIMEOUT,
       text: getRideMessageTextByType(RideMessageType.PUBLISHER_TIMEOUT),
@@ -137,12 +145,24 @@ export const RidesProvider = ({ children }) => {
         ride[user.uid].messages[ride[user.uid].messages.length - 1].type ===
           RideMessageType.PUBLISHER_APPROVED // Assuming "RideMessageTypes.PUBLISHER_APPROVED" is a valid type
     );
-    console.log(hasApprovedMessage);
+
+    const lastApprovedMessageCreatedAt =
+      hasApprovedMessage?.[user.uid]?.messages?.[
+        hasApprovedMessage[user.uid].messages.length - 1
+      ]?.createdAt;
+    console.log("lastApprovedMessageCreatedAt");
+
     if (hasApprovedMessage) {
+      console.log(getTimeLeft(lastApprovedMessageCreatedAt));
+
       setApprovedRide(hasApprovedMessage);
+      setTimeLeft(getTimeLeft(lastApprovedMessageCreatedAt));
       setIsModalVisible(true); // Show the modal if condition is met
+    } else {
+      setIsModalVisible(false);
     }
   }, [openNegotiationRides, user.uid]);
+
   return (
     <RidesContext.Provider
       value={{
@@ -162,25 +182,31 @@ export const RidesProvider = ({ children }) => {
         onRequestClose={() => {}}
       >
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>
-            {approvedRide.rideOwnerName} אישר את ההצעה שלך
-          </Text>
-          <View>
-            <TouchableOpacity
-              onPress={handleApprovedRide}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeButtonText}>אישור סופי</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleRejectRide}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeButtonText}>בסוף לא מתאים לי</Text>
-            </TouchableOpacity>
-          </View>
+          {timeLeft == 0 ? (
+            <Text style={styles.modalText}>נגמר הזמן, ההצעה נסגרה</Text>
+          ) : (
+            <Text style={styles.modalText}>
+              {approvedRide.rideOwnerName} אישר את ההצעה שלך
+            </Text>
+          )}
+          {timeLeft > 0 && (
+            <View>
+              <TouchableOpacity
+                onPress={handleApprovedRide}
+                style={styles.closeButton}
+              >
+                <Text style={styles.closeButtonText}>אישור סופי</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleRejectRide}
+                style={styles.closeButton}
+              >
+                <Text style={styles.closeButtonText}>בסוף לא מתאים לי</Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <Timer
-            startTimer={120}
+            startTimer={timeLeft}
             executeWhenFinish={handleTimesUp}
             stopInTheMiddle={stopTimerInMiddle}
           />

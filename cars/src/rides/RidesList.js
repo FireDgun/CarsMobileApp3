@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,14 +10,17 @@ import { useNavigation } from "@react-navigation/native";
 import MySellRides from "./myRides/sellRide/MySellRides";
 import MyBuyRides from "./myRides/buyRide/MyBuyRides";
 
-const RidesList = () => {
+const RidesList = ({ initialSelectedTab = "MySellRides" }) => {
   const navigation = useNavigation();
-  const [selectedTab, setSelectedTab] = useState("MySellRides");
+
+  const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const navigateToPostNewRide = () => {
     navigation.navigate("PostNewRide");
   };
-  console.log(scrollEnabled);
+  useEffect(() => {
+    setSelectedTab(initialSelectedTab);
+  }, [initialSelectedTab]);
   return (
     <View style={styles.container}>
       <ScrollView

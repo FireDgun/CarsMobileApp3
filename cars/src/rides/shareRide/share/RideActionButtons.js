@@ -50,6 +50,10 @@ const RideActionButtons = ({ ride }) => {
     console.log("Send button clicked");
     const updatedRide = await askForRide(ride, messageType, suggestionPrice);
     setRideDetails(updatedRide);
+    navigation.navigate("Dashboard", {
+      initialPage: "rides",
+      initialSelectedTab: "MyBuyRides",
+    });
   };
 
   const handleSuggestPrice = () => {

@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useAuth } from "../../../providers/AuthContext";
 import WaitingForResponse from "./WaitingForResponse";
@@ -17,6 +17,7 @@ import SuggestPriceForRide from "../../shareRide/share/SuggestPriceForRide";
 import RideConstructorActionButtonsNegotiation from "./RideConstructorActionButtonsNegotiation";
 import AdditionalMessage from "../../shareRide/share/AdditionalMessage";
 import Timer from "./Timer";
+import { getRealTimeLeft, getTimeLeft } from "../../../utils/datesHelper";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -36,6 +37,34 @@ const NegotiationButtons = ({
     useState(false);
   const { showModal, hideModal } = useMyModal();
 
+  useEffect(() => {
+    let intervalId = null;
+
+    if (type === RideMessageType.PUBLISHER_APPROVED) {
+      intervalId = setInterval(() => {
+        const timeLeft = getRealTimeLeft(messageCreatedAt);
+        if (timeLeft < -10) {
+          handleTimesUp();
+          clearInterval(intervalId); // Stop the interval once condition is met
+        }
+      }, 1000); // Check every second
+    }
+
+    // Clean up the interval on component unmount or when messages change
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [messages]);
+
+  const handleTimesUp = useCallback(() => {
+    sendMessageInNegotiation(ride.id, senderId, {
+      type: RideMessageType.PUBLISHER_TIMEOUT,
+      text: getRideMessageTextByType(RideMessageType.PUBLISHER_TIMEOUT),
+      createdAt: new Date(),
+    });
+  }, [ride]);
   const handlePublisherApprove = async () => {
     console.log("publisher approve");
     await sendMessageInNegotiation(ride.id, senderId, {
@@ -215,7 +244,7 @@ const NegotiationButtons = ({
   if (type == RideMessageType.PUBLISHER_APPROVED) {
     return (
       <Timer
-        startTimer={120}
+        startTimer={getTimeLeft(messageCreatedAt)}
         executeWhenFinish={() => {}}
         stopInTheMiddle={false}
       />
