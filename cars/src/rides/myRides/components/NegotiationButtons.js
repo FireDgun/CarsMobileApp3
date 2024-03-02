@@ -16,6 +16,7 @@ import { useMyModal } from "../../../providers/ModalProvider";
 import SuggestPriceForRide from "../../shareRide/share/SuggestPriceForRide";
 import RideConstructorActionButtonsNegotiation from "./RideConstructorActionButtonsNegotiation";
 import AdditionalMessage from "../../shareRide/share/AdditionalMessage";
+import Timer from "./Timer";
 
 //need to finish this component
 const NegotiationButtons = ({
@@ -26,6 +27,7 @@ const NegotiationButtons = ({
 }) => {
   const type = messages[messages.length - 1].type;
   const messageText = messages[messages.length - 1].text;
+  const messageCreatedAt = messages[messages.length - 1].createdAt;
   const { sendMessageInNegotiation } = useRidesContext();
   const { user } = useAuth();
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
@@ -133,7 +135,7 @@ const NegotiationButtons = ({
       );
     }
   }
-  console.log(type);
+  console.log(messageCreatedAt);
   if (
     type == RideMessageType.CONTRACTOR_OFFER_PRICE ||
     type == RideMessageType.CONTRACTOR_SEND
@@ -208,6 +210,16 @@ const NegotiationButtons = ({
           IsConstructor={false}
         />
       </View>
+    );
+  }
+  if (type == RideMessageType.PUBLISHER_APPROVED) {
+    return (
+      <Timer
+        startTimer={120}
+        executeWhenFinish={() => {}}
+        stopInTheMiddle={false}
+      />
+      // null
     );
   }
 };

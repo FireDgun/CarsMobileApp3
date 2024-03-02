@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useAuth } from "./AuthContext";
 import useMyRides from "../hooks/useMyRides";
 import {
@@ -8,6 +14,7 @@ import {
 import { Modal, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { useChatsContext } from "./ChatsProvider";
+import Timer from "../rides/myRides/components/Timer";
 const styles = StyleSheet.create({
   modalView: {
     flex: 1,
@@ -52,8 +59,18 @@ export const RidesProvider = ({ children }) => {
   const [openNegotiationRides, setOpenNegotiationRides] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
   const [approvedRide, setApprovedRide] = useState({});
+  const [stopTimerInMiddle, setStopTimerInMiddle] = useState(false);
+  const handleTimesUp = useCallback(() => {
+    setIsModalVisible(false);
+    sendMessageInNegotiation(approvedRide.id, user.uid, {
+      type: RideMessageType.PUBLISHER_TIMEOUT,
+      text: getRideMessageTextByType(RideMessageType.PUBLISHER_TIMEOUT),
+      createdAt: new Date(),
+    });
+  }, [approvedRide, user]);
   const handleApprovedRide = async () => {
     try {
+      setStopTimerInMiddle(true); // Stop the timer in the middle (optional, depending on the requirements of the app)
       // Run both async tasks in parallel and wait for them to complete
       await updateRide(approvedRide.id, {
         ...approvedRide,
@@ -82,6 +99,7 @@ export const RidesProvider = ({ children }) => {
   };
 
   const handleRejectRide = () => {
+    setStopTimerInMiddle(true); // Stop the timer in the middle (optional, depending on the requirements of the app)
     sendMessageInNegotiation(approvedRide.id, user.uid, {
       type: RideMessageType.CONTRACTOR_REJECT,
       text: getRideMessageTextByType(RideMessageType.CONTRACTOR_REJECT),
@@ -161,6 +179,11 @@ export const RidesProvider = ({ children }) => {
               <Text style={styles.closeButtonText}>בסוף לא מתאים לי</Text>
             </TouchableOpacity>
           </View>
+          <Timer
+            startTimer={120}
+            executeWhenFinish={handleTimesUp}
+            stopInTheMiddle={stopTimerInMiddle}
+          />
         </View>
       </Modal>
     </RidesContext.Provider>

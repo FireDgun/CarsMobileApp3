@@ -12,13 +12,24 @@ import RideDetails from "../components/RideDetails";
 import StopsModal from "../components/StopsModal";
 
 import RideActionButtons from "./RideActionButtons";
+import { useAuth } from "../../../providers/AuthContext";
 
 const RideMessage = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
+  const { user } = useAuth();
+  const [additionalStyle, setAdditionalStyle] = useState({});
 
+  useEffect(() => {
+    const updatedStyle = ride.canceled
+      ? styles.canceledCard
+      : ride.rideBuyer == user.uid
+      ? styles.approvedCard
+      : {};
+    setAdditionalStyle(updatedStyle);
+  }, [ride.canceled, ride.rideBuyer, user.uid]);
   return (
-    <View style={[styles.card, ride.canceled && styles.canceledCard]}>
+    <View style={[styles.card, additionalStyle]}>
       <Text style={styles.rideType}>{getRideTypeHebrewName(ride.type)}</Text>
 
       <View style={styles.messageContainer}>
@@ -54,6 +65,10 @@ const styles = StyleSheet.create({
   canceledCard: {
     backgroundColor: "#D3D3D3",
   },
+  approvedCard: {
+    backgroundColor: "#A4D3A2",
+  },
+
   rideType: {
     fontSize: 18,
     fontWeight: "bold",

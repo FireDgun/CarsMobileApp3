@@ -72,6 +72,10 @@ const RideActionButtons = ({ ride }) => {
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>בוטלה</Text>
         </TouchableOpacity>
+      ) : ride.rideBuyer && ride.rideBuyer == user.uid ? (
+        <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
+          <Text style={styles.disabledButtonText}>נסגרה איתך!</Text>
+        </TouchableOpacity>
       ) : ride.rideBuyer ? (
         <TouchableOpacity style={styles.cancelButtonDisabled} disabled>
           <Text style={styles.disabledButtonText}>נסגרה</Text>

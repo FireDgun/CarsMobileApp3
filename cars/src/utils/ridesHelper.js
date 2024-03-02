@@ -488,6 +488,7 @@ const getRideMessageTextByType = (type, suggestPrice, question) => {
       return "נגמר הזמן - נסה לשלוח שוב אם הנסיעה עדיין פתוחה";
     case RideMessageType.CONTRACTOR_REJECT:
       return "מבטל את ההצעה";
+
     default:
       return "הודעה";
   }
