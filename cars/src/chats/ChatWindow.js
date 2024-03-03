@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -39,6 +39,8 @@ function ChatWindow({ route }) {
   const [newMessage, setNewMessage] = useState("");
   const [chatImage, setChatImage] = useState();
   const [chatName, setChatName] = useState("");
+  const flatListRef = useRef();
+
   useEffect(() => {
     if (chat.chatParticipants) {
       setChatImage(chat.image ?? getChatImage(allUsers, chat, user.uid));
@@ -62,7 +64,9 @@ function ChatWindow({ route }) {
       setNewMessage("");
     }
   };
-
+  const onContentSizeChange = () => {
+    flatListRef.current.scrollToEnd({ animated: true });
+  };
   const renderMessage = ({ item }) => {
     if (item.type === "date") {
       return (
@@ -107,15 +111,16 @@ function ChatWindow({ route }) {
           <MaterialIcons name="more-vert" size={24} color="white" />
         </TouchableOpacity>
       </View>
+      {console.log(messages.length)}
 
       <FlatList
+        ref={flatListRef}
         data={messages}
         renderItem={renderMessage}
         keyExtractor={keyExtractor}
         style={styles.messagesList}
-        // Inverts the order so new messages are at the bottom
+        onContentSizeChange={onContentSizeChange} // Add this prop
       />
-
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
