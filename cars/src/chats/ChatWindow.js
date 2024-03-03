@@ -51,7 +51,7 @@ function ChatWindow({ route }) {
   useEffect(() => {
     const chat = myChats.find((chat) => chat.id == chatId);
     if (chat && chat.messages) {
-      const groupedMessages = groupMessagesByDate(chat.messages);
+      const groupedMessages = groupMessagesByDate(chat.messages).reverse();
       setMessages(groupedMessages);
       setChat(chat);
     }
@@ -65,7 +65,9 @@ function ChatWindow({ route }) {
     }
   };
   const onContentSizeChange = () => {
-    flatListRef.current.scrollToEnd({ animated: true });
+    if (messages[messages.length - 1].senderId == user.uid) {
+      flatListRef.current.scrollToEnd();
+    }
   };
   const renderMessage = ({ item }) => {
     if (item.type === "date") {
@@ -120,6 +122,7 @@ function ChatWindow({ route }) {
         keyExtractor={keyExtractor}
         style={styles.messagesList}
         onContentSizeChange={onContentSizeChange} // Add this prop
+        inverted
       />
       <View style={styles.inputContainer}>
         <TextInput

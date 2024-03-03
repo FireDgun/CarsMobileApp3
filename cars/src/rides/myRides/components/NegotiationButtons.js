@@ -164,7 +164,6 @@ const NegotiationButtons = ({
       );
     }
   }
-  console.log(messageCreatedAt);
   if (
     type == RideMessageType.CONTRACTOR_OFFER_PRICE ||
     type == RideMessageType.CONTRACTOR_SEND

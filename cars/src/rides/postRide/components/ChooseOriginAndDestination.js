@@ -11,7 +11,6 @@ const ChooseOriginAndDestination = ({
   showShowFullAddress = true,
 }) => {
   const [stops, setStops] = useState(defaultStops);
-  console.log(defaultStops);
   const addStop = () => {
     setStops([...stops, ""]); // Add a new empty stop
   };

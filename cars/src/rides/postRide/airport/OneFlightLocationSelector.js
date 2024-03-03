@@ -22,8 +22,7 @@ const OneFlightLocationSelector = ({
   const addStop = () => {
     setStops([...stops, ""]); // Add a new empty stop
   };
-  console.log("stops");
-  console.log(stops);
+
   const removeStop = (index) => {
     const updatedStops = stops.filter((_, idx) => idx !== index);
     setStops(updatedStops);

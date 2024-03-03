@@ -53,8 +53,6 @@ export default function usePostRide(initialRide) {
     originOrDestination,
     editWithoutAddress = false
   ) => {
-    console.log("data");
-    console.log(data);
     let newTripLocations = JSON.parse(JSON.stringify(formData.tripLocations));
     newTripLocations[index][originOrDestination] = data;
     if (editWithoutAddress) {
@@ -74,10 +72,6 @@ export default function usePostRide(initialRide) {
         originOrDestination == "origin" ||
         originOrDestination == "destination"
       ) {
-        console.log(newTripLocations[index][originOrDestination].addressName);
-        console.log(
-          formData.tripLocations[index][originOrDestination].addressName
-        );
         newTripLocations[index][originOrDestination].addressName =
           formData.tripLocations[index][originOrDestination].addressName;
       }

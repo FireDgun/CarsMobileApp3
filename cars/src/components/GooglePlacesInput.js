@@ -30,8 +30,6 @@ const GooglePlacesInput = ({
   const [isFullAddress, setIsFullAddress] = useState(false);
   useEffect(() => {
     if (defaultValue) {
-      console.log("default value");
-      console.log(defaultValue);
       ref.current?.setAddressText(defaultValue);
     }
   }, []);

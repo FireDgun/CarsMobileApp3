@@ -150,11 +150,8 @@ export const RidesProvider = ({ children }) => {
       hasApprovedMessage?.[user.uid]?.messages?.[
         hasApprovedMessage[user.uid].messages.length - 1
       ]?.createdAt;
-    console.log("lastApprovedMessageCreatedAt");
 
     if (hasApprovedMessage) {
-      console.log(getTimeLeft(lastApprovedMessageCreatedAt));
-
       setApprovedRide(hasApprovedMessage);
       setTimeLeft(getTimeLeft(lastApprovedMessageCreatedAt));
       setIsModalVisible(true); // Show the modal if condition is met

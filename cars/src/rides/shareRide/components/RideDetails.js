@@ -8,7 +8,6 @@ const RideDetails = ({ ride, setShowStopsModal, setStopsToDisplay }) => {
     setShowStopsModal,
     setStopsToDisplay
   );
-  console.log(ride);
   return (
     <>
       {rideDetails.map((detail, index) => (
