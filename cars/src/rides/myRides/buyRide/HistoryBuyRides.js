@@ -17,7 +17,7 @@ const HistoryBuyRides = ({ allModeRides, setScrollEnabled }) => {
 
   return (
     <View>
-      <Text>HistorySellRides</Text>
+      <Text>HistoryBuyRides</Text>
       {pastRides.map((ride) => (
         <View
           key={ride.id}

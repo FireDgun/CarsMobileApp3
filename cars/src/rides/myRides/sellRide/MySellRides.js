@@ -6,7 +6,12 @@ import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
 import SubNavBarMyRides from "../components/SubNavBarMyRides";
 
-const MySellRides = ({ setScrollEnabled }) => {
+const MySellRides = ({
+  setScrollEnabled,
+  initialTab,
+  optionalNegotiationId = "",
+  optionalNegotiationRideId = "",
+}) => {
   const { allRides } = useRidesContext();
   const { user } = useAuth();
   const mySellRides = allRides.filter((ride) => ride.rideOwner === user?.uid);
@@ -16,6 +21,9 @@ const MySellRides = ({ setScrollEnabled }) => {
         mode={"sell"}
         allModeRides={mySellRides}
         setScrollEnabled={setScrollEnabled}
+        initialTab={initialTab}
+        optionalNegotiationId={optionalNegotiationId}
+        optionalNegotiationRideId={optionalNegotiationRideId}
       />
     </View>
   );

@@ -10,17 +10,19 @@ import { useNavigation } from "@react-navigation/native";
 import MySellRides from "./myRides/sellRide/MySellRides";
 import MyBuyRides from "./myRides/buyRide/MyBuyRides";
 
-const RidesList = ({ initialSelectedTab = "MySellRides" }) => {
+const RidesList = ({
+  initialSelectedTab = "MySellRides",
+  initialTab,
+  optionalNegotiationId = "",
+  optionalNegotiationRideId = "",
+}) => {
   const navigation = useNavigation();
 
-  const [selectedTab, setSelectedTab] = useState(initialSelectedTab);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const navigateToPostNewRide = () => {
     navigation.navigate("PostNewRide");
   };
-  useEffect(() => {
-    setSelectedTab(initialSelectedTab);
-  }, [initialSelectedTab]);
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -31,26 +33,46 @@ const RidesList = ({ initialSelectedTab = "MySellRides" }) => {
           <TouchableOpacity
             style={[
               styles.navButton,
-              selectedTab === "MySellRides" && styles.selectedTab,
+              initialSelectedTab === "MySellRides" && styles.selectedTab,
             ]}
-            onPress={() => setSelectedTab("MySellRides")}
+            onPress={() =>
+              navigation.navigate("Dashboard", {
+                initialPage: "rides",
+                initialSelectedTab: "MySellRides",
+              })
+            }
           >
             <Text style={styles.navButtonText}>פרסמתי</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.navButton,
-              selectedTab === "MyBuyRides" && styles.selectedTab,
+              initialSelectedTab === "MyBuyRides" && styles.selectedTab,
             ]}
-            onPress={() => setSelectedTab("MyBuyRides")}
+            onPress={() =>
+              navigation.navigate("Dashboard", {
+                initialPage: "rides",
+                initialSelectedTab: "MyBuyRides",
+              })
+            }
           >
             <Text style={styles.navButtonText}>לקחתי</Text>
           </TouchableOpacity>
         </View>
-        {selectedTab === "MySellRides" ? (
-          <MySellRides setScrollEnabled={setScrollEnabled} />
+        {initialSelectedTab === "MySellRides" ? (
+          <MySellRides
+            setScrollEnabled={setScrollEnabled}
+            initialTab={initialTab}
+            optionalNegotiationId={optionalNegotiationId}
+            optionalNegotiationRideId={optionalNegotiationRideId}
+          />
         ) : (
-          <MyBuyRides setScrollEnabled={setScrollEnabled} />
+          <MyBuyRides
+            setScrollEnabled={setScrollEnabled}
+            initialTab={initialTab}
+            optionalNegotiationId={optionalNegotiationId}
+            optionalNegotiationRideId={optionalNegotiationRideId}
+          />
         )}
       </ScrollView>
       <TouchableOpacity

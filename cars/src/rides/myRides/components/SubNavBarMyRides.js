@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import CloseBuyRides from "../buyRide/CloseBuyRides";
 import OpenBuyRides from "../buyRide/OpenBuyRides";
@@ -6,14 +6,25 @@ import OpenSellRides from "../sellRide/OpenSellRides";
 import HistoryBuyRides from "../buyRide/HistoryBuyRides";
 import HistorySellRides from "../sellRide/HistorySellRides";
 import CloseSellRIdes from "../sellRide/CloseSellRIdes";
+import { useNavigation } from "@react-navigation/native";
 
-const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
-  const [activeTab, setActiveTab] = useState("Open");
-
+const SubNavBarMyRides = ({
+  mode,
+  allModeRides,
+  setScrollEnabled,
+  initialTab = "Open",
+  optionalNegotiationId = "",
+  optionalNegotiationRideId = "",
+}) => {
+  const navigation = useNavigation();
   const handleTabClick = (tab) => {
-    setActiveTab(tab);
+    navigation.navigate("Dashboard", {
+      initialPage: "rides",
+      initialSelectedTab: mode === "buy" ? "MyBuyRides" : "MySellRides",
+      initialTab: tab,
+    });
   };
-
+  console.log(mode);
   const renderCloseComponent = () => {
     if (mode === "buy") {
       return (
@@ -38,6 +49,8 @@ const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
         <OpenBuyRides
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          optionalNegotiationId={optionalNegotiationId}
+          optionalNegotiationRideId={optionalNegotiationRideId}
         />
       );
     } else if (mode === "sell") {
@@ -45,6 +58,8 @@ const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
         <OpenSellRides
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          optionalNegotiationId={optionalNegotiationId}
+          optionalNegotiationRideId={optionalNegotiationRideId}
         />
       );
     }
@@ -69,7 +84,7 @@ const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
   };
   let content;
 
-  switch (activeTab) {
+  switch (initialTab) {
     case "Close":
       content = renderCloseComponent();
       break;
@@ -86,19 +101,19 @@ const SubNavBarMyRides = ({ mode, allModeRides, setScrollEnabled }) => {
     <View style={styles.container}>
       <View style={styles.subNavBar}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "Open" && styles.activeTab]}
+          style={[styles.tab, initialTab === "Open" && styles.activeTab]}
           onPress={() => handleTabClick("Open")}
         >
           <Text>פתוחות</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "Close" && styles.activeTab]}
+          style={[styles.tab, initialTab === "Close" && styles.activeTab]}
           onPress={() => handleTabClick("Close")}
         >
           <Text>סגורות</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === "History" && styles.activeTab]}
+          style={[styles.tab, initialTab === "History" && styles.activeTab]}
           onPress={() => handleTabClick("History")}
         >
           <Text>היסטוריה</Text>

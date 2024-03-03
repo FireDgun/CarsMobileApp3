@@ -18,7 +18,7 @@ const CloseBuyRides = ({ allModeRides, setScrollEnabled }) => {
 
   return (
     <View>
-      <Text>CloseSellRIdes</Text>
+      <Text>CloseBuyRIdes</Text>
       {buyRides.map((ride) => (
         <View key={ride.id}>
           <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />

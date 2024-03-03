@@ -2,7 +2,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import RideRow from "../components/RideRow";
 
-const OpenSellRides = ({ allModeRides, setScrollEnabled }) => {
+const OpenSellRides = ({
+  allModeRides,
+  setScrollEnabled,
+  optionalNegotiationId = "",
+  optionalNegotiationRideId = "",
+}) => {
   const futureRides = allModeRides.filter((ride) => {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // Set time components to zero
@@ -15,7 +20,15 @@ const OpenSellRides = ({ allModeRides, setScrollEnabled }) => {
       <Text>OpenSellRides</Text>
       {futureRides.map((ride) => (
         <View key={ride.id}>
-          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          {optionalNegotiationRideId == ride.id ? (
+            <RideRow
+              ride={ride}
+              setScrollEnabled={setScrollEnabled}
+              optionalNegotiationId={optionalNegotiationId}
+            />
+          ) : (
+            <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          )}
         </View>
       ))}
     </View>

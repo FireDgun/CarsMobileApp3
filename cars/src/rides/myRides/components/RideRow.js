@@ -9,7 +9,7 @@ import StopsModal from "../../shareRide/components/StopsModal";
 import NegotiationRow from "./NegotiationRow";
 import { useAuth } from "../../../providers/AuthContext";
 
-const RideRow = ({ ride, setScrollEnabled }) => {
+const RideRow = ({ ride, setScrollEnabled, optionalNegotiationId = "" }) => {
   const [expanded, setExpanded] = useState(false); // State to manage the expanded/collapsed state
   const navigation = useNavigation();
   const { cancelRide } = useRidesContext();
@@ -26,7 +26,7 @@ const RideRow = ({ ride, setScrollEnabled }) => {
   const onSharePress = () => {
     navigation.navigate("ShareRidePage", { rideId: ride.id });
   };
-
+  console.log("optionalNegotiationId", optionalNegotiationId);
   const onCancelPress = () => {
     cancelRide(ride.id);
     cancelRideOnChats(ride.id);
@@ -97,19 +97,23 @@ const RideRow = ({ ride, setScrollEnabled }) => {
               senderName={negotiation.senderName}
               senderImg={negotiation.senderImg}
               messages={negotiation.messages}
-              buttons={negotiation.buttons}
               ride={ride}
               setScrollEnabled={setScrollEnabled}
+              initialExpand={
+                optionalNegotiationId == negotiation.senderId ? true : false
+              }
             />
           );
         })
       ) : (
         <NegotiationRow
-          senderName={""}
+          senderName={ride.rideOwnerName}
+          senderImg={ride.rideOwnerImage}
           senderId={user.uid}
           messages={ride?.[user.uid]?.messages}
           ride={ride}
           setScrollEnabled={setScrollEnabled}
+          initialExpand={optionalNegotiationId == user.uid ? true : false}
         />
       )}
     </View>

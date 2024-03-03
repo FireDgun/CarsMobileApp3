@@ -19,6 +19,7 @@ const RidePreviewPage = ({ route }) => {
       ...ride,
       type: getRideTypeHebrewName(ride.type),
       rideOwnerName: user.name,
+      rideOwnerImage: user.profilePic,
     });
     navigation.navigate("Dashboard", { initialPage: "rides" });
   };
