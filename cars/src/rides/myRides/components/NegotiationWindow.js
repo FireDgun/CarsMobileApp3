@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import NegotiationButtons from "./NegotiationButtons";
@@ -25,7 +25,13 @@ const NegotiationWindow = ({
   const handleBeginDrag = () => {
     setScrollEnabled(false);
   };
+  const scrollViewRef = useRef();
 
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: false });
+    }
+  }, []);
   // Handler to re-enable outer scroll when releasing the drag on the inner ScrollView
   const handleEndDrag = () => {
     setScrollEnabled(true);
@@ -58,7 +64,13 @@ const NegotiationWindow = ({
     <View
       style={expanded ? styles.containerExpanded : styles.containerCollapsed}
     >
-      <ScrollView style={{ width: "100%", height: "100%" }}>
+      <ScrollView
+        style={{ width: "100%", height: "100%" }}
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({ animated: false })
+        }
+      >
         {renderMessages()}
       </ScrollView>
       {enableSendButton && (

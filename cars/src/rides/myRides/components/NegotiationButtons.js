@@ -121,7 +121,7 @@ const NegotiationButtons = ({
   if (type == RideMessageType.CONTRACTOR_FINALIZE) {
     return <Text>סגרתם את הנסיעה</Text>;
   }
-  if (user.uid === senderId) {
+  if (user.uid === senderId && type != RideMessageType.CONTRACTOR_REJECT) {
     if (type.includes("Contractor")) {
       return <WaitingForResponse isLoading={true} />;
     }
@@ -150,7 +150,8 @@ const NegotiationButtons = ({
     }
     if (
       type == RideMessageType.PUBLISHER_SEND_DETAILS ||
-      type == RideMessageType.PUBLISHER_RESPONSE_QUESTION
+      type == RideMessageType.PUBLISHER_RESPONSE_QUESTION ||
+      (type == RideMessageType.PUBLISHER_TIMEOUT && ride.rideBuyer == null)
     ) {
       return (
         <RideConstructorActionButtonsNegotiation
@@ -162,6 +163,15 @@ const NegotiationButtons = ({
           isRideDetailsSent={true}
         />
       );
+    }
+  } else {
+    if (
+      type.includes("Publisher") &&
+      type != RideMessageType.PUBLISHER_APPROVED &&
+      type != RideMessageType.PUBLISHER_REJECT &&
+      type != RideMessageType.PUBLISHER_TIMEOUT
+    ) {
+      return <WaitingForResponse isLoading={true} />;
     }
   }
   if (

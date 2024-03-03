@@ -31,7 +31,7 @@ export default function Dashboard({ route }) {
       let index = selectedTab === "rides" ? 1 : 0;
       refFlatList.current.scrollToIndex({ animated: true, index });
     }
-  }, [selectedTab]);
+  }, [selectedTab, layoutReady]);
 
   const handleSetSelectedTab = (tab) => {
     navigation.navigate("Dashboard", {

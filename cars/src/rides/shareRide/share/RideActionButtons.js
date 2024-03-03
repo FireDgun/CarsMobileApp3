@@ -53,6 +53,9 @@ const RideActionButtons = ({ ride }) => {
     navigation.navigate("Dashboard", {
       initialPage: "rides",
       initialSelectedTab: "MyBuyRides",
+      initialTab: "Open",
+      optionalNegotiationId: user.uid,
+      optionalNegotiationRideId: ride.id,
     });
   };
 
@@ -89,9 +92,23 @@ const RideActionButtons = ({ ride }) => {
           <Text style={styles.disabledButtonText}>הנסיעה עברה</Text>
         </TouchableOpacity>
       ) : user.uid === ride.rideOwner ? (
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.buttonText}>בטל</Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+            <Text style={styles.buttonText}>בטל</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={() =>
+              navigation.navigate("Dashboard", {
+                initialPage: "rides",
+                initialSelectedTab: "MySellRides",
+                initialTab: "Open",
+              })
+            }
+          >
+            <Text style={styles.buttonText}>צפה במשא ומתן</Text>
+          </TouchableOpacity>
+        </>
       ) : rideDetails[user.uid] ? (
         <>
           <Text style={styles.disabledButtonText}>בקשה נשלחה</Text>
