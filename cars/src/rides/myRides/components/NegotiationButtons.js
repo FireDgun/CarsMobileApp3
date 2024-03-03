@@ -20,12 +20,7 @@ import Timer from "./Timer";
 import { getRealTimeLeft, getTimeLeft } from "../../../utils/datesHelper";
 
 //need to finish this component
-const NegotiationButtons = ({
-  messages,
-  senderId,
-  ride,
-  setEnableSendButton,
-}) => {
+const NegotiationButtons = ({ messages, senderId, ride }) => {
   const type = messages[messages.length - 1].type;
   const messageText = messages[messages.length - 1].text;
   const messageCreatedAt = messages[messages.length - 1].createdAt;

@@ -17,11 +17,12 @@ const NegotiationWindow = ({
   ride,
   senderId,
   setScrollEnabled,
+  enableSendButton = true,
+  tab,
 }) => {
   const handleExpandCollapse = () => {
     setExpanded(!expanded);
   };
-  const [enableSendButton, setEnableSendButton] = useState(true);
   const handleBeginDrag = () => {
     setScrollEnabled(false);
   };
@@ -73,12 +74,11 @@ const NegotiationWindow = ({
       >
         {renderMessages()}
       </ScrollView>
-      {enableSendButton && (
+      {tab == "Open" && (
         <NegotiationButtons
           ride={ride}
           messages={messages}
           senderId={senderId}
-          setEnableSendButton={setEnableSendButton}
         />
       )}
       {/* <TouchableOpacity

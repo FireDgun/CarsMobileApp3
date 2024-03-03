@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import RideRow from "../components/RideRow";
 
-const HistorySellRides = ({ allModeRides, setScrollEnabled }) => {
+const HistorySellRides = ({ allModeRides, setScrollEnabled, tab }) => {
   const pastRides = allModeRides.filter((ride) => {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0); // Set time components to zero
@@ -22,7 +22,7 @@ const HistorySellRides = ({ allModeRides, setScrollEnabled }) => {
             ride.canceled && styles.canceledRideContainer,
           ]}
         >
-          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} tab={tab} />
         </View>
       ))}
     </View>

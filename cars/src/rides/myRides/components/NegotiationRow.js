@@ -11,6 +11,7 @@ const NegotiationRow = ({
   senderId,
   setScrollEnabled,
   initialExpand = false,
+  tab,
 }) => {
   const [expanded, setExpanded] = useState(initialExpand);
   const handleRowClick = () => {
@@ -21,8 +22,9 @@ const NegotiationRow = ({
   useEffect(() => {
     setExpanded(initialExpand);
   }, [initialExpand]);
+  console.log(ride.rideBuyer == senderId);
   return (
-    <View>
+    <View style={ride.rideBuyer == senderId && styles.approvedRideRowContainer}>
       <TouchableOpacity onPress={handleRowClick}>
         <View style={styles.rowContainer}>
           <Image source={imageSource} style={styles.senderImage} />
@@ -37,6 +39,8 @@ const NegotiationRow = ({
           ride={ride}
           senderId={senderId}
           setScrollEnabled={setScrollEnabled}
+          enableSendButton={true}
+          tab={tab}
         />
       )}
     </View>
@@ -59,6 +63,9 @@ const styles = StyleSheet.create({
   senderName: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  approvedRideRowContainer: {
+    backgroundColor: "#4CAF50",
   },
 });
 

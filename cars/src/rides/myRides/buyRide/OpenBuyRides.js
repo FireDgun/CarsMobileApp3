@@ -8,6 +8,7 @@ const OpenBuyRides = ({
   setScrollEnabled,
   optionalNegotiationId = "",
   optionalNegotiationRideId = "",
+  tab,
 }) => {
   const { user } = useAuth();
   const futureRides = allModeRides.filter((ride) => {
@@ -32,9 +33,14 @@ const OpenBuyRides = ({
               ride={ride}
               setScrollEnabled={setScrollEnabled}
               optionalNegotiationId={optionalNegotiationId}
+              tab={tab}
             />
           ) : (
-            <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+            <RideRow
+              ride={ride}
+              setScrollEnabled={setScrollEnabled}
+              tab={tab}
+            />
           )}
         </View>
       ))}

@@ -3,7 +3,7 @@ import React from "react";
 import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
 
-const HistoryBuyRides = ({ allModeRides, setScrollEnabled }) => {
+const HistoryBuyRides = ({ allModeRides, setScrollEnabled, tab }) => {
   const { user } = useAuth();
   const pastRides = allModeRides.filter((ride) => {
     const currentDate = new Date();
@@ -26,7 +26,7 @@ const HistoryBuyRides = ({ allModeRides, setScrollEnabled }) => {
             ride.canceled && styles.canceledRideContainer,
           ]}
         >
-          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} tab={tab} />
         </View>
       ))}
     </View>

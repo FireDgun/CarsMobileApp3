@@ -31,6 +31,7 @@ const SubNavBarMyRides = ({
         <CloseBuyRides
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          tab={initialTab}
         />
       );
     } else if (mode === "sell") {
@@ -38,6 +39,7 @@ const SubNavBarMyRides = ({
         <CloseSellRIdes
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          tab={initialTab}
         />
       );
     }
@@ -51,6 +53,7 @@ const SubNavBarMyRides = ({
           setScrollEnabled={setScrollEnabled}
           optionalNegotiationId={optionalNegotiationId}
           optionalNegotiationRideId={optionalNegotiationRideId}
+          tab={initialTab}
         />
       );
     } else if (mode === "sell") {
@@ -60,6 +63,7 @@ const SubNavBarMyRides = ({
           setScrollEnabled={setScrollEnabled}
           optionalNegotiationId={optionalNegotiationId}
           optionalNegotiationRideId={optionalNegotiationRideId}
+          tab={initialTab}
         />
       );
     }
@@ -71,6 +75,7 @@ const SubNavBarMyRides = ({
         <HistoryBuyRides
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          tab={initialTab}
         />
       );
     } else if (mode === "sell") {
@@ -78,6 +83,7 @@ const SubNavBarMyRides = ({
         <HistorySellRides
           allModeRides={allModeRides}
           setScrollEnabled={setScrollEnabled}
+          tab={initialTab}
         />
       );
     }

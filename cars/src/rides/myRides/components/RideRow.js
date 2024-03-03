@@ -9,7 +9,12 @@ import StopsModal from "../../shareRide/components/StopsModal";
 import NegotiationRow from "./NegotiationRow";
 import { useAuth } from "../../../providers/AuthContext";
 
-const RideRow = ({ ride, setScrollEnabled, optionalNegotiationId = "" }) => {
+const RideRow = ({
+  ride,
+  setScrollEnabled,
+  optionalNegotiationId = "",
+  tab,
+}) => {
   const [expanded, setExpanded] = useState(false); // State to manage the expanded/collapsed state
   const navigation = useNavigation();
   const { cancelRide } = useRidesContext();
@@ -72,7 +77,7 @@ const RideRow = ({ ride, setScrollEnabled, optionalNegotiationId = "" }) => {
           showStopsModal={showStopsModal}
           stopsToDisplay={stopsToDisplay}
         />
-        {!ride.canceled && (
+        {tab == "Open" && ride.rideOwner == user.uid && (
           <>
             <TouchableOpacity style={styles.shareButton} onPress={onSharePress}>
               <Text style={styles.shareButtonText}>שתף</Text>
@@ -102,6 +107,7 @@ const RideRow = ({ ride, setScrollEnabled, optionalNegotiationId = "" }) => {
               initialExpand={
                 optionalNegotiationId == negotiation.senderId ? true : false
               }
+              tab={tab}
             />
           );
         })
@@ -114,6 +120,7 @@ const RideRow = ({ ride, setScrollEnabled, optionalNegotiationId = "" }) => {
           ride={ride}
           setScrollEnabled={setScrollEnabled}
           initialExpand={optionalNegotiationId == user.uid ? true : false}
+          tab={tab}
         />
       )}
     </View>

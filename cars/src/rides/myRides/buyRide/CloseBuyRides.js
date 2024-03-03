@@ -3,7 +3,7 @@ import React from "react";
 import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";
 
-const CloseBuyRides = ({ allModeRides, setScrollEnabled }) => {
+const CloseBuyRides = ({ allModeRides, setScrollEnabled, tab }) => {
   const { user } = useAuth();
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0); // Set time components to zero
@@ -21,7 +21,7 @@ const CloseBuyRides = ({ allModeRides, setScrollEnabled }) => {
       <Text>CloseBuyRIdes</Text>
       {buyRides.map((ride) => (
         <View key={ride.id}>
-          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} tab={tab} />
         </View>
       ))}
     </View>

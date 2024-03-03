@@ -7,6 +7,7 @@ const OpenSellRides = ({
   setScrollEnabled,
   optionalNegotiationId = "",
   optionalNegotiationRideId = "",
+  tab,
 }) => {
   const futureRides = allModeRides.filter((ride) => {
     const currentDate = new Date();
@@ -25,9 +26,14 @@ const OpenSellRides = ({
               ride={ride}
               setScrollEnabled={setScrollEnabled}
               optionalNegotiationId={optionalNegotiationId}
+              tab={tab}
             />
           ) : (
-            <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+            <RideRow
+              ride={ride}
+              setScrollEnabled={setScrollEnabled}
+              tab={tab}
+            />
           )}
         </View>
       ))}

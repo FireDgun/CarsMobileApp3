@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import RideRow from "../components/RideRow";
 
-const CloseSellRIdes = ({ allModeRides, setScrollEnabled }) => {
+const CloseSellRIdes = ({ allModeRides, setScrollEnabled, tab }) => {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0); // Set time components to zero
 
@@ -18,7 +18,7 @@ const CloseSellRIdes = ({ allModeRides, setScrollEnabled }) => {
       <Text>CloseSellRIdes</Text>
       {soldRides.map((ride) => (
         <View key={ride.id}>
-          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} />
+          <RideRow ride={ride} setScrollEnabled={setScrollEnabled} tab={tab} />
         </View>
       ))}
     </View>
