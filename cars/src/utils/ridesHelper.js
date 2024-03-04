@@ -79,7 +79,10 @@ const formatDate = (dateString) => {
     : "לא צוין";
 };
 
-const formatAddress = (address) => {
+const formatAddress = (address, isClosedRide = false) => {
+  if (isClosedRide) {
+    return address ? address.fullAddressName : "לא ידוע";
+  }
   return address ? address.addressName : "לא ידוע";
 };
 
@@ -510,7 +513,12 @@ const extractLastPriceFromMessagesArray = (messagesArray, defaultPrice) => {
   return defaultPrice; // Return defaultPrice if no price is found in any message
 };
 
-const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
+const buildSecondaryDetails = (
+  ride,
+  setShowStopsModal,
+  setStopsToDisplay,
+  closeRide
+) => {
   const {
     numberOfPassengers,
     paymentMethod,
@@ -519,11 +527,12 @@ const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
     notes,
     frequency,
     returnFrequency,
-    tripLocations,
     numberOfSuitcases,
     numberOfSuitcasesReturn,
     stops,
     stopsReturn,
+    flightNumber,
+    flightNumberReturn,
   } = ride;
 
   let secondaryDetails = [];
@@ -588,17 +597,28 @@ const buildSecondaryDetails = (ride, setShowStopsModal, setStopsToDisplay) => {
   if (numberOfSuitcases || numberOfSuitcasesReturn) {
     secondaryDetails.push(`מזוודות: ${numberOfSuitcases || 0}`);
   }
-
+  if (closeRide) {
+    if (flightNumber) {
+      secondaryDetails.push(`מספר טיסה: ${flightNumber}`);
+    }
+    if (flightNumberReturn) {
+      secondaryDetails.push(`מספר טיסה חזור: ${flightNumberReturn}`);
+    }
+  }
   return secondaryDetails;
 };
 
-const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
+const buildRideRowView = (
+  ride,
+  setShowStopsModal,
+  setStopsToDisplay,
+  closeRide
+) => {
   const {
     type,
     date,
     destination,
     origin,
-
     startTime,
     endTime,
     tripLocations,
@@ -608,7 +628,17 @@ const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
   // Main section details
   const mainDetails = [];
   const airport = 'נתב"ג';
-  mainDetails.push(formatDate(date));
+  mainDetails.push("תאריך: " + formatDate(date));
+
+  if (endDate) {
+    if (type === 'נתב"ג הלוך וחזור') {
+      mainDetails.push("תאריך חזור: " + formatDate(endDate));
+    }
+    if (type == "נסיעה צמודה") {
+      mainDetails.push("תאריך סיום: " + formatDate(endDate));
+    }
+  }
+
   mainDetails.push(`${type}`);
   if (type == "ביצוע קו חד פעמי" && endTime) {
     mainDetails.push(`הלוך וחזור`);
@@ -630,13 +660,16 @@ const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
   let originDestinationDisplay = "";
   if (type.includes('נתב"ג')) {
     if (type === 'נתב"ג נחיתה') {
-      originDestinationDisplay = `ל${ride.destination.addressName}`;
+      originDestinationDisplay = `ל${formatAddress(destination, closeRide)}`;
     }
     if (type === 'נסיעה לנתב"ג') {
-      originDestinationDisplay = `מ${ride.origin.addressName}`;
+      originDestinationDisplay = `מ${formatAddress(origin, closeRide)}`;
     }
     if (type === 'נתב"ג הלוך וחזור') {
-      originDestinationDisplay = `מ${ride.origin.addressName} ל${airport} וחזור ל${ride.destination.addressName}`;
+      originDestinationDisplay = `מ${formatAddress(
+        origin,
+        closeRide
+      )} ל${airport} וחזור ל${formatAddress(destination, closeRide)}`;
     }
   } else {
     if (
@@ -647,14 +680,15 @@ const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
       originDestinationDisplay = `${
         tripLocations.length
       } ימי טיול:\n מתחיל מ${formatAddress(
-        tripLocations[0].origin
+        tripLocations[0].origin,
+        closeRide
       )} ב${formatTime(tripLocations[0].startTime)}`;
     } else {
       originDestinationDisplay = `מ${
-        origin && origin.addressName ? formatAddress(origin) : "N/A"
+        origin && origin.addressName ? formatAddress(origin, closeRide) : "N/A"
       } ל${
         destination && destination.addressName
-          ? formatAddress(destination)
+          ? formatAddress(destination, closeRide)
           : "N/A"
       }`;
     }
@@ -665,7 +699,8 @@ const buildRideRowView = (ride, setShowStopsModal, setStopsToDisplay) => {
   const secondaryDetails = buildSecondaryDetails(
     ride,
     setShowStopsModal,
-    setStopsToDisplay
+    setStopsToDisplay,
+    closeRide
   );
 
   // Combining main and secondary details

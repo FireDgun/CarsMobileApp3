@@ -1,7 +1,12 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
-const StopsModal = ({ stopsToDisplay, showStopsModal, setShowStopsModal }) => {
+const StopsModal = ({
+  stopsToDisplay,
+  showStopsModal,
+  setShowStopsModal,
+  fullDetails = false,
+}) => {
   return (
     <Modal
       visible={showStopsModal}
@@ -13,7 +18,7 @@ const StopsModal = ({ stopsToDisplay, showStopsModal, setShowStopsModal }) => {
         <Text style={styles.modalText}>עצירות בדרך:</Text>
         {stopsToDisplay.map((stop, index) => (
           <Text key={index} style={styles.modalStopText}>
-            {stop.addressName}
+            {fullDetails ? stop.fullAddressName : stop.addressName}
           </Text>
         ))}
         <TouchableOpacity

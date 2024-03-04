@@ -8,6 +8,8 @@ import { buildRideRowView, flashRide } from "../../../utils/ridesHelper";
 import StopsModal from "../../shareRide/components/StopsModal";
 import NegotiationRow from "./NegotiationRow";
 import { useAuth } from "../../../providers/AuthContext";
+import MenageRideButtons from "./MenageRideButtons";
+import MenageRidePayment from "./MenageRidePayment";
 
 const RideRow = ({
   ride,
@@ -25,7 +27,8 @@ const RideRow = ({
   const { mainDetails, secondaryDetails } = buildRideRowView(
     ride,
     setShowStopsModal,
-    setStopsToDisplay
+    setStopsToDisplay,
+    tab == "Close"
   ); // Extract details using the utility function
 
   const onSharePress = () => {
@@ -76,6 +79,7 @@ const RideRow = ({
           setShowStopsModal={setShowStopsModal}
           showStopsModal={showStopsModal}
           stopsToDisplay={stopsToDisplay}
+          fullDetails={tab == "Close" ? true : false}
         />
         {tab == "Open" && ride.rideOwner == user.uid && (
           <>
@@ -90,6 +94,11 @@ const RideRow = ({
             </TouchableOpacity>
           </>
         )}
+        {tab == "Close" && <MenageRideButtons ride={ride} />}
+        {tab == "History" && ride.rideBuyer && (
+          <MenageRidePayment ride={ride} />
+        )}
+
         {ride.canceled && <Text style={styles.canceledText}>בוטל</Text>}
         <MaterialIcons name="expand-more" size={24} color="gray" />
       </TouchableOpacity>

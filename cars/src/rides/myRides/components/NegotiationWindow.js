@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import NegotiationButtons from "./NegotiationButtons";
+import MenageRideButtons from "./MenageRideButtons";
 
 const NegotiationWindow = ({
   messages,
