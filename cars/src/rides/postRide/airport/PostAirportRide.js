@@ -21,6 +21,20 @@ const PostAirportRide = () => {
     usePostRide();
   const [rideType, setRideType] = useState("arrival"); // Can be 'arrival', 'departure', or 'both'
   const navigation = useNavigation();
+  const [endDateError, setEndDateError] = useState("");
+
+  useEffect(() => {
+    const start = new Date(formData.date);
+    const end = formData.endDate ? new Date(formData.endDate) : start;
+    let dayDifference = (end - start) / (1000 * 3600 * 24);
+    if (dayDifference < 0) {
+      setEndDateError("תאריך סיום חייב להיות אחרי התאריך התחלה");
+      return;
+    } else {
+      setEndDateError(""); // Clear error if the condition is fixed
+    }
+  }, [formData.date, formData.endDate]);
+
   useEffect(() => {
     handleInputChange("origin", "");
     handleInputChange("destination", "");
@@ -79,6 +93,9 @@ const PostAirportRide = () => {
                 handleInputChange("endDate", selectedDate)
               }
             />
+            {endDateError ? (
+              <Text style={styles.errorText}>{endDateError}</Text>
+            ) : null}
             <TimePickerComponent
               time={formData.endTime}
               onTimeChange={(selectedTime) =>
@@ -127,6 +144,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
+  },
+  errorText: {
+    color: "red", // Change as needed
+    marginTop: 4,
+    // Add other styling for your error text
   },
   subNavbar: {
     flexDirection: "row",

@@ -26,9 +26,9 @@ const RidePreview = ({ ride }) => {
           stopsToDisplay={stopsToDisplay}
         />
       </View>
-      <TouchableOpacity style={styles.button}>
+      {/* <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>שלח</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
