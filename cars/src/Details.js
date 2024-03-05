@@ -31,6 +31,7 @@ export default function Details({ route, navigation }) {
   const [selectedYear, setSelectedYear] = useState(
     new Date().getFullYear().toString()
   );
+  const [isNameEmpty, setIsNameEmpty] = useState(false);
   const [selectedLocations, setSelectedLocations] = useState([]);
   const [profilePic, setProfilePic] = useState(null);
   const toggleLocation = (location) => {
@@ -44,20 +45,24 @@ export default function Details({ route, navigation }) {
   };
 
   const handleSaveDetails = async () => {
-    try {
-      await saveDetails(
-        uid,
-        name,
-        selectedMonth,
-        selectedYear,
-        phoneNumber,
-        selectedLocations,
-        profilePic,
-        navigation
-      );
-      await addDataFromDbToUser(uid);
-    } catch (error) {
-      console.log("Error saving the details :" + error);
+    if (name != "") {
+      try {
+        await saveDetails(
+          uid,
+          name,
+          selectedMonth,
+          selectedYear,
+          phoneNumber,
+          selectedLocations,
+          profilePic ?? "",
+          navigation
+        );
+        await addDataFromDbToUser(uid);
+      } catch (error) {
+        console.log("Error saving the details :" + error);
+      }
+    } else {
+      setIsNameEmpty(true);
     }
   };
 
@@ -93,7 +98,12 @@ export default function Details({ route, navigation }) {
         }}
         placeholder="שם החברה"
         value={name}
-        onChangeText={setName}
+        onChangeText={(text) => {
+          if (text != "") {
+            setIsNameEmpty(false);
+          }
+          setName(text);
+        }}
       />
       <Text>ממתי אתה עושה הסעות?</Text>
 
@@ -133,6 +143,9 @@ export default function Details({ route, navigation }) {
           שמור
         </Text>
       </TouchableOpacity>
+      {isNameEmpty && (
+        <Text style={{ color: "red", marginBottom: 10 }}>אנא הכנס שם</Text>
+      )}
     </ScrollView>
   );
 }

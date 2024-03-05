@@ -65,7 +65,7 @@ function ChatWindow({ route }) {
     }
   };
   const onContentSizeChange = () => {
-    if (messages[messages.length - 1].senderId == user.uid) {
+    if (messages[messages.length - 1]?.senderId == user.uid) {
       flatListRef.current.scrollToEnd();
     }
   };

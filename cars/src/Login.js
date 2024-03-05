@@ -99,7 +99,7 @@ export default function Login() {
           </TouchableOpacity>
           {wrongNumber && (
             <Text style={{ color: "red", marginBottom: 10 }}>
-              מספר טלפון שגוי, אנא נסה שוב
+              מספר טלפון לא תקין, אנא נסה שוב
             </Text>
           )}
         </>
