@@ -115,6 +115,7 @@ const PostAirportRide = () => {
           specialOption={formData.specialOption}
           handleSpecialOptionChange={handleSpecialOptionChange}
           optionalMarginTop={40}
+          openForOffers={formData.openForOffers}
         />
       </View>
       <TouchableOpacity

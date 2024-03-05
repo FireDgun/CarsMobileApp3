@@ -430,6 +430,7 @@ const initialRideObject = {
   returnFrequency: "",
   interestedUsers: [],
   rideBuyer: null,
+  openForOffers: true,
 };
 
 const flashRide = (ride) => {

@@ -13,6 +13,7 @@ const ChatRow = ({
   style = {},
 }) => {
   const imageSource = image ? { uri: image } : defaultImage;
+  console.log(imageSource);
   const { user } = useAuth();
   if (user && user.uid == id) return;
 

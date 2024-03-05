@@ -15,6 +15,7 @@ import { useRidesContext } from "../../../providers/RidesContext";
 import { useChatsContext } from "../../../providers/ChatsProvider";
 import WaitingForResponse from "../../myRides/components/WaitingForResponse";
 import SuggestPriceForRide from "./SuggestPriceForRide";
+import CancelRideModal from "./CancelRideModal";
 
 const RideActionButtons = ({ ride }) => {
   const [showPriceSuggestionModal, setShowPriceSuggestionModal] =
@@ -24,7 +25,7 @@ const RideActionButtons = ({ ride }) => {
   const { user } = useAuth();
   const [rideDetails, setRideDetails] = useState(ride);
   const [isReady, setIsReady] = useState(false);
-
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsReady(true);
@@ -65,6 +66,9 @@ const RideActionButtons = ({ ride }) => {
   };
 
   const handleCancel = () => {
+    setIsCancelModalVisible(true);
+  };
+  const handleConfirmCancelRide = () => {
     console.log("Cancel button clicked");
     cancelRide(ride.id);
     cancelRideOnChats(ride.id);
@@ -96,18 +100,25 @@ const RideActionButtons = ({ ride }) => {
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.buttonText}>בטל</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() =>
-              navigation.navigate("Dashboard", {
-                initialPage: "rides",
-                initialSelectedTab: "MySellRides",
-                initialTab: "Open",
-              })
-            }
-          >
-            <Text style={styles.buttonText}>צפה במשא ומתן</Text>
-          </TouchableOpacity>
+          <CancelRideModal
+            modalVisible={isCancelModalVisible}
+            setModalVisible={setIsCancelModalVisible}
+            onConfirm={handleConfirmCancelRide}
+          />
+          {ride?.interestedUsers?.length > 0 && (
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={() =>
+                navigation.navigate("Dashboard", {
+                  initialPage: "rides",
+                  initialSelectedTab: "MySellRides",
+                  initialTab: "Open",
+                })
+              }
+            >
+              <Text style={styles.buttonText}>צפה במשא ומתן</Text>
+            </TouchableOpacity>
+          )}
         </>
       ) : rideDetails[user.uid] ? (
         <>
@@ -148,12 +159,14 @@ const RideActionButtons = ({ ride }) => {
               <Text style={styles.buttonText}>שלח פרטים</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSuggestPrice}
-            >
-              <Text style={styles.buttonText}>הצע מחיר</Text>
-            </TouchableOpacity>
+            {ride.openForOffers && (
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={handleSuggestPrice}
+              >
+                <Text style={styles.buttonText}>הצע מחיר</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}

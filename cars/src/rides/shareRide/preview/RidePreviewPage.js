@@ -53,7 +53,15 @@ const RidePreviewPage = ({ route }) => {
       };
       flag = false;
     }
-
+    if (!ride.openForOffers) {
+      if (!ride.price) {
+        validations.price = {
+          label: "מחיר",
+          message: "חובה למלא מחיר או לסמן שאתה רוצה לקבל הצעות מחיר",
+        };
+        flag = false;
+      }
+    }
     if (getRideTypeHebrewName(ride.type) == "נסיעה צמודה") {
       console.log(ride.tripLocations);
       ride.tripLocations.forEach((location, index) => {

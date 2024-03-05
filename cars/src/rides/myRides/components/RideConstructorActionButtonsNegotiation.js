@@ -115,12 +115,14 @@ const RideConstructorActionButtonsNegotiation = ({
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSuggestPrice}
-            >
-              <Text style={styles.buttonText}>הצע מחיר</Text>
-            </TouchableOpacity>
+            {ride.openForOffers && (
+              <TouchableOpacity
+                style={styles.sendButton}
+                onPress={handleSuggestPrice}
+              >
+                <Text style={styles.buttonText}>הצע מחיר</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}

@@ -160,6 +160,7 @@ const PostTripRide = () => {
           notes={formData.notes}
           specialOption={formData.specialOption}
           handleSpecialOptionChange={handleSpecialOptionChange}
+          openForOffers={formData.openForOffers}
         />
       </View>
 

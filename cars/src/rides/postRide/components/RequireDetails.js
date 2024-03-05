@@ -25,6 +25,7 @@ const RequireDetails = ({
   numberOfPassengers,
   price,
   paymentMethod,
+  openForOffers,
   handleInputChange,
   notes,
   specialOption,
@@ -39,22 +40,37 @@ const RequireDetails = ({
 
   return (
     <View style={{ marginTop: optionalMarginTop }}>
-      <TextInput
-        placeholder="מספר נוסעים"
-        value={numberOfPassengers}
-        onChangeText={(text) => handleInputChange("numberOfPassengers", text)}
-        style={{ ...styles.input, marginBottom: 10 }}
-        keyboardType="numeric"
-        size={"small"}
-      />
+      <View style={styles.row}>
+        <TextInput
+          placeholder="מספר נוסעים"
+          value={numberOfPassengers}
+          onChangeText={(text) => handleInputChange("numberOfPassengers", text)}
+          style={[styles.input, styles.flexItem]}
+          keyboardType="numeric"
+          size={"small"}
+        />
+      </View>
+      <View style={styles.row}>
+        <TextInput
+          placeholder="מחיר"
+          value={price}
+          onChangeText={(text) => handleInputChange("price", text)}
+          style={[styles.input, styles.flexItem]}
+          keyboardType="numeric"
+        />
+        <TouchableOpacity
+          onPress={() => handleInputChange("openForOffers", !openForOffers)}
+          style={[
+            styles.checkboxBase,
+            styles.flexItem,
+            openForOffers && styles.checkboxChecked,
+          ]}
+        >
+          {openForOffers && <Text style={styles.checkmark}>✓</Text>}
+        </TouchableOpacity>
 
-      <TextInput
-        placeholder="מחיר"
-        value={price}
-        onChangeText={(text) => handleInputChange("price", text)}
-        style={styles.input}
-        keyboardType="numeric"
-      />
+        <Text style={styles.flexItem}>פתוח להצעות</Text>
+      </View>
 
       <Picker
         selectedValue={paymentMethod}
@@ -157,5 +173,35 @@ const styles = StyleSheet.create({
     color: "gray", // Text color to match the icon
     marginLeft: 5, // Space between the icon and the text
     fontSize: 16, // Font size for clarity and readability
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  flexItem: {
+    margin: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "gray",
+    padding: 10,
+    width: 200,
+  },
+  checkboxBase: {
+    width: 24,
+    height: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#000",
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  checkboxChecked: {
+    backgroundColor: "#000",
+  },
+  checkmark: {
+    color: "white",
+    fontSize: 14, // Adjust the size as needed
   },
 });

@@ -20,7 +20,6 @@ export default function Dashboard({ route }) {
     optionalNegotiationId,
     optionalNegotiationRideId,
   } = useRideNavigation(route);
-
   // useEffect(() => {
   //   let index = selectedTab === "rides" ? 1 : 0;
   //   refFlatList.current.scrollToIndex({ animated: true, index });

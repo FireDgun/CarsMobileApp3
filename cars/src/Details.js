@@ -54,7 +54,8 @@ export default function Details({ route, navigation }) {
           selectedYear,
           phoneNumber,
           selectedLocations,
-          profilePic ?? "",
+          profilePic ??
+            "https://firebasestorage.googleapis.com/v0/b/carsmobileapp-5f072.appspot.com/o/driver.png?alt=media&token=88418939-1372-47c3-912e-79aa3885afbc",
           navigation
         );
         await addDataFromDbToUser(uid);
