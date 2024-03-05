@@ -10,6 +10,7 @@ import NegotiationRow from "./NegotiationRow";
 import { useAuth } from "../../../providers/AuthContext";
 import MenageRideButtons from "./MenageRideButtons";
 import MenageRidePayment from "./MenageRidePayment";
+import CancelRideModal from "../../shareRide/share/CancelRideModal";
 
 const RideRow = ({
   ride,
@@ -23,6 +24,8 @@ const RideRow = ({
   const { cancelRideOnChats } = useChatsContext();
   const [showStopsModal, setShowStopsModal] = useState(false);
   const [stopsToDisplay, setStopsToDisplay] = useState([]);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+
   const { user } = useAuth();
   const { mainDetails, secondaryDetails } = buildRideRowView(
     ride,
@@ -35,7 +38,12 @@ const RideRow = ({
     navigation.navigate("ShareRidePage", { rideId: ride.id });
   };
   console.log("optionalNegotiationId", optionalNegotiationId);
+
   const onCancelPress = () => {
+    setIsCancelModalVisible(true);
+  };
+  const handleConfirmCancelRide = () => {
+    console.log("Cancel button clicked");
     cancelRide(ride.id);
     cancelRideOnChats(ride.id);
   };
@@ -92,6 +100,11 @@ const RideRow = ({
             >
               <Text style={styles.cancelButtonText}>בטל</Text>
             </TouchableOpacity>
+            <CancelRideModal
+              modalVisible={isCancelModalVisible}
+              setModalVisible={setIsCancelModalVisible}
+              onConfirm={handleConfirmCancelRide}
+            />
           </>
         )}
         {tab == "Close" && <MenageRideButtons ride={ride} />}

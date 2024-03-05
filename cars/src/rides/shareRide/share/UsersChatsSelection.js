@@ -98,13 +98,6 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
   };
 
   const renderSelectedItem = (item) => {
-    let userImage;
-    if (item.category === "chat") {
-      userImage = getChatImage(allUsers, item, user.uid);
-      if (userImage == "") {
-        userImage = defaultImage;
-      }
-    }
     return (
       <View key={item.id} style={styles.selectedUserContainer}>
         <TouchableOpacity
@@ -112,9 +105,12 @@ const UsersChatsSelection = ({ selectedItems, setSelectedItems }) => {
           onPress={() => handleSelectItem(item)}
         >
           <Image
-            source={
-              item.category === "chat" ? userImage : { uri: item.profilePic }
-            }
+            source={{
+              uri:
+                item.category === "chat"
+                  ? getChatImage(allUsers, item, user.uid)
+                  : item.profilePic,
+            }}
             style={styles.selectedUserImage}
           />
         </TouchableOpacity>
