@@ -133,7 +133,7 @@ export const RidesProvider = ({ children }) => {
       setOpenNegotiationRides(
         allRides.filter(
           (ride) =>
-            ride.rideBuyer == null && ride.interestedUsers.includes(user.uid)
+            ride.rideBuyer == null && ride.interestedUsers?.includes(user.uid)
         )
       );
     }
