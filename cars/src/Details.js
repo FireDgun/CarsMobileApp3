@@ -17,6 +17,7 @@ import { locationOptions } from "./utils/locationsList";
 import CustomImagePicker from "./components/CustomImagePicker";
 import { useUsersContext } from "./providers/UsersProvider";
 import { useAuth } from "./providers/AuthContext";
+import MultiSelectDropdown from "./components/MultiSelectDropdown";
 
 export default function Details({ route, navigation }) {
   const uid = route.params?.uid;
@@ -76,6 +77,11 @@ export default function Details({ route, navigation }) {
       >
         הוסף פרטים
       </Text>
+      <CustomImagePicker
+        uid={uid}
+        folderName={"profile_pics"}
+        handleSetState={handleSetProfilePic}
+      />
       <TextInput
         style={{
           height: 50,
@@ -91,14 +97,14 @@ export default function Details({ route, navigation }) {
       />
       <Text>ממתי אתה עושה הסעות?</Text>
 
-      <Picker
+      {/* <Picker
         selectedValue={selectedMonth}
         onValueChange={(itemValue) => setSelectedMonth(itemValue)}
       >
         {months.map((month) => (
           <Picker.Item key={month} label={month} value={month} />
         ))}
-      </Picker>
+      </Picker> */}
       <Picker
         selectedValue={selectedYear}
         onValueChange={(itemValue) => setSelectedYear(itemValue)}
@@ -107,28 +113,10 @@ export default function Details({ route, navigation }) {
           <Picker.Item key={year} label={year} value={year} />
         ))}
       </Picker>
-      <View style={{ marginBottom: 20 }}>
-        {locationOptions.map((location) => (
-          <TouchableOpacity
-            key={location}
-            onPress={() => toggleLocation(location)}
-            style={{
-              backgroundColor: selectedLocations.includes(location)
-                ? "#841584"
-                : "#999",
-              padding: 10,
-              borderRadius: 5,
-              marginBottom: 10,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 16 }}>{location}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <CustomImagePicker
-        uid={uid}
-        folderName={"profile_pics"}
-        handleSetState={handleSetProfilePic}
+      <MultiSelectDropdown
+        options={locationOptions}
+        selectedOptions={selectedLocations}
+        setSelectedOptions={setSelectedLocations}
       />
 
       <TouchableOpacity

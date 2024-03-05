@@ -11,6 +11,7 @@ export default function Login() {
   const [confirm, setConfirm] = useState(null);
   const [error, setError] = useState("");
   const [resendCount, setResendCount] = useState(0);
+  const [wrongNumber, setWrongNumber] = useState(false);
   const navigation = useNavigation();
 
   const signInWithPhoneNumber = async () => {
@@ -20,6 +21,7 @@ export default function Login() {
       );
       setConfirm(confirmation);
     } catch (error) {
+      setWrongNumber(true);
       console.log("Error sending code: " + error);
     }
   };
@@ -76,7 +78,10 @@ export default function Login() {
             }}
             placeholder="לדוגמא: 052-1231231"
             value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            onChangeText={(text) => {
+              setWrongNumber(false);
+              setPhoneNumber(text);
+            }}
           />
           <TouchableOpacity
             onPress={signInWithPhoneNumber}
@@ -92,6 +97,11 @@ export default function Login() {
               שלח קוד
             </Text>
           </TouchableOpacity>
+          {wrongNumber && (
+            <Text style={{ color: "red", marginBottom: 10 }}>
+              מספר טלפון שגוי, אנא נסה שוב
+            </Text>
+          )}
         </>
       ) : (
         <>

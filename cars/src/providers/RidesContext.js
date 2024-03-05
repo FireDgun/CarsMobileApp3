@@ -129,7 +129,7 @@ export const RidesProvider = ({ children }) => {
   }, [user]); // Depend on cleanupListeners and applyListenersToAllMyRides as well
 
   useEffect(() => {
-    if (allRides) {
+    if (allRides && user?.uid) {
       setOpenNegotiationRides(
         allRides.filter(
           (ride) =>
@@ -139,26 +139,28 @@ export const RidesProvider = ({ children }) => {
     }
   }, [allRides]);
   useEffect(() => {
-    const hasApprovedMessage = openNegotiationRides.find(
-      (ride) =>
-        ride[user.uid]?.messages?.length > 0 &&
-        ride[user.uid].messages[ride[user.uid].messages.length - 1].type ===
-          RideMessageType.PUBLISHER_APPROVED // Assuming "RideMessageTypes.PUBLISHER_APPROVED" is a valid type
-    );
+    if (user) {
+      const hasApprovedMessage = openNegotiationRides.find(
+        (ride) =>
+          ride[user.uid]?.messages?.length > 0 &&
+          ride[user.uid].messages[ride[user.uid].messages.length - 1].type ===
+            RideMessageType.PUBLISHER_APPROVED // Assuming "RideMessageTypes.PUBLISHER_APPROVED" is a valid type
+      );
 
-    const lastApprovedMessageCreatedAt =
-      hasApprovedMessage?.[user.uid]?.messages?.[
-        hasApprovedMessage[user.uid].messages.length - 1
-      ]?.createdAt;
+      const lastApprovedMessageCreatedAt =
+        hasApprovedMessage?.[user.uid]?.messages?.[
+          hasApprovedMessage[user.uid].messages.length - 1
+        ]?.createdAt;
 
-    if (hasApprovedMessage) {
-      setApprovedRide(hasApprovedMessage);
-      setTimeLeft(getTimeLeft(lastApprovedMessageCreatedAt));
-      setIsModalVisible(true); // Show the modal if condition is met
-    } else {
-      setIsModalVisible(false);
+      if (hasApprovedMessage) {
+        setApprovedRide(hasApprovedMessage);
+        setTimeLeft(getTimeLeft(lastApprovedMessageCreatedAt));
+        setIsModalVisible(true); // Show the modal if condition is met
+      } else {
+        setIsModalVisible(false);
+      }
     }
-  }, [openNegotiationRides, user.uid]);
+  }, [openNegotiationRides, user?.uid]);
 
   return (
     <RidesContext.Provider
