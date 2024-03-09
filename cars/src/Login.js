@@ -30,10 +30,12 @@ export default function Login() {
     try {
       const userCredential = await confirm.confirm(code);
       const user = userCredential.user;
+
       const userDocument = await firestore()
         .collection("users")
         .doc(user.uid)
         .get();
+
       let number = fixPhoneFormat(phoneNumber);
       navigation.reset({
         index: 0,

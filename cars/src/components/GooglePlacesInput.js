@@ -96,7 +96,7 @@ const GooglePlacesInput = ({
         }
         debounce={300}
       />
-      {showShowFullAddress && (
+      {/* {showShowFullAddress && (
         <View style={styles.buttonContainer}>
           <Text style={styles.addressText}>כתובת לפרסום:</Text>
           <Text style={styles.addressText}>
@@ -124,7 +124,7 @@ const GooglePlacesInput = ({
             </Text>
           </TouchableOpacity>
         </View>
-      )}
+      )} */}
     </View>
   );
 };

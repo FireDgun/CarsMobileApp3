@@ -7,11 +7,11 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import CustomImagePicker from "../components/CustomImagePicker";
 import Header from "../layout/Header";
 import uuid from "react-native-uuid";
-import useChats from "../hooks/useChats";
 import { useChatsContext } from "../providers/ChatsProvider";
 import { useAuth } from "../providers/AuthContext";
 import { useNavigation } from "@react-navigation/native";
@@ -19,6 +19,8 @@ import { useNavigation } from "@react-navigation/native";
 const StartNewChatGroupDetails = ({ route }) => {
   const [groupName, setGroupName] = useState("");
   const [groupImage, setGroupImage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // New state for managing error messages
+  const [isLoading, setIsLoading] = useState(false); // New state for managing loading state
   const [imageGroupChatId, setImageGroupChatId] = useState(uuid.v4());
   const { createGroupChat } = useChatsContext();
   const { user } = useAuth();
@@ -27,28 +29,32 @@ const StartNewChatGroupDetails = ({ route }) => {
 
   const handleGroupNameChange = (text) => {
     setGroupName(text);
+    setErrorMessage(""); // Clear error message when user starts typing
   };
 
   const handleCreateGroup = async () => {
+    const trimmedGroupName = groupName.trim();
+    if (trimmedGroupName.length === 0) {
+      setErrorMessage("חובה לכתוב שם קבוצה");
+      return;
+    }
+    setIsLoading(true); // Start loading
     try {
       let newChatId = await createGroupChat(
         [...selectedUsers.map((u) => u.uid), user.uid],
         groupImage ?? "",
-        groupName ?? ""
+        trimmedGroupName
       );
-      console.log("New chat created with id ", newChatId);
       navigation.navigate("Dashboard");
     } catch (err) {
       console.log("Error while creating new group chat ", err);
+      setErrorMessage(
+        "An error occurred while creating the group. Please try again."
+      );
+    } finally {
+      setIsLoading(false); // Stop loading regardless of outcome
     }
   };
-
-  const renderSelectedUser = ({ item }) => (
-    <View style={styles.selectedUser}>
-      <Image source={{ uri: item.profilePic }} style={styles.userImage} />
-      <Text style={styles.userName}>{item.name}</Text>
-    </View>
-  );
 
   return (
     <>
@@ -56,18 +62,29 @@ const StartNewChatGroupDetails = ({ route }) => {
       <View style={styles.container}>
         <CustomImagePicker
           folderName="group_images"
-          uid={imageGroupChatId} // This should be a unique ID for the group
+          uid={imageGroupChatId}
           handleSetState={setGroupImage}
         />
         <TextInput
           value={groupName}
           onChangeText={handleGroupNameChange}
-          placeholder="Enter group name"
+          placeholder="שם הקבוצה"
           style={styles.textInput}
         />
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
         <FlatList
           data={selectedUsers}
-          renderItem={renderSelectedUser}
+          renderItem={({ item }) => (
+            <View style={styles.selectedUser}>
+              <Image
+                source={{ uri: item.profilePic }}
+                style={styles.userImage}
+              />
+              <Text style={styles.userName}>{item.name}</Text>
+            </View>
+          )}
           keyExtractor={(item) => item.uid}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -76,8 +93,13 @@ const StartNewChatGroupDetails = ({ route }) => {
         <TouchableOpacity
           style={styles.createGroupButton}
           onPress={handleCreateGroup}
+          disabled={isLoading} // Disable the button when loading
         >
-          <Text style={styles.createGroupButtonText}>Create Group</Text>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.createGroupButtonText}>צור קבוצה חדשה</Text>
+          )}
         </TouchableOpacity>
       </View>
     </>
@@ -95,6 +117,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
+  },
+  errorText: {
+    color: "red", // Make the error message stand out
+    marginBottom: 10,
   },
   selectedUser: {
     alignItems: "center",
