@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { fixPhoneFormat } from "./utils/phoneHelper";
-import { useContacts } from "./providers/ContactsProvider";
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");
   const [confirm, setConfirm] = useState(null);
   const [error, setError] = useState("");
-  const [resendCount, setResendCount] = useState(0);
   const [wrongNumber, setWrongNumber] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const signInWithPhoneNumber = async () => {
     try {
+      setIsLoading(true);
       const confirmation = await auth().signInWithPhoneNumber(
         "+972" + phoneNumber
       );
@@ -24,10 +30,12 @@ export default function Login() {
       setWrongNumber(true);
       console.log("Error sending code: " + error);
     }
+    setIsLoading(false);
   };
 
   const confirmCode = async () => {
     try {
+      setIsLoading(true);
       const userCredential = await confirm.confirm(code);
       const user = userCredential.user;
 
@@ -50,6 +58,7 @@ export default function Login() {
       setError("קוד שגוי, נסו שוב");
       console.log("Invalid code: " + error);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -95,9 +104,14 @@ export default function Login() {
               alignItems: "center",
             }}
           >
-            <Text style={{ color: "white", fontSize: 22, fontWeight: "bold" }}>
-              שלח קוד
-            </Text>
+            {!isLoading && (
+              <Text
+                style={{ color: "white", fontSize: 22, fontWeight: "bold" }}
+              >
+                שלח קוד
+              </Text>
+            )}
+            {isLoading && <ActivityIndicator size="small" color="#fff" />}
           </TouchableOpacity>
           {wrongNumber && (
             <Text style={{ color: "red", marginBottom: 10 }}>
@@ -128,24 +142,27 @@ export default function Login() {
             value={code}
             onChangeText={setCode}
           />
-          {error === "" && (
-            <TouchableOpacity
-              onPress={confirmCode}
-              style={{
-                backgroundColor: "#841584",
-                padding: 10,
-                borderRadius: 5,
-                marginBottom: 20,
-                alignItems: "center",
-              }}
-            >
+
+          <TouchableOpacity
+            onPress={confirmCode}
+            style={{
+              backgroundColor: "#841584",
+              padding: 10,
+              borderRadius: 5,
+              marginBottom: 20,
+              alignItems: "center",
+            }}
+          >
+            {!isLoading && (
               <Text
                 style={{ color: "white", fontSize: 22, fontWeight: "bold" }}
               >
                 אישור
               </Text>
-            </TouchableOpacity>
-          )}
+            )}
+            {isLoading && <ActivityIndicator size="small" color="#fff" />}
+          </TouchableOpacity>
+
           {error !== "" && (
             <>
               <Text style={{ color: "red", marginBottom: 10 }}>{error}</Text>
@@ -167,7 +184,12 @@ export default function Login() {
                 <Text
                   style={{ color: "white", fontSize: 22, fontWeight: "bold" }}
                 >
-                  חזור
+                  {phoneNumber} לא נכון?
+                </Text>
+                <Text
+                  style={{ color: "white", fontSize: 22, fontWeight: "bold" }}
+                >
+                  שנה מספר טלפון
                 </Text>
               </TouchableOpacity>
             </>

@@ -9,6 +9,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import MySellRides from "./myRides/sellRide/MySellRides";
 import MyBuyRides from "./myRides/buyRide/MyBuyRides";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const RidesList = ({
   initialSelectedTab = "MySellRides",
@@ -79,6 +80,8 @@ const RidesList = ({
         style={styles.newChatButton}
         onPress={navigateToPostNewRide}
       >
+        <MaterialIcons name="directions-bus" size={24} color={"white"} />
+
         <Text style={styles.newChatButtonText}>+</Text>
       </TouchableOpacity>
     </View>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
   },
   newChatButtonText: {
     color: "white",
-    fontSize: 24,
+    fontSize: 12,
     fontWeight: "bold",
   },
 });

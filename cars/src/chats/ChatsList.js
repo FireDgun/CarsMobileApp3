@@ -16,6 +16,7 @@ import {
   getChatImage,
 } from "../utils/chatsDataHelpers";
 import { useAuth } from "../providers/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ChatsList() {
   const { myChats } = useChatsContext();
@@ -29,8 +30,8 @@ export default function ChatsList() {
       },
       [navigation]
     );
-    const navigateToStartNewChat = () => {
-      navigation.navigate("StartNewChat");
+    const navigateToPostNewRide = () => {
+      navigation.navigate("PostNewRide");
     };
     const renderItem = ({ item }) => {
       // Assuming each chat item has properties like id, name, city, image, etc.
@@ -58,8 +59,9 @@ export default function ChatsList() {
         />
         <TouchableOpacity
           style={styles.newChatButton}
-          onPress={navigateToStartNewChat}
+          onPress={navigateToPostNewRide}
         >
+          <MaterialIcons name="directions-bus" size={24} color={"white"} />
           <Text style={styles.newChatButtonText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   },
   newChatButtonText: {
     color: "white",
-    fontSize: 24,
+    fontSize: 12,
     fontWeight: "bold",
   },
 });
