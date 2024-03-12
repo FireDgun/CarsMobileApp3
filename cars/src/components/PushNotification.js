@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Text, View, Button, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import Constants from "expo-constants";
 import { useAuth } from "../providers/AuthContext";
 import { useUsersContext } from "../providers/UsersProvider";
-
+import { EXPO_PROJECT_ID } from "@env";
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -22,18 +21,19 @@ export default function PushNotification() {
   const { user } = useAuth();
   const { saveUserExpoPushToken } = useUsersContext();
   useEffect(() => {
-    if (user) {
+    if (user?.name) {
+      console.log("user");
+      console.log(user);
+
       registerForPushNotificationsAsync(user, saveUserExpoPushToken).then(
         (token) => setExpoPushToken(token)
       );
-
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
           console.log("notification");
           console.log(notification);
           setNotification(notification);
         });
-
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
           console.log("response");
@@ -54,6 +54,7 @@ export default function PushNotification() {
 
 async function registerForPushNotificationsAsync(user, saveUserExpoPushToken) {
   let token;
+  console.log("hey1");
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -63,31 +64,39 @@ async function registerForPushNotificationsAsync(user, saveUserExpoPushToken) {
       lightColor: "#FF231F7C",
     });
   }
+  console.log("hey2");
+
   if (!Device.isDevice) {
     alert("Must use physical device for Push Notifications");
     return;
   }
+  console.log("hey3");
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
+  console.log("hey4");
 
   if (existingStatus !== "granted") {
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
   }
+  console.log("hey5");
 
   if (finalStatus !== "granted") {
     alert("בבקשה אשר קבלת התראות באפליקציה");
     return;
   }
 
-  const projectId = process.env.EXPO_PROJECT_ID;
+  const projectId = EXPO_PROJECT_ID;
+
   token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+  console.log("hey6");
 
   // Assuming fetchUserExpoPushTokens and saveUserExpoPushTokens are implemented
   const existingTokens = user.expoPushTokens || [];
-  console.log(projectId);
-  console.log("existingTokens");
+  console.log(token);
+  console.log("token");
+  console.log(existingTokens);
   if (!existingTokens.includes(token)) {
     const updatedTokens = [...existingTokens, token];
     await saveUserExpoPushToken(user.uid, updatedTokens);

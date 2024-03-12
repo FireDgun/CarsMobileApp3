@@ -6,6 +6,9 @@ import ChatsList from "./chats/ChatsList";
 import useRideNavigation from "./hooks/useRideNavigation";
 import { useNavigation } from "@react-navigation/native";
 import PushNotification from "./components/PushNotification";
+import usePushNotifications from "./hooks/usePushNotifications";
+import { useAuth } from "./providers/AuthContext";
+import { useUsersContext } from "./providers/UsersProvider";
 
 const { width } = Dimensions.get("window");
 
@@ -13,6 +16,8 @@ export default function Dashboard({ route }) {
   const [layoutReady, setLayoutReady] = useState(false); // Track layout readiness
   const navigation = useNavigation();
   const refFlatList = useRef(null);
+  const { user } = useAuth();
+  const { saveUserExpoPushToken } = useUsersContext();
   const {
     selectedTab,
     initialRidePage,
@@ -20,6 +25,7 @@ export default function Dashboard({ route }) {
     optionalNegotiationId,
     optionalNegotiationRideId,
   } = useRideNavigation(route);
+  usePushNotifications(user, saveUserExpoPushToken);
   // useEffect(() => {
   //   let index = selectedTab === "rides" ? 1 : 0;
   //   refFlatList.current.scrollToIndex({ animated: true, index });
@@ -59,7 +65,6 @@ export default function Dashboard({ route }) {
   return (
     <View style={styles.container}>
       <Header setSelectedTab={handleSetSelectedTab} />
-      <PushNotification />
       <FlatList
         ref={refFlatList}
         onLayout={() => setLayoutReady(true)}

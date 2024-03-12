@@ -48,13 +48,16 @@ export default function useUsers() {
         await firestore()
           .collection("users")
           .doc(uid)
-          .set({
-            name,
-            dob: `${selectedMonth}/${selectedYear}`, // Store DOB as "month/year"
-            phoneNumber,
-            selectedLocations, // Store selected locations
-            profilePic,
-          });
+          .set(
+            {
+              name,
+              dob: `${selectedMonth}/${selectedYear}`, // Store DOB as "month/year"
+              phoneNumber,
+              selectedLocations, // Store selected locations
+              profilePic,
+            },
+            { merge: true }
+          );
         navigation.navigate("Dashboard");
       } catch (error) {
         console.log("Error saving the details :" + error);
