@@ -411,6 +411,7 @@ const initialRideObject = {
     {
       origin: "",
       destination: "",
+      endAt: "origin", // "destination" or "origin"
       stops: [],
       startTime: null,
       endTime: null,

@@ -1,24 +1,35 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import TopNavigation from "./TopNavigation";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
+import PopupMenu from "./PopupMenu";
 
 const Header = ({ setSelectedTab }) => {
   const navigation = useNavigation();
   const route = useRoute();
+  const [isSearchVisible, setSearchVisible] = useState(false);
+  const [isMenuVisible, setMenuVisible] = useState(false);
 
-  const handleSearch = () => {
-    console.log("Search clicked");
+  const toggleSearch = () => {
+    setSearchVisible((prev) => !prev);
   };
 
-  const handleSettings = () => {
-    console.log("Settings clicked");
+  const toggleMenu = () => {
+    setMenuVisible((prev) => !prev);
   };
 
   const handleLogout = async () => {
     try {
+      setMenuVisible(false);
+      setSearchVisible(false);
       await auth().signOut();
       navigation.reset({
         index: 0,
@@ -28,31 +39,28 @@ const Header = ({ setSelectedTab }) => {
       console.log("Error during logout :" + error);
     }
   };
+
   return (
     <View style={styles.header}>
       <View style={styles.iconsBar}>
-        {
-          route.name !== "Dashboard" ? (
-            <TouchableOpacity
-              style={styles.backBtn}
-              onPress={() => navigation.goBack()}
-            >
-              <Text>Back</Text>
+        {isSearchVisible ? (
+          <>
+            <TouchableOpacity style={styles.backBtn} onPress={toggleSearch}>
+              <MaterialIcons name="arrow-forward-ios" size={30} color="black" />
             </TouchableOpacity>
-          ) : (
-            <View style={styles.placeholder} />
-          ) // Placeholder when back button is not shown
-        }
-        <View style={styles.icons}>
-          <TouchableOpacity onPress={handleSearch}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search..."
+              autoFocus={true}
+            />
+          </>
+        ) : (
+          <TouchableOpacity onPress={toggleSearch}>
             <MaterialIcons name="search" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleSettings}>
-            <MaterialIcons name="settings" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={handleLogout}>
-          <Text>🚪</Text>
+        )}
+        <TouchableOpacity onPress={toggleMenu}>
+          <MaterialIcons name="more-vert" size={30} color="black" />
         </TouchableOpacity>
       </View>
       {route.name === "Dashboard" && (
@@ -60,6 +68,29 @@ const Header = ({ setSelectedTab }) => {
           <TopNavigation setSelectedTab={setSelectedTab} />
         </View>
       )}
+      <PopupMenu visible={isMenuVisible} onClose={toggleMenu}>
+        {route.name === "Dashboard" && (
+          <TouchableOpacity
+            onPress={() => {
+              setMenuVisible(false);
+              setSearchVisible(false);
+              navigation.navigate("StartNewChat");
+            }}
+          >
+            <Text style={styles.menuItem}>שיחה חדשה</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity
+          onPress={() => {
+            console.log("setting");
+          }}
+        >
+          <Text style={styles.menuItem}>הגדרות</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Text style={styles.menuItem}>התנתק</Text>
+        </TouchableOpacity>
+      </PopupMenu>
     </View>
   );
 };
@@ -74,23 +105,49 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDD",
     width: "100%",
   },
+  backBtn: {
+    marginRight: "auto",
+  },
   iconsBar: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     width: "100%",
     paddingHorizontal: 10, // Add some padding on the sides
   },
-  icons: {
-    display: "flex",
-    flexDirection: "row",
-    // Remove alignSelf: "end"
-  },
+
   placeholder: {
     width: 50, // Make sure this width is similar to the back button's width
   },
   menu: {
     width: "100%",
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginRight: 10, // add some margin to the right of the search bar
+  },
+  menuBox: {
+    position: "absolute",
+    right: 10,
+    top: 50,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 10, // for Android shadow
+    zIndex: 100,
+  },
+  menuItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 

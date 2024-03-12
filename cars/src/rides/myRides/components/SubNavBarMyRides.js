@@ -24,7 +24,6 @@ const SubNavBarMyRides = ({
       initialTab: tab,
     });
   };
-  console.log(mode);
   const renderCloseComponent = () => {
     if (mode === "buy") {
       return (

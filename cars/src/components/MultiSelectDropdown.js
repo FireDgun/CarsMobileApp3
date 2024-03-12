@@ -32,7 +32,6 @@ export default function MultiSelectDropdown({
       setSelectedOptions([...selectedOptions, option]);
     }
   };
-  console.log(modalVisible);
   return (
     <View>
       <TouchableOpacity

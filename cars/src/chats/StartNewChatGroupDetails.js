@@ -42,7 +42,8 @@ const StartNewChatGroupDetails = ({ route }) => {
     try {
       let newChatId = await createGroupChat(
         [...selectedUsers.map((u) => u.uid), user.uid],
-        groupImage ?? "",
+        groupImage ??
+          "https://firebasestorage.googleapis.com/v0/b/carsmobileapp-5f072.appspot.com/o/team.png?alt=media&token=378045e0-c9f8-4464-b0c0-64afa19f0225",
         trimmedGroupName
       );
       navigation.navigate("Dashboard");
@@ -58,7 +59,6 @@ const StartNewChatGroupDetails = ({ route }) => {
 
   return (
     <>
-      <Header />
       <View style={styles.container}>
         <CustomImagePicker
           folderName="group_images"

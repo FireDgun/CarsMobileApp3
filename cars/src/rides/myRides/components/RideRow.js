@@ -37,7 +37,6 @@ const RideRow = ({
   const onSharePress = () => {
     navigation.navigate("ShareRidePage", { rideId: ride.id });
   };
-  console.log("optionalNegotiationId", optionalNegotiationId);
 
   const onCancelPress = () => {
     setIsCancelModalVisible(true);

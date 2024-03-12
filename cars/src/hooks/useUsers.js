@@ -62,6 +62,19 @@ export default function useUsers() {
     },
     []
   );
+  const saveUserExpoPushToken = useCallback(async (uid, expoPushTokens) => {
+    try {
+      await firestore().collection("users").doc(uid).set(
+        {
+          expoPushTokens,
+        },
+        { merge: true }
+      ); // Use merge option to update the document without overwriting existing fields
+      console.log("Expo Push Token saved successfully");
+    } catch (error) {
+      console.log("Error saving the Expo Push Token: " + error);
+    }
+  }, []);
 
   return {
     allUsers,
@@ -69,5 +82,6 @@ export default function useUsers() {
     getAllUsers,
     saveDetails,
     getUserById,
+    saveUserExpoPushToken,
   };
 }

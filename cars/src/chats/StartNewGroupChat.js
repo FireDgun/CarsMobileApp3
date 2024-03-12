@@ -69,7 +69,6 @@ const StartNewGroupChat = () => {
 
   return (
     <View style={styles.container}>
-      <Header title="New Group Chat" />
       <ScrollView horizontal style={styles.selectedUsersContainer}>
         {selectedUsers.map(renderSelectedUser)}
       </ScrollView>

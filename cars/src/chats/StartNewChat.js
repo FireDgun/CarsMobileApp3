@@ -64,8 +64,6 @@ export default function StartNewChat() {
 
   return (
     <View style={styles.container}>
-      <Header />
-
       <TouchableOpacity
         style={styles.row}
         onPress={() => navigation.navigate("StartNewGroupChat")}

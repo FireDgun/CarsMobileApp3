@@ -5,13 +5,13 @@ import RidesList from "./rides/RidesList";
 import ChatsList from "./chats/ChatsList";
 import useRideNavigation from "./hooks/useRideNavigation";
 import { useNavigation } from "@react-navigation/native";
+import PushNotification from "./components/PushNotification";
 
 const { width } = Dimensions.get("window");
 
 export default function Dashboard({ route }) {
   const [layoutReady, setLayoutReady] = useState(false); // Track layout readiness
   const navigation = useNavigation();
-
   const refFlatList = useRef(null);
   const {
     selectedTab,
@@ -59,6 +59,7 @@ export default function Dashboard({ route }) {
   return (
     <View style={styles.container}>
       <Header setSelectedTab={handleSetSelectedTab} />
+      <PushNotification />
       <FlatList
         ref={refFlatList}
         onLayout={() => setLayoutReady(true)}

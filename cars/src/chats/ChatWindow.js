@@ -113,7 +113,6 @@ function ChatWindow({ route }) {
           <MaterialIcons name="more-vert" size={24} color="white" />
         </TouchableOpacity>
       </View>
-      {console.log(messages.length)}
 
       <FlatList
         ref={flatListRef}

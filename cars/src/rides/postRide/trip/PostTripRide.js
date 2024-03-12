@@ -101,6 +101,25 @@ const PostTripRide = () => {
           endTimeLabel={"שעת סיום"}
           onlyTwoTimes={true}
         />
+        <Text>
+          סיום יום הטיול ב
+          {formData.tripLocations[index]?.endAt == "destination"
+            ? formData.tripLocations[index]?.destination.addressName
+            : formData.tripLocations[index]?.origin.addressName}
+        </Text>
+        <TouchableOpacity
+          onPress={() =>
+            handleUpdateTripData(
+              formData.tripLocations[index]?.endAt == "destination"
+                ? "origin"
+                : "destination",
+              index,
+              "endAt"
+            )
+          }
+        >
+          <Text>שנה את המקום שבו מסיימים את הטיול</Text>
+        </TouchableOpacity>
         <Divider style={{ marginTop: 16 }} />
       </View>
     ));

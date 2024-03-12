@@ -11,6 +11,7 @@ import { RidesProvider } from "./src/providers/RidesContext";
 import { Modal, StyleSheet, View, Text } from "react-native";
 import GooglePlacesInput from "./src/components/GooglePlacesInput";
 import ModalProvider from "./src/providers/ModalProvider";
+import { useEffect, useState } from "react";
 
 const Stack = createStackNavigator();
 

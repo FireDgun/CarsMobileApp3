@@ -46,7 +46,7 @@ export default function AppRouter() {
       <Stack.Screen
         name="StartNewChat"
         component={StartNewChat}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="ChatWindow"
@@ -56,12 +56,12 @@ export default function AppRouter() {
       <Stack.Screen
         name="StartNewGroupChat"
         component={StartNewGroupChat}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="StartNewChatGroupDetails"
         component={StartNewChatGroupDetails}
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
       />
       <Stack.Screen
         name="Profile"

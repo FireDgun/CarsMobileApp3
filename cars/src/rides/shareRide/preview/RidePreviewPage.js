@@ -36,7 +36,6 @@ const RidePreviewPage = ({ route }) => {
   };
   const validateRide = (globalRide) => {
     const ride = JSON.parse(JSON.stringify(globalRide));
-    console.log(ride);
     const validations = {};
     let flag = true;
     if (
@@ -63,14 +62,12 @@ const RidePreviewPage = ({ route }) => {
       }
     }
     if (getRideTypeHebrewName(ride.type) == "נסיעה צמודה") {
-      console.log(ride.tripLocations);
       ride.tripLocations.forEach((location, index) => {
         if (!location.origin || location.origin == "") {
           validations[`origin_${index}`] = {
             label: `מוצא ${index + 1}`,
             message: "חובה למלא מוצא",
           };
-          console.log(validations);
           flag = false;
         }
         if (!location.destination || location.destination == "") {
@@ -161,7 +158,6 @@ const RidePreviewPage = ({ route }) => {
     setRideValidations(validations);
     return flag;
   };
-  console.log(rideValidations);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>תצוגה מקדימה</Text>

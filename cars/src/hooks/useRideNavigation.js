@@ -32,11 +32,7 @@ const useRideNavigation = (route) => {
     setInitialRidePage(newInitialRidePage);
     setInitialTab(newInitialTab);
   }, [route]);
-  console.log("selectedTab", selectedTab);
-  console.log("initialRidePage", initialRidePage);
-  console.log("initialTab", initialTab);
-  console.log("optionalNegotiationId", optionalNegotiationId);
-  console.log("optionalNegotiationRideId", optionalNegotiationRideId);
+
   return {
     selectedTab,
     initialRidePage,

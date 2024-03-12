@@ -22,7 +22,6 @@ const NegotiationRow = ({
   useEffect(() => {
     setExpanded(initialExpand);
   }, [initialExpand]);
-  console.log(ride.rideBuyer == senderId);
   return (
     <View style={ride.rideBuyer == senderId && styles.approvedRideRowContainer}>
       <TouchableOpacity onPress={handleRowClick}>

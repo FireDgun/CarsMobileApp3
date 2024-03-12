@@ -33,8 +33,13 @@ const SuggestPriceForRide = ({
           <Text style={styles.modalText}>מחיר נוכחי: {currentPrice}</Text>
           <TextInput
             style={styles.input}
+            keyboardType="numeric"
             placeholder="מה המחיר שאתה מציע?"
-            onChangeText={(text) => setSuggestedPrice(text)}
+            onChangeText={(text) => {
+              // Allow only numeric input
+              const numericText = text.replace(/[^0-9]/g, "");
+              setSuggestedPrice(numericText);
+            }}
           />
           <View style={styles.modalButtonContainer}>
             <TouchableOpacity

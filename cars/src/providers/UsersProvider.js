@@ -4,18 +4,33 @@ import useUsers from "../hooks/useUsers";
 export const UsersContext = createContext();
 
 export const UsersProvider = ({ children }) => {
-  const { allUsers, usersNumbers, getAllUsers, saveDetails, getUserById } =
-    useUsers();
+  const {
+    allUsers,
+    usersNumbers,
+    getAllUsers,
+    saveDetails,
+    getUserById,
+    saveUserExpoPushToken,
+  } = useUsers();
   useEffect(() => {
     async function fetchData() {
       await getAllUsers();
     }
     fetchData();
+
+    console.log("users provider");
   }, []);
 
   return (
     <UsersContext.Provider
-      value={{ allUsers, usersNumbers, getAllUsers, saveDetails, getUserById }}
+      value={{
+        allUsers,
+        usersNumbers,
+        getAllUsers,
+        saveDetails,
+        getUserById,
+        saveUserExpoPushToken,
+      }}
     >
       {children}
     </UsersContext.Provider>
