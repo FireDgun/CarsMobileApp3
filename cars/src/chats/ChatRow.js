@@ -11,6 +11,7 @@ const ChatRow = ({
   id,
   lastTimeMessage = "",
   style = {},
+  badge = 0,
 }) => {
   const imageSource = image ? { uri: image } : defaultImage;
   const { user } = useAuth();
@@ -24,6 +25,11 @@ const ChatRow = ({
         {city && <Text style={styles.city}>{city}</Text>}
       </View>
       <Text style={styles.time}>{lastTimeMessage}</Text>
+      {badge > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{badge}</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "flex-start", // Aligns items to the right
+    alignItems: "flex-start",
   },
   name: {
     fontSize: 16,
@@ -58,6 +64,20 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 12,
     color: "#999",
+  },
+  badge: {
+    backgroundColor: "#004aad",
+    minWidth: 24, // Ensure the badge is at least somewhat round
+    padding: 4, // Padding inside the badge
+    borderRadius: 12, // Half of the height to make it perfectly round
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 10,
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
   },
 });
 

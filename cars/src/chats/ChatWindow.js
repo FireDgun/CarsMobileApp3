@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import {
   View,
   Text,
@@ -41,10 +47,20 @@ function ChatWindow({ route }) {
   const [chatName, setChatName] = useState("");
   const flatListRef = useRef();
 
+  // Inside your component
+  const chatMessagesRef = useRef(chat.messages);
+
+  // Update the ref every time chat.messages changes
   useEffect(() => {
+    chatMessagesRef.current = chat.messages;
+  }, [chat.messages]);
+
+  useEffect(() => {
+    // This function only runs when the component unmounts
     return () => {
-      markAllMessagesAsRead(chatId);
+      markAllMessagesAsRead(chatId, chatMessagesRef.current);
     };
+    // No dependencies means this effect only runs on mount and cleanup on unmount
   }, []);
 
   useEffect(() => {
@@ -61,6 +77,9 @@ function ChatWindow({ route }) {
       setMessages(groupedMessages);
       setChat(chat);
     }
+    () => {
+      //if exit from this component
+    };
   }, [myChats, chatId]);
 
   const clickOnSendMessage = () => {

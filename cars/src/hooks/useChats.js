@@ -274,11 +274,10 @@ export default function useChats() {
   );
 
   const markAllMessagesAsRead = useCallback(
-    async (chatId) => {
+    async (chatId, messages) => {
       try {
-        const chat = myChats.find((chat) => chat.id === chatId);
         let isChange = false;
-        const updatedMessages = chat.messages.map((message) => {
+        const updatedMessages = messages.map((message) => {
           if (
             message.senderId !== user.uid &&
             !message.readBy.includes(user.uid)

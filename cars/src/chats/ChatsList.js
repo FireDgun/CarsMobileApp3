@@ -46,6 +46,9 @@ export default function ChatsList() {
           onClick={() => handleChatSelect(item.id)}
           id={item.id}
           lastTimeMessage={timeOfLastMessage}
+          badge={
+            item.messages.filter((m) => !m.readBy.includes(user.uid)).length
+          }
         />
       );
     };
