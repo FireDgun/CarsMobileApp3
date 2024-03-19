@@ -18,7 +18,7 @@ export default function useUsers() {
         name: docData.name,
         phoneNumber: docData.phoneNumber,
         profilePic: docData.profilePic,
-
+        expoPushTokens: docData.expoPushTokens ?? [],
         selectedLocations: docData.selectedLocations,
       };
     });

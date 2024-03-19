@@ -1,11 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import firestore from "@react-native-firebase/firestore";
 import { useAuth } from "../providers/AuthContext";
+import { sendNotifications } from "../services/notificationsService";
+import { useUsersContext } from "../providers/UsersProvider";
 
 export default function useChats() {
   const { user } = useAuth();
   const [myChats, setMyChats] = useState([]);
   const [refreshListeners, setRefreshListeners] = useState(false);
+  const { allUsers } = useUsersContext();
 
   const fetchMyChats = useCallback(async () => {
     if (!user) return [];
@@ -49,29 +52,46 @@ export default function useChats() {
     }
   }, []);
 
-  const sendMessage = async (chatId, messageContent, type) => {
-    try {
-      const message = {
-        ...messageContent, // The text or other content of the message
-        senderId: user?.uid,
-        senderName: user?.name,
-        senderImg: user?.profilePic,
-        senderPhoneNumber: user?.phoneNumber,
-        readBy: user ? [user.uid] : [],
-        timestamp: new Date(), // Set the timestamp
-        type: type,
-      };
+  const sendMessage = useCallback(
+    async (chatId, messageContent, type) => {
+      try {
+        const message = {
+          ...messageContent, // The text or other content of the message
+          senderId: user?.uid,
+          senderName: user?.name,
+          senderImg: user?.profilePic,
+          senderPhoneNumber: user?.phoneNumber,
+          readBy: user ? [user.uid] : [],
+          timestamp: new Date(), // Set the timestamp
+          type: type,
+        };
 
-      await firestore()
-        .collection("chats")
-        .doc(chatId)
-        .update({
-          messages: firestore.FieldValue.arrayUnion(message), // Add the message to the array
-        });
-    } catch (error) {
-      console.error("Error sending message: ", error);
-    }
-  };
+        await firestore()
+          .collection("chats")
+          .doc(chatId)
+          .update({
+            messages: firestore.FieldValue.arrayUnion(message), // Add the message to the array
+          });
+        const chat = myChats.find((chat) => chat.id === chatId);
+        const otherParticipant = chat.chatParticipants.filter(
+          (p) => p !== user.uid
+        );
+        const otherParticipantPushToken = allUsers
+          .filter((u) => otherParticipant.includes(u.uid))
+          .flatMap((u) => u.expoPushTokens);
+        console.log("otherParticipantPushToken", otherParticipantPushToken);
+        const notifications = otherParticipantPushToken.map((token) => ({
+          pushToken: token,
+          body: message.text,
+          data: { chatId: chat.id },
+        }));
+        sendNotifications(notifications);
+      } catch (error) {
+        console.error("Error sending message: ", error);
+      }
+    },
+    [user, myChats]
+  );
 
   const applyListenersToAllMyChats = useCallback(async () => {
     const unsubscribers = [];
