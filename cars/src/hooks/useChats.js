@@ -272,6 +272,36 @@ export default function useChats() {
     },
     [myChats]
   );
+
+  const markAllMessagesAsRead = useCallback(
+    async (chatId) => {
+      try {
+        const chat = myChats.find((chat) => chat.id === chatId);
+        let isChange = false;
+        const updatedMessages = chat.messages.map((message) => {
+          if (
+            message.senderId !== user.uid &&
+            !message.readBy.includes(user.uid)
+          ) {
+            isChange = true;
+            message.readBy.push(user.uid);
+          }
+          return message;
+        });
+        if (!isChange) return;
+        await firestore()
+          .collection("chats")
+          .doc(chatId)
+          .update({ messages: updatedMessages });
+        console.log("markAllMessagesAsRead");
+      } catch (error) {
+        console.error("Error marking messages as read: ", error);
+      }
+    },
+
+    [myChats]
+  );
+
   return {
     myChats,
     refreshListeners,
@@ -283,5 +313,6 @@ export default function useChats() {
     cancelRideOnChats,
     updateRideOnChat,
     closeRideWithMeOnChats,
+    markAllMessagesAsRead,
   };
 }

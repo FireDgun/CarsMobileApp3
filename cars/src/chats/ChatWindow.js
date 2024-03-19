@@ -32,7 +32,7 @@ function ChatWindow({ route }) {
   const { id: chatId } = route.params; // The ID of the other user in the chat
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { sendMessage, myChats } = useChatsContext();
+  const { sendMessage, myChats, markAllMessagesAsRead } = useChatsContext();
   const { allUsers } = useUsersContext();
   const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState({});
@@ -40,6 +40,12 @@ function ChatWindow({ route }) {
   const [chatImage, setChatImage] = useState();
   const [chatName, setChatName] = useState("");
   const flatListRef = useRef();
+
+  useEffect(() => {
+    return () => {
+      markAllMessagesAsRead(chatId);
+    };
+  }, []);
 
   useEffect(() => {
     if (chat.chatParticipants) {

@@ -15,6 +15,7 @@ export const ChatsProvider = ({ children }) => {
     cancelRideOnChats,
     updateRideOnChat,
     closeRideWithMeOnChats,
+    markAllMessagesAsRead,
   } = useChats();
 
   const { user } = useAuth();
@@ -57,6 +58,7 @@ export const ChatsProvider = ({ children }) => {
         cancelRideOnChats,
         updateRideOnChat,
         closeRideWithMeOnChats,
+        markAllMessagesAsRead,
       }}
     >
       {children}
