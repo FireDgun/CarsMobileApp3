@@ -79,7 +79,6 @@ export default function useChats() {
         const otherParticipantPushToken = allUsers
           .filter((u) => otherParticipant.includes(u.uid))
           .flatMap((u) => u.expoPushTokens);
-        console.log("otherParticipantPushToken", otherParticipantPushToken);
         const notifications = otherParticipantPushToken.map((token) => ({
           pushToken: token,
           body: message.text,
@@ -140,6 +139,7 @@ export default function useChats() {
         // ... other chat details (Image, Chat name, etc.)
       };
       const newChatRef = await firestore().collection("chats").add(newChat);
+
       setMyChats((prev) => [...prev, { ...newChat, id: newChatRef.id }]);
 
       setRefreshListeners((prev) => !prev);
@@ -159,6 +159,16 @@ export default function useChats() {
       };
 
       const newChatRef = await firestore().collection("chats").add(newChat);
+      const otherParticipant = participants.filter((p) => p !== user.uid);
+      const otherParticipantPushToken = allUsers
+        .filter((u) => otherParticipant.includes(u.uid))
+        .flatMap((u) => u.expoPushTokens);
+      const notifications = otherParticipantPushToken.map((token) => ({
+        pushToken: token,
+        body: "צורפת לקבוצה חדשה",
+        data: { chatId: newChatRef.id },
+      }));
+      sendNotifications(notifications);
       setMyChats((prev) => [...prev, { ...newChat, id: newChatRef.id }]);
 
       setRefreshListeners((prev) => !prev);
