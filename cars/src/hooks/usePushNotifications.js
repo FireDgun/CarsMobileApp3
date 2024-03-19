@@ -1,23 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
+import { AppState, Platform } from "react-native";
 import { EXPO_PROJECT_ID } from "@env";
-
-// Notification handling setup
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 const usePushNotifications = (user, saveUserExpoPushToken) => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [appState, setAppState] = useState(AppState.currentState);
+
+  useEffect(() => {
+    // App state change handler
+    const handleAppStateChange = (nextAppState) => {
+      setAppState(nextAppState);
+    };
+
+    AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener("change", handleAppStateChange);
+    };
+  }, []);
 
   useEffect(() => {
     let isSubscribed = false; // Track whether listeners were added
@@ -28,7 +33,14 @@ const usePushNotifications = (user, saveUserExpoPushToken) => {
           setExpoPushToken(token);
         }
       );
-
+      // Notification handling setup
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: appState !== "active", // Show alerts only if app is not in the foreground
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }),
+      });
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
           setNotification(notification);
