@@ -3,26 +3,75 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { AppState, Platform } from "react-native";
 import { EXPO_PROJECT_ID } from "@env";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const usePushNotifications = (user, saveUserExpoPushToken) => {
+const storeResponseAsync = async (response) => {
+  try {
+    console.log("Storing notification response:", response);
+    AsyncStorage.setItem("notificationResponse", JSON.stringify(response));
+    console.log("Stored notification response:", response);
+  } catch (error) {
+    console.log("Error storing notification response", error);
+  }
+};
+
+const resetStoredResponseAsync = async () => {
+  try {
+    await AsyncStorage.removeItem("notificationResponse");
+  } catch (error) {
+    console.log("Error removing stored notification response", error);
+  }
+};
+
+const usePushNotifications = (user, saveUserExpoPushToken, navigation) => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
   const [appState, setAppState] = useState(AppState.currentState);
 
-  useEffect(() => {
-    // App state change handler
-    const handleAppStateChange = (nextAppState) => {
-      setAppState(nextAppState);
-    };
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
-    AppState.addEventListener("change", handleAppStateChange);
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (appState.match(/inactive|background/) && nextAppState === "active") {
+        // App has come to the foreground, check for any notification response
+        checkNotificationResponse();
+      }
+      setAppState(nextAppState);
+    });
+
+    // Initial check in case the app was opened by a notification
+    checkNotificationResponse();
 
     return () => {
-      AppState.removeEventListener("change", handleAppStateChange);
+      subscription.remove();
     };
-  }, []);
+  }, [appState]);
+  console.log("app state " + appState);
+  const checkNotificationResponse = async () => {
+    let response = await Notifications.getLastNotificationResponseAsync();
+    console.log("Last notification response:", response);
+    if (response == null) {
+      try {
+        let responseJSON = await AsyncStorage.getItem("notificationResponse");
+        console.log("Stored notification response:", responseJSON);
+        response = JSON.parse(responseJSON);
+      } catch (error) {
+        console.log("Error getting stored notification response", error);
+      }
+    }
+    console.log("Notification response:", response);
+    if (response) {
+      console.log(
+        "Notification response:",
+        response.notification.request.content.data?.chatId
+      );
+      navigation?.navigate("ChatWindow", {
+        id: response.notification.request.content.data?.chatId,
+      });
+    }
+    resetStoredResponseAsync();
+  };
 
   useEffect(() => {
     let isSubscribed = false; // Track whether listeners were added
@@ -36,22 +85,26 @@ const usePushNotifications = (user, saveUserExpoPushToken) => {
       // Notification handling setup
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
-          shouldShowAlert: appState !== "active", // Show alerts only if app is not in the foreground
-          shouldPlaySound: false,
+          shouldShowAlert: false, // Show alerts only if app is not in the foreground
+          shouldPlaySound: true,
           shouldSetBadge: false,
         }),
       });
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
+          console.log("Notification received", notification);
           setNotification(notification);
         });
 
       responseListener.current =
         Notifications.addNotificationResponseReceivedListener((response) => {
           // Handle response here
+          console.log("Notification response received:", response);
+          storeResponseAsync(response);
         });
 
       isSubscribed = true; // Indicate that listeners were added
+      console.log("Notification listeners added");
     }
 
     return () => {
@@ -61,9 +114,10 @@ const usePushNotifications = (user, saveUserExpoPushToken) => {
           notificationListener.current
         );
         Notifications.removeNotificationSubscription(responseListener.current);
+        console.log("Notification listeners removed");
       }
     };
-  }, [user, saveUserExpoPushToken]);
+  }, [user, saveUserExpoPushToken, navigation]);
 
   return { expoPushToken, notification };
 };

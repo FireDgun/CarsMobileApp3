@@ -13,7 +13,7 @@ const CloseBuyRides = ({ allModeRides, setScrollEnabled, tab }) => {
       ride.rideBuyer &&
       user.uid == ride.rideBuyer &&
       !ride.canceled &&
-      new Date(ride.date).setHours(0, 0, 0, 0) > currentDate
+      new Date(ride.date).setHours(0, 0, 0, 0) >= currentDate
   );
 
   return (

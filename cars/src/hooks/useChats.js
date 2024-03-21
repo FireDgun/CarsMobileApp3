@@ -79,6 +79,7 @@ export default function useChats() {
         const otherParticipantPushToken = allUsers
           .filter((u) => otherParticipant.includes(u.uid))
           .flatMap((u) => u.expoPushTokens);
+
         const notifications = otherParticipantPushToken.map((token) => ({
           pushToken: token,
           body: message.text,

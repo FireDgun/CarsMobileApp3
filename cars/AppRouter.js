@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "./src/Login";
 import Dashboard from "./src/Dashboard";
@@ -20,12 +20,16 @@ import RidePreviewPage from "./src/rides/shareRide/preview/RidePreviewPage";
 import MySellRides from "./src/rides/myRides/sellRide/MySellRides";
 import MyBuyRides from "./src/rides/myRides/buyRide/MyBuyRides";
 import ShareRidePage from "./src/rides/shareRide/share/ShareRidePage";
+import usePushNotifications from "./src/hooks/usePushNotifications";
+import { useUsersContext } from "./src/providers/UsersProvider";
 
 const Stack = createStackNavigator();
 
 export default function AppRouter() {
   const { user } = useAuth();
-
+  const navigation = useNavigation();
+  const { saveUserExpoPushToken } = useUsersContext();
+  usePushNotifications(user, saveUserExpoPushToken, navigation);
   return (
     <Stack.Navigator initialRouteName={user ? "Dashboard" : "Login"}>
       <Stack.Screen

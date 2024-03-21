@@ -1,12 +1,12 @@
 import "react-native-gesture-handler";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import ContactsProvider from "./src/providers/ContactsProvider";
-import { AuthProvider } from "./src/providers/AuthContext";
+import { AuthProvider, useAuth } from "./src/providers/AuthContext";
 import AppRouter from "./AppRouter";
 import { ChatsProvider } from "./src/providers/ChatsProvider";
-import { UsersProvider } from "./src/providers/UsersProvider";
+import { UsersProvider, useUsersContext } from "./src/providers/UsersProvider";
 import { RidesProvider } from "./src/providers/RidesContext";
 import { Modal, StyleSheet, View, Text } from "react-native";
 import GooglePlacesInput from "./src/components/GooglePlacesInput";
