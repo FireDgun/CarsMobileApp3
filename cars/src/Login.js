@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import { fixPhoneFormat } from "./utils/phoneHelper";
+
 export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [code, setCode] = useState("");

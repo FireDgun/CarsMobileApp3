@@ -5,7 +5,6 @@ import RidesList from "./rides/RidesList";
 import ChatsList from "./chats/ChatsList";
 import useRideNavigation from "./hooks/useRideNavigation";
 import { useNavigation } from "@react-navigation/native";
-import PushNotification from "./components/PushNotification";
 import usePushNotifications from "./hooks/usePushNotifications";
 import { useAuth } from "./providers/AuthContext";
 import { useUsersContext } from "./providers/UsersProvider";

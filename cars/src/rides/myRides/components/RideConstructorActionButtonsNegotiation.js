@@ -29,7 +29,6 @@ const RideConstructorActionButtonsNegotiation = ({
     useState(false);
   const { sendMessageInNegotiation, allRides } = useRidesContext();
   const { user } = useAuth();
-  const { showModal, hideModal } = useMyModal();
 
   const [rideDetails, setRideDetails] = useState(ride);
   useEffect(() => {

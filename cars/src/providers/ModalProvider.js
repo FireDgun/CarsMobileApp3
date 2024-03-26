@@ -20,9 +20,7 @@ const ModalProvider = ({ children }) => {
     <View style={styles.fullScreenModal}>{children}</View>
   );
   return (
-    <MyModalContext.Provider
-      value={{ isModalVisible, modalContent, showModal, hideModal }}
-    >
+    <MyModalContext.Provider value={{ showModal, hideModal }}>
       {children}
       {isModalVisible && <FullScreenModal>{modalContent}</FullScreenModal>}
     </MyModalContext.Provider>

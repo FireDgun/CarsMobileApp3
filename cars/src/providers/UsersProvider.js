@@ -26,7 +26,6 @@ export const UsersProvider = ({ children }) => {
       value={{
         allUsers,
         usersNumbers,
-        getAllUsers,
         saveDetails,
         getUserById,
         saveUserExpoPushToken,
