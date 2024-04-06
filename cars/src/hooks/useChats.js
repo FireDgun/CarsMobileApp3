@@ -308,7 +308,6 @@ export default function useChats() {
     sendMessage,
     applyListenersToAllMyChats,
     createChat,
-    fetchMyChats,
     createGroupChat,
     cancelRideOnChats,
     updateRideOnChat,

@@ -1,10 +1,7 @@
 import firestore from "@react-native-firebase/firestore";
 import { useAuth } from "../providers/AuthContext";
 import { useCallback, useState } from "react";
-import {
-  RideMessageType,
-  getRideMessageTextByType,
-} from "../utils/ridesHelper";
+import { getRideMessageTextByType } from "../utils/ridesHelper";
 
 const useMyRides = () => {
   const { user } = useAuth();

@@ -4,33 +4,40 @@ import { initialRideObject } from "../utils/ridesHelper";
 export default function usePostRide(initialRide) {
   const [formData, setFormData] = useState(initialRide ?? initialRideObject);
 
-  const handleInputChange = (field, value, editWithoutAddress = false) => {
-    if (editWithoutAddress) {
-      if (field == "stops" || field == "stopsReturn") {
-        setFormData((prev) => ({
-          ...prev,
-          [field]: value.map((stop, stopIndex) => {
-            // Check if the corresponding stop exists in the previous state
-            const existingStop = prev[field][stopIndex];
-            return {
-              ...stop,
-              // Use the address from the existing stop if it exists, otherwise set a default or handle as needed
-              addressName: existingStop
-                ? existingStop.addressName
-                : stop.addressName || "",
-            };
-          }),
-        }));
+  const updateStopsPreservingAddress = (field, value, prevFormData) => {
+    return {
+      ...prevFormData,
+      [field]: value.map((stop, stopIndex) => {
+        const existingStop = prevFormData[field][stopIndex];
+        return {
+          ...stop,
+          // Preserve address name from the existing stop if available
+          addressName: existingStop
+            ? existingStop.addressName
+            : stop.addressName || "",
+        };
+      }),
+    };
+  };
 
-        return;
+  const updateFieldPreservingAddress = (field, value, prevFormData) => {
+    return {
+      ...prevFormData,
+      [field]: { ...value, addressName: prevFormData[field].addressName },
+    };
+  };
+
+  const handleInputChange = (field, value, editWithoutAddress = false) => {
+    setFormData((prev) => {
+      if (editWithoutAddress) {
+        if (field === "stops" || field === "stopsReturn") {
+          return updateStopsPreservingAddress(field, value, prev);
+        }
+        return updateFieldPreservingAddress(field, value, prev);
       }
-      setFormData((prev) => ({
-        ...prev,
-        [field]: { ...value, addressName: prev[field].addressName },
-      }));
-      return;
-    }
-    setFormData({ ...formData, [field]: value });
+      // Direct update for all other cases
+      return { ...prev, [field]: value };
+    });
   };
 
   const handleSpecialOptionChange = (value) => {

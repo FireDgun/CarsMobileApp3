@@ -68,7 +68,6 @@ export const ChatsProvider = ({ children }) => {
 
 export const useChatsContext = () => {
   const context = useContext(ChatsContext);
-  if (!context)
-    throw new Error("useContacts must be used within a NameProvider");
+  if (!context) throw new Error("useChats must be used within a NameProvider");
   return context;
 };

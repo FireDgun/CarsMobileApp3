@@ -189,9 +189,9 @@ export const NegotiationsProvider = ({ children }) => {
 };
 
 export const useNegotiationsContext = () => {
-  const context = useContext(RidesContext);
+  const context = useContext(NegotiationsContext);
   if (!context) {
-    throw new Error("useRidesContext must be used within a RidesProvider");
+    throw new Error("useNegotiations must be used within a RidesProvider");
   }
   return context;
 };

@@ -4,6 +4,7 @@ const cors = require("./middlewares/cors");
 const logger = require("./logger/loggerService");
 const router = require("./router/router");
 const { handleError } = require("./utils/handleErrors");
+
 require("dotenv").config();
 
 const app = express();
