@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import Header from "../../../layout/Header";
+import Footer from "../../../layout/Footer";
 import { useRidesContext } from "../../../providers/RidesContext";
 import { useAuth } from "../../../providers/AuthContext";
 import RideRow from "../components/RideRow";

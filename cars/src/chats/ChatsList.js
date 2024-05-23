@@ -77,7 +77,7 @@ export default function ChatsList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    paddingTop: 50,
   },
   header: {
     fontSize: 24,

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import ChatRow from "./ChatRow";
 import { useContacts } from "../providers/ContactsProvider";
 import { useNavigation } from "@react-navigation/native";

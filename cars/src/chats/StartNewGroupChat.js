@@ -8,7 +8,7 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import ChatRow from "./ChatRow"; // Ensure this path is correct
 import { useUsersContext } from "../providers/UsersProvider";
 import { useNavigation } from "@react-navigation/native";

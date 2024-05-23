@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import CustomImagePicker from "../components/CustomImagePicker";
-import Header from "../layout/Header";
+import Footer from "../layout/Footer";
 import uuid from "react-native-uuid";
 import { useChatsContext } from "../providers/ChatsProvider";
 import { useAuth } from "../providers/AuthContext";

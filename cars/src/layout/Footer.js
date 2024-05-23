@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import TopNavigation from "./TopNavigation";
+import BottomNavigation from "./BottomNavigation";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import PopupMenu from "./PopupMenu";
 
-const Header = ({ setSelectedTab }) => {
+const Footer = ({ setSelectedTab, selectedTab }) => {
   const navigation = useNavigation();
   const route = useRoute();
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -42,7 +42,7 @@ const Header = ({ setSelectedTab }) => {
 
   return (
     <View style={styles.header}>
-      <View style={styles.iconsBar}>
+      {/* <View style={styles.iconsBar}>
         {isSearchVisible ? (
           <>
             <TouchableOpacity style={styles.backBtn} onPress={toggleSearch}>
@@ -62,13 +62,16 @@ const Header = ({ setSelectedTab }) => {
         <TouchableOpacity onPress={toggleMenu}>
           <MaterialIcons name="more-vert" size={30} color="black" />
         </TouchableOpacity>
-      </View>
+      </View> */}
       {route.name === "Dashboard" && (
         <View style={styles.menu}>
-          <TopNavigation setSelectedTab={setSelectedTab} />
+          <BottomNavigation
+            setSelectedTab={setSelectedTab}
+            selectedTab={selectedTab}
+          />
         </View>
       )}
-      <PopupMenu visible={isMenuVisible} onClose={toggleMenu}>
+      {/* <PopupMenu visible={isMenuVisible} onClose={toggleMenu}>
         {route.name === "Dashboard" && (
           <TouchableOpacity
             onPress={() => {
@@ -90,7 +93,7 @@ const Header = ({ setSelectedTab }) => {
         <TouchableOpacity onPress={handleLogout}>
           <Text style={styles.menuItem}>התנתק</Text>
         </TouchableOpacity>
-      </PopupMenu>
+      </PopupMenu> */}
     </View>
   );
 };
@@ -101,7 +104,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 0,
-    paddingTop: 50,
     backgroundColor: "#DDD",
     width: "100%",
   },
@@ -151,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default Footer;
