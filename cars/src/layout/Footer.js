@@ -69,6 +69,9 @@ const Footer = ({ setSelectedTab, selectedTab }) => {
             setSelectedTab={setSelectedTab}
             selectedTab={selectedTab}
           />
+          <TouchableOpacity onPress={handleLogout}>
+            <Text style={styles.menuItem}>התנתק</Text>
+          </TouchableOpacity>
         </View>
       )}
       {/* <PopupMenu visible={isMenuVisible} onClose={toggleMenu}>

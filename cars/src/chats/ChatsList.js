@@ -60,13 +60,13 @@ export default function ChatsList() {
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.newChatButton}
           onPress={navigateToPostNewRide}
         >
           <MaterialIcons name="directions-bus" size={24} color={"white"} />
           <Text style={styles.newChatButtonText}>+</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   } else {
