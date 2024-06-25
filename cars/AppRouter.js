@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from "./src/Login";
-import Dashboard from "./src/Dashboard";
-import Details from "./src/Details";
+import Login from "./src/screens/Login";
+import Dashboard from "./src/screens/Dashboard";
+import Details from "./src/screens/Details";
 import StartNewChat from "./src/chats/StartNewChat";
 import ChatWindow from "./src/chats/ChatWindow";
 import ContactsProvider from "./src/providers/ContactsProvider";

@@ -1,23 +1,12 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from "react-native";
-import firestore from "@react-native-firebase/firestore";
+import { Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import storage from "@react-native-firebase/storage"; // Ensure Firebase Storage is correctly imported
-import useUsers from "./hooks/useUsers";
-import { uploadImage } from "./utils/FireStorageHelper";
-import { months, years } from "./utils/datesHelper";
-import { locationOptions } from "./utils/locationsList";
-import CustomImagePicker from "./components/CustomImagePicker";
-import { useUsersContext } from "./providers/UsersProvider";
-import { useAuth } from "./providers/AuthContext";
-import MultiSelectDropdown from "./components/MultiSelectDropdown";
+import { years } from "./../utils/datesHelper";
+import { locationOptions } from "./../utils/locationsList";
+import CustomImagePicker from "./../components/CustomImagePicker";
+import { useUsersContext } from "./../providers/UsersProvider";
+import { useAuth } from "./../providers/AuthContext";
+import MultiSelectDropdown from "./../components/MultiSelectDropdown";
 
 export default function Details({ route, navigation }) {
   const uid = route.params?.uid;

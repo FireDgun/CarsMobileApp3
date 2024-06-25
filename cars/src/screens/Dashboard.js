@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
-import Footer from "./layout/Footer";
-import RidesList from "./rides/RidesList";
-import ChatsList from "./chats/ChatsList";
-import useRideNavigation from "./hooks/useRideNavigation";
+import Footer from "../layout/Footer";
+import RidesList from "../rides/RidesList";
+import ChatsList from "../chats/ChatsList";
+import useRideNavigation from "../hooks/useRideNavigation";
 import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");

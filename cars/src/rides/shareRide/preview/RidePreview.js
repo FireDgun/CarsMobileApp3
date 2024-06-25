@@ -3,8 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import { getRideTypeHebrewName } from "../../../utils/ridesHelper";
 import RideDetails from "../components/RideDetails";
 import StopsModal from "../components/StopsModal";
-import { useNavigation } from "@react-navigation/native";
-import { useRidesContext } from "../../../providers/RidesContext";
 
 const RidePreview = ({ ride }) => {
   const [showStopsModal, setShowStopsModal] = useState(false);
