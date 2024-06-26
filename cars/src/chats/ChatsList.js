@@ -23,6 +23,7 @@ export default function ChatsList() {
   const navigation = useNavigation();
   const { allUsers } = useUsersContext();
   const { user } = useAuth();
+
   if (user) {
     const handleChatSelect = useCallback(
       (chatId) => {

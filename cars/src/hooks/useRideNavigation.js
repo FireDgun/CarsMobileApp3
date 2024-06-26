@@ -1,40 +1,35 @@
 import { useState, useEffect } from "react";
 
 const useRideNavigation = (route) => {
+  const initialParams = route?.params || {};
   const [selectedTab, setSelectedTab] = useState(
-    route?.params?.initialPage ?? "chats"
+    initialParams.initialPage || "chats"
   );
   const [initialRidePage, setInitialRidePage] = useState(
-    route?.params?.initialSelectedTab ?? "MySellRides"
+    initialParams.initialSelectedTab || "MySellRides"
   );
   const [initialTab, setInitialTab] = useState(
-    route?.params?.initialTab ?? "Open"
+    initialParams.initialTab || "Open"
   );
   const [optionalNegotiationId, setOptionalNegotiationId] = useState(
-    route?.params?.optionalNegotiationId ?? ""
+    initialParams.optionalNegotiationId || ""
   );
   const [optionalNegotiationRideId, setOptionalNegotiationRideId] = useState(
-    route?.params?.optionalNegotiationRideId ?? ""
+    initialParams.optionalNegotiationRideId || ""
   );
 
   useEffect(() => {
-    const newInitialPage = route?.params?.initialPage ?? "chats";
-    const newInitialRidePage =
-      route?.params?.initialSelectedTab ?? "MySellRides";
-    const newInitialTab = route?.params?.initialTab ?? "Open";
-    const newOptionalNegotiationId = route?.params?.optionalNegotiationId ?? "";
-    const newOptionalNegotiationRideId =
-      route?.params?.optionalNegotiationRideId ?? "";
-
-    setOptionalNegotiationId(newOptionalNegotiationId);
-    setOptionalNegotiationRideId(newOptionalNegotiationRideId);
-    setSelectedTab(newInitialPage);
-    setInitialRidePage(newInitialRidePage);
-    setInitialTab(newInitialTab);
+    const newParams = route?.params || {};
+    setSelectedTab(newParams.initialPage || "chats");
+    setInitialRidePage(newParams.initialSelectedTab || "MySellRides");
+    setInitialTab(newParams.initialTab || "Open");
+    setOptionalNegotiationId(newParams.optionalNegotiationId || "");
+    setOptionalNegotiationRideId(newParams.optionalNegotiationRideId || "");
   }, [route]);
 
   return {
     selectedTab,
+    setSelectedTab,
     initialRidePage,
     initialTab,
     optionalNegotiationId,

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import Footer from "../layout/Footer";
 import RidesList from "../rides/RidesList";
@@ -8,42 +8,37 @@ import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
-export default function Dashboard({ route }) {
-  const [layoutReady, setLayoutReady] = useState(false); // Track layout readiness
-  const [whoActivateSetSelectedTab, setWhoActivateSetSelectedTab] =
-    useState(""); // Track who activate setSelectedTab
-  const navigation = useNavigation();
+const Dashboard = ({ route }) => {
+  const [layoutReady, setLayoutReady] = useState(false);
   const refFlatList = useRef(null);
 
   const {
     selectedTab,
+    setSelectedTab,
     initialRidePage,
     initialTab,
     optionalNegotiationId,
     optionalNegotiationRideId,
   } = useRideNavigation(route);
 
-  useEffect(() => {
-    if (refFlatList.current && layoutReady) {
-      let index = selectedTab === "rides" ? 1 : 0;
-      refFlatList.current.scrollToIndex({ animated: true, index });
-      setWhoActivateSetSelectedTab("");
-    }
-  }, [selectedTab, layoutReady]);
+  const handleSetSelectedTab = (tab, whoActivated) => {
+    if (layoutReady === false) return;
+    const index = tab === "rides" ? 1 : 0;
+    setSelectedTab(tab);
+    refFlatList.current.scrollToIndex({ animated: true, index });
+  };
 
-  const handleSetSelectedTab = (tab, whoActivate) => {
-    if (whoActivate !== "scroll") setWhoActivateSetSelectedTab("click");
-    navigation.navigate("Dashboard", {
-      initialPage: tab,
-    });
+  const handleMomentumScrollEnd = (e) => {
+    const offsetX = e.nativeEvent.contentOffset.x;
+    const activeScreen = Math.round(offsetX / width) + 1; // Calculate the active screen index
+    console.log(activeScreen);
+    if (activeScreen === 1) {
+      setSelectedTab("rides");
+    } else {
+      setSelectedTab("chats");
+    }
   };
-  const handleScroll = (event) => {
-    if (whoActivateSetSelectedTab === "click") return;
-    const index = Math.round(event.nativeEvent.contentOffset.x / width);
-    const tab = index === 0 ? "chats" : "rides";
-    setWhoActivateSetSelectedTab("scroll");
-    handleSetSelectedTab(tab, "scroll");
-  };
+
   const renderItem = ({ item }) => {
     const Component = item.component;
     const extraProps =
@@ -55,6 +50,7 @@ export default function Dashboard({ route }) {
             optionalNegotiationRideId: optionalNegotiationRideId,
           }
         : {};
+
     return (
       <View style={{ width }}>
         <Component {...extraProps} />
@@ -69,20 +65,20 @@ export default function Dashboard({ route }) {
         onLayout={() => setLayoutReady(true)}
         horizontal
         pagingEnabled
-        showsHorizontalScrollIndicator={false}
         data={[
           { key: "chats", component: ChatsList },
           { key: "rides", component: RidesList },
         ]}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
+        // onScrollEndDrag={handleScroll}
         style={styles.contentContainer}
-        onScrollEndDrag={handleScroll}
+        onMomentumScrollEnd={handleMomentumScrollEnd}
       />
       <Footer setSelectedTab={handleSetSelectedTab} selectedTab={selectedTab} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -93,3 +89,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
+export default Dashboard;
