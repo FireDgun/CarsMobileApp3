@@ -2,7 +2,11 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 
-const BottomNavigation = ({ selectedTab, setSelectedTab }) => {
+const BottomNavigation = ({
+  selectedTab,
+  setSelectedTab,
+  mainButtonFunction,
+}) => {
   const navigation = useNavigation();
 
   const navigateToPostNewRide = () => {
@@ -31,15 +35,27 @@ const BottomNavigation = ({ selectedTab, setSelectedTab }) => {
 
       <TouchableOpacity
         style={styles.addButtonContainer}
-        onPress={navigateToPostNewRide}
+        onPress={() => {
+          if (mainButtonFunction) {
+            mainButtonFunction();
+          } else {
+            navigateToPostNewRide();
+          }
+        }}
       >
         <View style={styles.addButton}>
           <Image
-            source={require("../../assets/buttons/postNewRideButton.png")}
-            style={styles.addIcon}
+            source={
+              mainButtonFunction
+                ? require("../../assets/buttons/publishNewRide.png")
+                : require("../../assets/buttons/postNewRideButton.png")
+            }
+            style={mainButtonFunction ? styles.publishIcon : styles.addIcon}
           />
         </View>
-        <Text style={styles.addText}>הוסף נסיעה</Text>
+        <Text style={styles.addText}>
+          {mainButtonFunction ? "פרסום נסיעה" : "הוסף נסיעה"}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.navItem}
@@ -114,6 +130,10 @@ const styles = StyleSheet.create({
   addIcon: {
     width: 30, // Increase size of icon
     height: 55, // Increase size of icon
+  },
+  publishIcon: {
+    width: 55, // Increase size of icon
+    height: 30, // Increase size of icon
   },
   addText: {
     fontSize: 12,

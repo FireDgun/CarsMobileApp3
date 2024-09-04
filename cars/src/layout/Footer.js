@@ -12,7 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import PopupMenu from "./PopupMenu";
 
-const Footer = ({ setSelectedTab, selectedTab }) => {
+const Footer = ({ setSelectedTab, selectedTab, mainButtonFunction }) => {
   const navigation = useNavigation();
   const route = useRoute();
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -63,17 +63,18 @@ const Footer = ({ setSelectedTab, selectedTab }) => {
           <MaterialIcons name="more-vert" size={30} color="black" />
         </TouchableOpacity>
       </View> */}
-      {route.name === "Dashboard" && (
-        <View style={styles.menu}>
-          <BottomNavigation
-            setSelectedTab={setSelectedTab}
-            selectedTab={selectedTab}
-          />
-          {/* <TouchableOpacity onPress={handleLogout}>
+
+      <View style={styles.menu}>
+        <BottomNavigation
+          setSelectedTab={setSelectedTab}
+          selectedTab={selectedTab}
+          mainButtonFunction={mainButtonFunction}
+        />
+        {/* <TouchableOpacity onPress={handleLogout}>
             <Text style={styles.menuItem}>התנתק</Text>
           </TouchableOpacity> */}
-        </View>
-      )}
+      </View>
+
       {/* <PopupMenu visible={isMenuVisible} onClose={toggleMenu}>
         {route.name === "Dashboard" && (
           <TouchableOpacity

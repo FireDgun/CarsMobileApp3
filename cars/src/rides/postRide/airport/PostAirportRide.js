@@ -16,12 +16,18 @@ import RideTypeSelector from "./RideTypeSelector";
 import OneFlightLocationSelector from "./OneFlightLocationSelector";
 import { useNavigation } from "@react-navigation/native";
 
-const PostAirportRide = () => {
-  const { formData, handleInputChange, handleSpecialOptionChange } =
-    usePostRide();
-  const [rideType, setRideType] = useState("arrival"); // Can be 'arrival', 'departure', or 'both'
+const PostAirportRide = ({
+  formData,
+  handleInputChange,
+  handleSpecialOptionChange,
+}) => {
+  const [rideType, setRideType] = useState("airportArrival"); // Can be 'arrival', 'departure', or 'both'
   const navigation = useNavigation();
   const [endDateError, setEndDateError] = useState("");
+
+  useEffect(() => {
+    handleInputChange("type", rideType);
+  }, [rideType]);
 
   useEffect(() => {
     const start = new Date(formData.date);
@@ -40,6 +46,8 @@ const PostAirportRide = () => {
     handleInputChange("destination", "");
     handleInputChange("stops", []);
   }, [rideType]);
+
+  console.log(formData);
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>נתב"ג</Text>
@@ -124,12 +132,7 @@ const PostAirportRide = () => {
           navigation.navigate("RidePreviewPage", {
             ride: JSON.stringify({
               ...formData,
-              type:
-                rideType == "arrival"
-                  ? "airportArrival"
-                  : rideType == "departure"
-                  ? "airportDeparture"
-                  : "airportBoth",
+              type: rideType,
             }),
           })
         }

@@ -7,27 +7,27 @@ const RideTypeSelector = ({ rideType, setRideType }) => {
       <TouchableOpacity
         style={[
           styles.subNavbarItem,
-          rideType === "arrival" && styles.subNavbarItemActive,
+          rideType === "airportArrival" && styles.subNavbarItemActive,
         ]}
-        onPress={() => setRideType("arrival")}
+        onPress={() => setRideType("airportArrival")}
       >
         <Text style={styles.subNavbarText}>נחיתה</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.subNavbarItem,
-          rideType === "departure" && styles.subNavbarItemActive,
+          rideType === "airportDeparture" && styles.subNavbarItemActive,
         ]}
-        onPress={() => setRideType("departure")}
+        onPress={() => setRideType("airportDeparture")}
       >
         <Text style={styles.subNavbarText}>המראה</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.subNavbarItem,
-          rideType === "both" && styles.subNavbarItemActive,
+          rideType === "airportBoth" && styles.subNavbarItemActive,
         ]}
-        onPress={() => setRideType("both")}
+        onPress={() => setRideType("airportBoth")}
       >
         <Text style={styles.subNavbarText}>גם וגם</Text>
       </TouchableOpacity>

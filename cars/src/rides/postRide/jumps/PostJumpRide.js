@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -13,12 +13,17 @@ import RequireDetails from "../components/RequireDetails";
 import usePostRide from "../../../hooks/usePostRide";
 import { useNavigation } from "@react-navigation/native";
 
-const PostJumpRide = () => {
-  const { formData, handleInputChange, handleSpecialOptionChange } =
-    usePostRide();
+const PostJumpRide = ({
+  formData,
+  handleInputChange,
+  handleSpecialOptionChange,
+}) => {
   const navigation = useNavigation();
 
   const [oneWay, setOneWay] = useState(true);
+  useEffect(() => {
+    handleInputChange("type", oneWay ? "jumpOneWay" : "jumpTwoWay");
+  }, [oneWay]);
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="always">
       <Text style={styles.title}>

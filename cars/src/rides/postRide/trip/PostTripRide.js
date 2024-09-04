@@ -19,18 +19,19 @@ import { useNavigation } from "@react-navigation/native";
 
 // Function to calculate the number of days between startDate and endDate
 
-const PostTripRide = () => {
-  const {
-    formData,
-    handleInputChange,
-    handleUpdateTripData,
-    handleSpecialOptionChange,
-    setFormData,
-  } = usePostRide();
+const PostTripRide = ({
+  formData,
+  handleInputChange,
+  handleUpdateTripData,
+  handleSpecialOptionChange,
+  setFormData,
+}) => {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [endDateError, setEndDateError] = useState("");
   const navigation = useNavigation();
-
+  useEffect(() => {
+    handleInputChange("type", "tripRide");
+  }, []);
   // Effect to adjust tripLocations array size
   useEffect(() => {
     const start = new Date(formData.date);

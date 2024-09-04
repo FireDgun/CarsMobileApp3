@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -15,15 +15,20 @@ import RequireDetails from "../components/RequireDetails";
 import FrequencyComponent from "./FrequencyComponent";
 import { useNavigation } from "@react-navigation/native";
 
-const PostLineRide = () => {
+const PostLineRide = ({
+  formData,
+  handleInputChange,
+  handleSpecialOptionChange,
+}) => {
   const [isOneTime, setIsOneTime] = useState(true);
   const [onWay, setOneWay] = useState(true);
   const navigation = useNavigation();
 
-  const { formData, handleInputChange, handleSpecialOptionChange } =
-    usePostRide(); // Assuming usePostRide provides necessary handlers
-
   const toggleSwitch = () => setIsOneTime((previousState) => !previousState);
+
+  useEffect(() => {
+    handleInputChange("type", isOneTime ? "oneTimeLine" : "lineRide");
+  }, [isOneTime]);
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="always">

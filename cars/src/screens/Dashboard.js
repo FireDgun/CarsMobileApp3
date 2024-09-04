@@ -21,6 +21,15 @@ const Dashboard = ({ route }) => {
     optionalNegotiationRideId,
   } = useRideNavigation(route);
 
+  useEffect(() => {
+    console.log(route.params);
+    if (route.params?.initialPage === "rides") {
+      handleSetSelectedTab("rides");
+    } else handleSetSelectedTab("chats");
+  }, [route.params]);
+
+  console.log(selectedTab);
+
   const handleSetSelectedTab = (tab, whoActivated) => {
     if (layoutReady === false) return;
     const index = tab === "rides" ? 1 : 0;
@@ -31,7 +40,7 @@ const Dashboard = ({ route }) => {
   const handleMomentumScrollEnd = (e) => {
     const offsetX = e.nativeEvent.contentOffset.x;
     const activeScreen = Math.round(offsetX / width) + 1; // Calculate the active screen index
-    console.log(activeScreen);
+
     if (activeScreen === 1) {
       setSelectedTab("rides");
     } else {
@@ -71,7 +80,6 @@ const Dashboard = ({ route }) => {
         ]}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
-        // onScrollEndDrag={handleScroll}
         style={styles.contentContainer}
         onMomentumScrollEnd={handleMomentumScrollEnd}
       />
